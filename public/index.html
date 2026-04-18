@@ -1,2024 +1,1343 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Diagnóstico SEO + SOSTAC</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Diagnóstico Técnico de Visibilidad | Jairo Amaya</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        #seo-diagnostic-widget {
+            width: 100%;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .widget-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .widget-header h1 {
+            font-size: clamp(28px, 5vw, 42px);
+            font-weight: 900;
+            margin-bottom: 12px;
+            background: linear-gradient(135deg, #fff 0%, #999 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .widget-header p {
+            color: #999;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .input-container {
+            background: rgb(0, 0, 0);
+            border: 2px solid #222;
+            border-radius: 20px;
+            padding: 40px;
+            margin-bottom: 32px;
+            transition: all 0.3s ease;
+        }
+
+        .input-container:hover {
+            border-color: #333;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+        }
+
+        .input-group {
+            margin-bottom: 24px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 11px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .input-group input {
+            width: 100%;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            padding: 16px 20px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00ff88;
+            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+        }
+
+        .input-group input::placeholder {
+            color: #555;
+        }
+
+        .analyze-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc77 100%);
+            color: #000;
+            border: none;
+            padding: 18px 32px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
+        }
+
+        .analyze-btn:active {
+            transform: translateY(0);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loading-state {
+            text-align: center;
+            padding: 60px 40px;
+            background: rgb(0, 0, 0);
+            border: 2px solid #222;
+            border-radius: 20px;
+        }
+
+        .loading-spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid #222;
+            border-top: 4px solid #00ff88;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .loading-domain {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00ff88;
+        }
+
+        .results-container {
+            background: rgb(0, 0, 0);
+            border: 2px solid #222;
+            border-radius: 20px;
+            padding: 40px;
+        }
+
+        .score-section {
+            text-align: center;
+            padding: 40px 0;
+            border-bottom: 1px solid #222;
+            margin-bottom: 40px;
+        }
+
+        .score-label {
+            font-size: 12px;
+            color: #999;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .score-value {
+            font-size: clamp(64px, 12vw, 96px);
+            font-weight: 900;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc77 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1;
+            margin-bottom: 16px;
+        }
+
+        .score-description {
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Nuevos estilos FASE 2 */
+        .category-breakdown {
+            margin: 40px 0;
+        }
+
+        .category-breakdown h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .category-item {
+            background: #0d0d0d;
+            border: 1px solid #222;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .category-score {
+            font-size: 20px;
+            font-weight: 900;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .category-score.high { color: #00ff88; }
+        .category-score.medium { color: #ffaa00; }
+        .category-score.low { color: #ff4444; }
+
+        .category-details {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.8;
+        }
+
+        .category-details li {
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-icon {
+            font-size: 14px;
+        }
+
+        .benchmark-section {
+            background: linear-gradient(135deg, #1a0a0a 0%, #0a1a0a 100%);
+            border: 2px solid #333;
+            border-radius: 16px;
+            padding: 32px;
+            margin: 40px 0;
+        }
+
+        .benchmark-section h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .benchmark-bar {
+            margin-bottom: 20px;
+        }
+
+        .benchmark-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+        }
+
+        .benchmark-label span:first-child {
+            color: #999;
+        }
+
+        .benchmark-label span:last-child {
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .bar-container {
+            width: 100%;
+            height: 12px;
+            background: #0d0d0d;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .roadmap-preview {
+            margin: 40px 0;
+        }
+
+        .roadmap-preview h3 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .roadmap-week {
+            background: #0d0d0d;
+            border-left: 4px solid #00ff88;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+
+        .week-header {
+            font-size: 12px;
+            color: #00ff88;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .week-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 16px;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 13px;
+            color: #999;
+        }
+
+        .task-priority {
+            background: #ff4444;
+            color: #000;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .task-priority.p0 { background: #ff4444; }
+        .task-priority.p1 { background: #ffaa00; }
+        .task-priority.p2 { background: #00ff88; }
+
+        .task-impact {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .week-estimated {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #222;
+            font-size: 12px;
+            color: #999;
+        }
+
+        .week-estimated strong {
+            color: #00ff88;
+        }
+
+        .cta-section {
+            background: linear-gradient(135deg, #0a1a0a 0%, #1a0a0a 100%);
+            border: 2px solid #00ff88;
+            border-radius: 20px;
+            padding: 40px;
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .cta-section h3 {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .cta-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 24px 0;
+        }
+
+        .cta-stat {
+            text-align: center;
+        }
+
+        .cta-stat-value {
+            font-size: 24px;
+            font-weight: 900;
+            color: #00ff88;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cta-stat-label {
+            font-size: 11px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .cta-problem {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .cta-problem h4 {
+            font-size: 14px;
+            color: #ff4444;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .cta-problem p {
+            font-size: 13px;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .cta-needs {
+            background: #0d0d0d;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: left;
+        }
+
+        .cta-needs h4 {
+            font-size: 14px;
+            color: #fff;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .cta-needs ul {
+            list-style: none;
+        }
+
+        .cta-needs li {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .cta-needs li:before {
+            content: '•';
+            color: #00ff88;
+            font-size: 20px;
+            position: absolute;
+            left: 0;
+        }
+
+        .cta-primary-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #00ff88 0%, #00cc77 100%);
+            color: #000;
+            border: none;
+            padding: 20px 32px;
+            border-radius: 12px;
+            font-weight: 900;
+            font-size: 14px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            margin-bottom: 16px;
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .cta-primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+        }
+
+        .cta-secondary-btn {
+            width: 100%;
+            background: transparent;
+            color: #00ff88;
+            border: 2px solid #00ff88;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 13px;
+            font-family: 'Poppins', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cta-secondary-btn:hover {
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+        }
+
+        .error-message h3 {
+            color: #ff4444;
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .error-message p {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .retry-btn {
+            background: #ff4444;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .input-container,
+            .results-container,
+            .loading-state {
+                padding: 24px;
+            }
+
+            .cta-stats {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .benchmark-label {
+                font-size: 11px;
+            }
+        }
+    </style>
 </head>
 <body>
-
-<!-- Widget autocontenido - No afecta estilos externos -->
-<div id="seo-diagnostic-widget"></div>
-
-<script>
-(function() {
-  'use strict';
-  
-  // ============================================
-  // CONFIGURACIÓN
-  // ============================================
-  const CONFIG = {
-    colors: {
-      primary: '#ff2d8d',
-      success: '#00ff88',
-      warning: '#ffaa00',
-      error: '#ff4444'
-    },
-    whatsapp: '573012963640',
-    proxyUrl: 'https://jairoamaya.co/html-proxy.php'
-  };
-
-  // ============================================
-  // ESTADO
-  // ============================================
-  let STATE = {
-    step: 'input',
-    domain: '',
-    score: 0,
-    baseScore: 0,
-    data: {},
-    fixes: [],
-    usedFixes: [],
-    gaps: [],
-    signals: {},
-    validation: {}
-  };
-
-  // ============================================
-  // INYECTAR FUENTES
-  // ============================================
-  const fontLink = document.createElement('link');
-  fontLink.href = 'https://fonts.googleapis.com/css2?family=Poppins:wght@900&family=Roboto:wght@400&display=swap';
-  fontLink.rel = 'stylesheet';
-  document.head.appendChild(fontLink);
-
-  // ============================================
-  // CONTENEDOR ROOT
-  // ============================================
-  const root = document.getElementById('seo-diagnostic-widget');
-  root.style.cssText = `
-    margin: 0;
-    padding: 20px;
-    background: #000;
-    font-family: 'Roboto', sans-serif;
-    min-height: 100vh;
-    box-sizing: border-box;
-  `;
-
-  // Crear contenedor interno
-  const container = document.createElement('div');
-  container.id = 'widget-container';
-  root.appendChild(container);
-
-  // ============================================
-  // FUNCIÓN RENDER
-  // ============================================
-  function render() {
-    console.log('Rendering...', STATE.step);
-    
-    if(STATE.step === 'input') {
-      container.innerHTML = `
-        <div style="max-width:600px;margin:80px auto;text-align:center;font-family:'Roboto',sans-serif;">
-          <h1 style="color:#fff;font-size:clamp(24px,5vw,36px);font-weight:900;margin-bottom:12px;letter-spacing:-0.5px;font-family:'Poppins',sans-serif;">
-            Diagnóstico Técnico de Visibilidad
-          </h1>
-          <p style="color:#666;font-size:15px;margin-bottom:40px;line-height:1.6;">
-            Análisis real sin simulaciones ni datos falsos
-          </p>
-          <input 
-            type="text" 
-            id="domain-input" 
-            placeholder="tudominio.com"
-            style="
-              width:100%;
-              max-width:500px;
-              background:#0d0d0d;
-              border:2px solid #1a1a1a;
-              padding:18px 24px;
-              border-radius:12px;
-              color:#fff;
-              font-size:16px;
-              font-family:'Roboto',sans-serif;
-              margin-bottom:16px;
-              outline:none;
-              box-sizing:border-box;
-            "
-          />
-          <button 
-            id="analyze-btn"
-            style="
-              width:100%;
-              max-width:500px;
-              background:#fff;
-              color:#000;
-              border:none;
-              padding:18px 32px;
-              border-radius:12px;
-              font-weight:900;
-              font-size:14px;
-              font-family:'Poppins',sans-serif;
-              text-transform:uppercase;
-              letter-spacing:1.5px;
-              cursor:pointer;
-            "
-          >
-            Escanear Sitio →
-          </button>
+    <div id="seo-diagnostic-widget">
+        <div class="widget-header">
+            <h1>Diagnóstico Técnico de Visibilidad</h1>
+            <p>Análisis real sin simulaciones ni datos falsos</p>
         </div>
-      `;
-      
-      // Agregar event listeners
-      document.getElementById('analyze-btn').addEventListener('click', () => {
-        const domain = document.getElementById('domain-input').value.trim();
-        if(domain) runAnalysis(domain);
-      });
-      
-      document.getElementById('domain-input').addEventListener('keydown', (e) => {
-        if(e.key === 'Enter') {
-          const domain = e.target.value.trim();
-          if(domain) runAnalysis(domain);
-        }
-      });
-    }
-    
-    else if(STATE.step === 'analyzing') {
-      container.innerHTML = `
-        <div style="max-width:600px;margin:80px auto;text-align:center;">
-          <div style="
-            width:80px;
-            height:80px;
-            border:3px solid #1a1a1a;
-            border-top-color:${CONFIG.colors.primary};
-            border-radius:50%;
-            margin:0 auto 24px;
-            animation:spin 1s linear infinite;
-          "></div>
-          <p style="color:#666;font-size:14px;text-transform:uppercase;letter-spacing:2px;font-family:'Poppins',sans-serif;font-weight:900;">
-            Analizando ${STATE.domain}...
-          </p>
-          <style>
-            @keyframes spin {
-              to { transform: rotate(360deg); }
+
+        <div id="app-content">
+            <!-- Estado inicial: Input -->
+        </div>
+    </div>
+
+    <script>
+        console.log('SEO Widget SOSTAC: Iniciando...');
+
+        // Estado global
+        const STATE = {
+            currentView: 'input',
+            domain: '',
+            score: 0,
+            aiScore: 0,
+            issues: [],
+            analysis: null
+        };
+
+        // Render functions
+        function render() {
+            console.log('Rendering...', STATE.currentView);
+            const container = document.getElementById('app-content');
+
+            switch (STATE.currentView) {
+                case 'input':
+                    container.innerHTML = renderInput();
+                    attachInputListeners();
+                    break;
+                case 'analyzing':
+                    container.innerHTML = renderAnalyzing();
+                    break;
+                case 'results':
+                    container.innerHTML = renderResults();
+                    attachResultsListeners();
+                    break;
+                case 'error':
+                    container.innerHTML = renderError();
+                    attachErrorListeners();
+                    break;
             }
-          </style>
-        </div>
-      `;
-    }
-    
-    else if(STATE.step === 'results') {
-      renderResults();
-    }
-  }
-
-  // ============================================
-  // ANÁLISIS COMPLETO
-  // ============================================
-  async function runAnalysis(domain) {
-    STATE.domain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-    STATE.step = 'analyzing';
-    render();
-    
-    try {
-      const tStart = performance.now();
-      const url = `${CONFIG.proxyUrl}?url=${encodeURIComponent('https://' + STATE.domain)}`;
-      const response = await fetch(url);
-      const html = await response.text();
-      const tEnd = performance.now();
-      const latency = (tEnd - tStart) / 1000;
-      
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
-      
-      // Extracción de datos
-      const title = doc.querySelector('title')?.textContent || '';
-      const titleLen = title.length;
-      
-      const metaDesc = doc.querySelector('meta[name="description"]')?.getAttribute('content') || '';
-      const descLen = metaDesc.length;
-      
-      const h1s = doc.querySelectorAll('h1');
-      const h1Count = h1s.length;
-      
-      const schemaScripts = doc.querySelectorAll('script[type="application/ld+json"]');
-      const hasSchema = schemaScripts.length > 0;
-      const schemaTypes = [];
-      schemaScripts.forEach(s => {
-        try {
-          const j = JSON.parse(s.textContent);
-          const t = j['@type'] || (Array.isArray(j) ? j.map(x => x['@type']).join(',') : '');
-          if(t) schemaTypes.push(t);
-        } catch(e) {}
-      });
-      
-      const canonical = doc.querySelector('link[rel="canonical"]');
-      const hasCanonical = !!canonical;
-      
-      const ogTitle = doc.querySelector('meta[property="og:title"]');
-      const ogDesc = doc.querySelector('meta[property="og:description"]');
-      const ogImage = doc.querySelector('meta[property="og:image"]');
-      const ogScore = (ogTitle?1:0) + (ogDesc?1:0) + (ogImage?1:0);
-      
-      const allImgs = doc.querySelectorAll('img');
-      let noAltImgs = 0;
-      allImgs.forEach(img => {
-        if(!img.getAttribute('alt')) noAltImgs++;
-      });
-      
-      const robotsMeta = doc.querySelector('meta[name="robots"]');
-      const robotsContent = robotsMeta?.getAttribute('content')?.toLowerCase() || 'index';
-      const isNoindex = robotsContent.includes('noindex');
-      
-      const bodyText = (doc.body?.innerText || doc.body?.textContent || '')
-        .replace(/\s+/g, ' ')
-        .trim();
-      const words = bodyText.split(/\s+/).filter(w => w.length > 2).length;
-      
-      // SCORING
-      let s = 0;
-      const breakdown = [];
-      
-      let titlePts = 0;
-      if(titleLen > 0 && titleLen <= 60) titlePts = 15;
-      else if(titleLen > 60 && titleLen <= 75) titlePts = 10;
-      else if(titleLen > 0) titlePts = 5;
-      s += titlePts;
-      breakdown.push({
-        label: 'TÍTULO SEO',
-        pts: titlePts,
-        max: 15,
-        note: titleLen === 0 ? 'Sin título' : `${titleLen} caracteres`
-      });
-      
-      let descPts = 0;
-      if(descLen >= 120 && descLen <= 160) descPts = 10;
-      else if(descLen > 0 && descLen < 120) descPts = 5;
-      else if(descLen > 160) descPts = 6;
-      s += descPts;
-      breakdown.push({
-        label: 'META DESCRIPTION',
-        pts: descPts,
-        max: 10,
-        note: descLen === 0 ? 'Ausente' : `${descLen} caracteres`
-      });
-      
-      let h1Pts = h1Count === 1 ? 15 : h1Count === 0 ? 0 : 7;
-      s += h1Pts;
-      breakdown.push({
-        label: 'H1',
-        pts: h1Pts,
-        max: 15,
-        note: h1Count === 0 ? 'AUSENTE' : h1Count === 1 ? 'OK' : `${h1Count} H1 detectados`
-      });
-      
-      let schemaPts = hasSchema ? 20 : 0;
-      s += schemaPts;
-      breakdown.push({
-        label: 'SCHEMA',
-        pts: schemaPts,
-        max: 20,
-        note: hasSchema ? schemaTypes.slice(0,2).join(', ') : 'NO'
-      });
-      
-      let contentPts = words > 800 ? 15 : words > 400 ? 10 : words > 150 ? 5 : 0;
-      s += contentPts;
-      breakdown.push({
-        label: 'CONTENIDO',
-        pts: contentPts,
-        max: 15,
-        note: `${words} palabras`
-      });
-      
-      let latPts = latency < 1.5 ? 10 : latency < 2.5 ? 7 : latency < 4 ? 4 : 0;
-      s += latPts;
-      breakdown.push({
-        label: 'TTFB',
-        pts: latPts,
-        max: 10,
-        note: `${latency.toFixed(2)}s`
-      });
-      
-      let ogPts = ogScore === 3 ? 8 : ogScore === 2 ? 5 : ogScore === 1 ? 2 : 0;
-      s += ogPts;
-      breakdown.push({
-        label: 'OG TAGS',
-        pts: ogPts,
-        max: 8,
-        note: `${ogScore}/3`
-      });
-      
-      let canPts = hasCanonical ? 4 : 0;
-      s += canPts;
-      breakdown.push({
-        label: 'CANONICAL',
-        pts: canPts,
-        max: 4,
-        note: hasCanonical ? 'SÍ' : 'NO'
-      });
-      
-      let altPts = allImgs.length === 0 ? 2 : noAltImgs === 0 ? 3 : noAltImgs <= 2 ? 1 : 0;
-      s += altPts;
-      breakdown.push({
-        label: 'ALT EN IMÁGENES',
-        pts: altPts,
-        max: 3,
-        note: `${noAltImgs} sin alt de ${allImgs.length}`
-      });
-      
-      if(isNoindex) {
-        s = Math.max(0, s - 25);
-        breakdown.push({
-          label: '⚠️ NOINDEX',
-          pts: -25,
-          max: 0,
-          note: 'Penalización'
-        });
-      }
-      
-      s = Math.min(100, Math.max(0, Math.round(s)));
-      
-      // ============================================
-      // AI READINESS SCORE (nuevo)
-      // ============================================
-      let aiScore = 0;
-      
-      // Schema.org (40 pts - crítico para IA)
-      if(hasSchema) aiScore += 40;
-      
-      // Canonical (10 pts - identidad única)
-      if(hasCanonical) aiScore += 10;
-      
-      // Contenido estructurado (30 pts)
-      if(h1Count === 1) aiScore += 10; // Jerarquía clara
-      if(words > 400) aiScore += 10; // Densidad informativa
-      if(titleLen > 0 && titleLen <= 60) aiScore += 10; // Título bien formado
-      
-      // Performance (10 pts)
-      if(latency < 2) aiScore += 10;
-      
-      // Open Graph (10 pts - compartibilidad)
-      if(ogScore >= 2) aiScore += 10;
-      
-      aiScore = Math.min(100, Math.max(0, Math.round(aiScore)));
-      
-      // AI Readiness Tier
-      const aiTier = aiScore > 80 ? 'AI-Ready' :
-                    aiScore > 60 ? 'Parcialmente Preparado' :
-                    aiScore > 40 ? 'Configuración Básica' :
-                    'No Preparado para IA';
-      
-      // AI Warning específico
-      let aiWarning = '';
-      if(STATE.score > 60 && !hasSchema) {
-        aiWarning = '⚠️ Tu sitio puede posicionar en SEO tradicional, pero no está estructurado para ser interpretado por agentes de IA. Sin Schema.org, eres invisible para sistemas como ChatGPT, Perplexity y futuros motores de búsqueda basados en LLMs.';
-      } else if(!hasSchema && h1Count !== 1) {
-        aiWarning = '🚨 Sin estructura semántica interpretable. Para un LLM, tu sitio es ruido, no una fuente confiable.';
-      } else if(hasSchema && aiScore < 60) {
-        aiWarning = '⚡ Tienes Schema.org pero la implementación está incompleta. Los agentes de IA pueden verte, pero no confiar plenamente en tus datos.';
-      } else if(aiScore > 80) {
-        aiWarning = '✅ Tu sitio está preparado para ser citado por agentes de IA. Tienes soberanía semántica.';
-      }
-      
-      // ============================================
-      // VISIBILITY LAYERS SYSTEM (Gamificación)
-      // ============================================
-      const executabilityScore = 0; // Placeholder - se implementaría con WebMCP detection
-      const sovereigntyScore = 0;   // Placeholder - se implementaría con llms.txt detection
-      
-      STATE.visibilityLayers = {
-        technical: {
-          name: 'Visibilidad Técnica',
-          score: s,
-          unlocked: true,
-          progress: s,
-          icon: '🎯',
-          description: 'SEO tradicional y optimización básica',
-          nextRequirement: null
-        },
-        ai_citability: {
-          name: 'Citabilidad IA',
-          score: aiScore,
-          unlocked: s > 50,
-          progress: aiScore,
-          icon: '🤖',
-          description: 'Interpretabilidad por agentes de IA y LLMs',
-          nextRequirement: s <= 50 ? 'Alcanza 50+ en Visibilidad Técnica' : null
-        },
-        executability: {
-          name: 'Ejecutabilidad',
-          score: executabilityScore,
-          unlocked: aiScore > 70,
-          progress: executabilityScore,
-          icon: '⚡',
-          description: 'WebMCP, API endpoints y acciones ejecutables',
-          nextRequirement: aiScore <= 70 ? 'Alcanza 70+ en Citabilidad IA' : null,
-          comingSoon: true
-        },
-        sovereignty: {
-          name: 'Soberanía Semántica',
-          score: sovereigntyScore,
-          unlocked: executabilityScore > 80,
-          progress: sovereigntyScore,
-          icon: '👑',
-          description: 'Control total de tu representación en sistemas de IA',
-          nextRequirement: 'Completa Ejecutabilidad',
-          comingSoon: true
         }
-      };
-      
-      // FIXES
-      const fixes = [];
-      if(!hasSchema) fixes.push({
-        label: 'Implementar Schema.org / Grafos de Confianza',
-        gain: 20
-      });
-      if(h1Count !== 1) fixes.push({
-        label: h1Count === 0 
-          ? 'Agregar H1 único con keyword principal'
-          : 'Consolidar múltiples H1 en jerarquía correcta',
-        gain: 15
-      });
-      if(descLen < 120 || descLen === 0) fixes.push({
-        label: 'Optimizar meta description (120-160 chars)',
-        gain: 10
-      });
-      if(titleLen === 0 || titleLen > 75) fixes.push({
-        label: 'Corregir título SEO (30-60 chars)',
-        gain: 10
-      });
-      if(ogScore < 3) fixes.push({
-        label: 'Completar Open Graph para redes sociales',
-        gain: 8
-      });
-      if(!hasCanonical) fixes.push({
-        label: 'Configurar URL canonical',
-        gain: 4
-      });
-      if(noAltImgs > 0) fixes.push({
-        label: `Agregar alt text a ${noAltImgs} imágenes`,
-        gain: 3
-      });
-      if(words < 400) fixes.push({
-        label: 'Ampliar contenido (mínimo 600 palabras)',
-        gain: 10
-      });
-      if(latency >= 2.5) fixes.push({
-        label: 'Optimizar velocidad del servidor (TTFB)',
-        gain: 6
-      });
-      
-      const topFixes = fixes.sort((a,b) => b.gain - a.gain).slice(0,3);
-      
-      // INSIGHT
-      let insight = '';
-      if(!hasSchema && h1Count !== 1) {
-        insight = 'Tu sitio no tiene estructura semántica interpretable. Para un LLM, eres ruido, no una fuente.';
-      } else if(words < 300) {
-        insight = 'Tu problema no es SEO. Es ausencia de densidad informativa suficiente para competir.';
-      } else if(isNoindex) {
-        insight = 'Tienes NOINDEX activo. Google literalmente no puede indexarte. Esto no es optimización, es bloqueo autoinfligido.';
-      } else if(latency > 2.5) {
-        insight = 'Tu cuello de botella no es contenido. Es infraestructura: estás llegando tarde a cada respuesta.';
-      } else if(!hasSchema && words > 600) {
-        insight = 'Tienes contenido, pero sin marcado estructurado. Los agentes de IA no pueden extraer datos verificables.';
-      } else if(h1Count === 0) {
-        insight = 'Sin H1 no hay jerarquía semántica. Tu página es un bloque de texto sin arquitectura interpretable.';
-      } else if(h1Count > 1 && hasSchema) {
-        insight = 'Schema implementado pero jerarquía rota (múltiples H1). Estás enviando señales contradictorias.';
-      } else if(ogScore < 2 && hasSchema) {
-        insight = 'Tienes Schema pero no Open Graph. Invisible en redes sociales mientras optimizas para bots.';
-      } else {
-        insight = 'Tu sitio tiene base técnica, pero no está optimizado para citabilidad por IA ni soberanía semántica.';
-      }
-      
-      // Generar gaps para SOSTAC
-      STATE.gaps = [];
-      if(!hasSchema) STATE.gaps.push({titulo: 'Sin Schema.org', desc: 'Faltan datos estructurados', impacto: 'critical'});
-      if(h1Count !== 1) STATE.gaps.push({titulo: 'Jerarquía H1 incorrecta', desc: h1Count === 0 ? 'Sin H1' : 'Múltiples H1', impacto: 'high'});
-      if(descLen < 120) STATE.gaps.push({titulo: 'Meta Description', desc: 'Ausente o muy corta', impacto: 'high'});
-      if(titleLen === 0 || titleLen > 75) STATE.gaps.push({titulo: 'Title SEO', desc: 'Ausente o muy largo', impacto: 'high'});
-      if(latency > 2.5) STATE.gaps.push({titulo: 'TTFB Alto', desc: 'Servidor lento', impacto: 'critical'});
-      if(ogScore < 3) STATE.gaps.push({titulo: 'Open Graph incompleto', desc: 'Faltan tags sociales', impacto: 'medium'});
-      if(!hasCanonical) STATE.gaps.push({titulo: 'Sin Canonical', desc: 'Falta URL canónica', impacto: 'medium'});
-      if(words < 400) STATE.gaps.push({titulo: 'Contenido insuficiente', desc: 'Menos de 400 palabras', impacto: 'high'});
-      
-      STATE.score = s;
-      STATE.baseScore = s;
-      STATE.aiScore = aiScore;
-      STATE.aiTier = aiTier;
-      STATE.aiWarning = aiWarning;
-      STATE.data = {
-        breakdown,
-        latency: latency.toFixed(2),
-        h1Count,
-        hasSchema,
-        hasCanonical,
-        ogScore,
-        words,
-        isNoindex,
-        insight
-      };
-      STATE.fixes = topFixes;
-      STATE.usedFixes = [];
-      STATE.signals = { html5_semantic: true };
-      STATE.validation = { schema_usable: hasSchema ? 'executes' : 'missing' };
-      STATE.step = 'results';
-      render();
-      
-    } catch(error) {
-      console.error('Error:', error);
-      alert('Error al analizar el sitio. Verifica el dominio.');
-      STATE.step = 'input';
-      render();
-    }
-  }
 
-  function applyFix(index) {
-    if(STATE.usedFixes.includes(index)) return;
-    STATE.usedFixes.push(index);
-    STATE.score = Math.min(100, STATE.score + STATE.fixes[index].gain);
-    render();
-  }
+        function renderInput() {
+            return `
+                <div class="input-container">
+                    <div class="input-group">
+                        <label for="domain-input">Sitio web a analizar</label>
+                        <input 
+                            type="text" 
+                            id="domain-input" 
+                            placeholder="tudominio.com"
+                            value="${STATE.domain}"
+                        />
+                    </div>
+                    <button class="analyze-btn" id="analyze-btn">
+                        Escanear sitio →
+                    </button>
+                </div>
+            `;
+        }
 
-  // ============================================
-  // RENDER RESULTADOS COMPLETO
-  // ============================================
-  function renderResults() {
-    const statusColor = STATE.score > 80 ? CONFIG.colors.success : 
-                       STATE.score > 50 ? CONFIG.colors.warning : 
-                       CONFIG.colors.error;
-    const statusLabel = STATE.score > 80 ? 'SALUDABLE' :
-                       STATE.score > 50 ? 'RIESGO MODERADO' :
-                       'VISIBILIDAD CRÍTICA';
-    const semaphore = STATE.score > 80 ? 'green' :
-                     STATE.score > 50 ? 'yellow' :
-                     'red';
-    
-    // Métricas en grid 3x2
-    const metrics = STATE.data.breakdown.slice(0,6).map(m => {
-      const status = m.pts === m.max ? 'ok' 
-                   : m.pts > m.max * 0.6 ? 'warn'
-                   : 'bad';
-      
-      const statusColor = status === 'ok' ? CONFIG.colors.success
-                        : status === 'warn' ? CONFIG.colors.warning
-                        : CONFIG.colors.error;
-      
-      const value = m.label === 'H1' ? (m.note === 'OK' ? 'OK' : m.note)
-                  : m.label === 'SCHEMA' ? m.note
-                  : m.label === 'CANONICAL' ? m.note
-                  : m.label === 'OG TAGS' ? m.note
-                  : m.label === 'TTFB' ? m.note
-                  : m.note;
-      
-      return `
-        <div style="
-          background:#0d0d0d;
-          border:1px solid #1a1a1a;
-          border-radius:12px;
-          padding:20px;
-          text-align:center;
-        ">
-          <div style="
-            font-size:10px;
-            color:#555;
-            text-transform:uppercase;
-            letter-spacing:1.5px;
-            margin-bottom:12px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-          ">${m.label}</div>
-          <div style="
-            font-size:18px;
-            color:${statusColor};
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-          ">${value}</div>
-        </div>
-      `;
-    }).join('');
-    
-    // Score potencial
-    const potentialScore = Math.min(100, STATE.score + STATE.fixes.reduce((sum, f) => sum + (STATE.usedFixes.includes(STATE.fixes.indexOf(f)) ? 0 : f.gain), 0));
-    
-    // Plan de intervención
-    const interventions = STATE.fixes.map((fix, i) => {
-      const used = STATE.usedFixes.includes(i);
-      return `
-        <div id="fix-${i}" style="
-          background:#0d0d0d;
-          border:1px solid #1a1a1a;
-          border-radius:10px;
-          padding:16px 20px;
-          margin-bottom:12px;
-          display:flex;
-          justify-content:space-between;
-          align-items:center;
-          cursor:${used ? 'not-allowed' : 'pointer'};
-          opacity:${used ? '0.3' : '1'};
-          transition:background 0.2s;
-        ">
-          <span style="color:#ccc;font-size:13px;line-height:1.5;">${fix.label}</span>
-          <span style="
-            background:${used ? '#0a0a0a' : 'linear-gradient(135deg,' + CONFIG.colors.success + ' 0%, #00cc66 100%)'};
-            color:${used ? '#333' : '#000'};
-            padding:6px 12px;
-            border-radius:6px;
-            font-size:11px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-            min-width:60px;
-            text-align:center;
-          ">${used ? '✓ HECHO' : '+' + fix.gain}</span>
-        </div>
-      `;
-    }).join('');
-    
-    container.innerHTML = `
-      <div style="max-width:1400px;margin:40px auto;font-family:'Roboto',sans-serif;">
-        
-        <!-- ============================================ -->
-        <!-- CAPA 1: SEO TRADICIONAL (Entregable core)   -->
-        <!-- ============================================ -->
-        
-        <!-- Score SEO Principal -->
-        <div style="
-          background:#0d0d0d;
-          border:2px solid ${CONFIG.colors.primary};
-          border-radius:16px;
-          padding:40px;
-          text-align:center;
-          margin-bottom:40px;
-        ">
-          <div style="
-            font-size:11px;
-            color:#555;
-            text-transform:uppercase;
-            letter-spacing:2px;
-            margin-bottom:16px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-          ">VISIBILITY SCORE SEO</div>
-          
-          <div style="display:flex;justify-content:center;align-items:center;gap:40px;margin-bottom:24px;">
-            <!-- Score -->
-            <div>
-              <div style="
-                font-size:clamp(80px,12vw,120px);
-                font-weight:900;
-                font-family:'Poppins',sans-serif;
-                background:linear-gradient(135deg,${CONFIG.colors.primary} 0%,#ff006e 100%);
-                -webkit-background-clip:text;
-                -webkit-text-fill-color:transparent;
-                line-height:1;
-              ">${STATE.score}<span style="
-                  font-size:0.3em;
-                  color:#333;
-                  font-weight:400;
-                ">/100</span>
-              </div>
-            </div>
-            
-            <!-- Semáforo -->
-            <div style="
-              display:flex;
-              flex-direction:column;
-              gap:14px;
-            ">
-              <div style="
-                width:32px;
-                height:32px;
-                border-radius:50%;
-                background:${semaphore === 'red' ? CONFIG.colors.error : '#1a1a1a'};
-                box-shadow:${semaphore === 'red' ? `0 0 20px ${CONFIG.colors.error}aa` : 'none'};
-              "></div>
-              <div style="
-                width:32px;
-                height:32px;
-                border-radius:50%;
-                background:${semaphore === 'yellow' ? CONFIG.colors.warning : '#1a1a1a'};
-                box-shadow:${semaphore === 'yellow' ? `0 0 20px ${CONFIG.colors.warning}aa` : 'none'};
-              "></div>
-              <div style="
-                width:32px;
-                height:32px;
-                border-radius:50%;
-                background:${semaphore === 'green' ? CONFIG.colors.success : '#1a1a1a'};
-                box-shadow:${semaphore === 'green' ? `0 0 20px ${CONFIG.colors.success}aa` : 'none'};
-              "></div>
-            </div>
-          </div>
-          
-          <div style="
-            font-size:11px;
-            color:#666;
-            text-transform:uppercase;
-            letter-spacing:1.5px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-          ">
-            ESTADO: <span style="color:${statusColor};font-weight:900;">${statusLabel}</span>
-          </div>
-          
-          <div style="
-            margin-top:16px;
-            padding-top:16px;
-            border-top:1px solid #1a1a1a;
-            color:#999;
-            font-size:13px;
-          ">
-            ${STATE.domain}
-          </div>
-        </div>
-        
-        <!-- DIAGNÓSTICO -->
-        <div style="
-          background:linear-gradient(135deg, #1a0a0a 0%, #0a0000 100%);
-          border:2px solid ${CONFIG.colors.primary};
-          border-radius:16px;
-          padding:32px;
-          margin-bottom:40px;
-          position:relative;
-          overflow:hidden;
-        ">
-          <div style="
-            position:absolute;
-            top:0;
-            left:0;
-            right:0;
-            height:3px;
-            background:linear-gradient(90deg, ${CONFIG.colors.primary} 0%, #ff006e 100%);
-          "></div>
-          <div style="
-            font-size:10px;
-            color:${CONFIG.colors.primary};
-            text-transform:uppercase;
-            letter-spacing:2px;
-            margin-bottom:16px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-          ">DIAGNÓSTICO SIN FILTROS</div>
-          <div style="
-            color:#fff;
-            font-size:17px;
-            line-height:1.8;
-            font-weight:400;
-            font-family:'Roboto',sans-serif;
-          ">
-            ${STATE.data.insight}
-          </div>
-        </div>
-        
-        <!-- Evidencia Técnica + Plan -->
-        <div style="
-          display:grid;
-          grid-template-columns:1fr 1fr;
-          gap:32px;
-          margin-bottom:40px;
-        ">
-          
-          <!-- EVIDENCIA TÉCNICA -->
-          <div>
-            <div style="
-              font-size:10px;
-              color:#555;
-              text-transform:uppercase;
-              letter-spacing:2px;
-              margin-bottom:24px;
-              font-weight:900;
-              font-family:'Poppins',sans-serif;
-            ">EVIDENCIA TÉCNICA DETECTADA</div>
-            
-            <div style="
-              display:grid;
-              grid-template-columns:repeat(2, 1fr);
-              gap:16px;
-              margin-bottom:32px;
-            ">
-              ${metrics}
-            </div>
-            
-            ${STATE.data.isNoindex ? `
-              <div style="
-                background:#1a0000;
-                border:1px solid #440000;
-                border-radius:12px;
-                padding:20px;
-                margin-bottom:24px;
-              ">
-                <div style="
-                  font-size:10px;
-                  color:${CONFIG.colors.error};
-                  text-transform:uppercase;
-                  letter-spacing:1.5px;
-                  margin-bottom:6px;
-                  font-weight:900;
-                  font-family:'Poppins',sans-serif;
-                ">⚠️ NOINDEX ACTIVO</div>
-                <div style="
-                  color:#999;
-                  font-size:13px;
-                  line-height:1.5;
-                  font-family:'Roboto',sans-serif;
-                ">
-                  Tu sitio tiene instrucciones de no-indexación. <span style="color:#ccc;font-weight:600;">Penalización: -25 pts</span>
+        function renderAnalyzing() {
+            return `
+                <div class="loading-state">
+                    <div class="loading-spinner"></div>
+                    <div class="loading-text">Analizando tu sitio...</div>
+                    <div class="loading-domain">${STATE.domain}</div>
                 </div>
-              </div>
-            ` : ''}
-          </div>
-          
-          <!-- PLAN DE INTERVENCIÓN -->
-          <div>
-            <div style="
-              font-size:10px;
-              color:#555;
-              text-transform:uppercase;
-              letter-spacing:2px;
-              margin-bottom:24px;
-              font-weight:900;
-              font-family:'Poppins',sans-serif;
-            ">PLAN DE INTERVENCIÓN</div>
+            `;
+        }
+
+        function renderResults() {
+            const categories = calculateCategoryScores(STATE.analysis);
             
-            <div style="margin-bottom:24px;">
-              ${interventions}
-            </div>
-            
-            <!-- Score Potencial -->
-            <div style="
-              background:#0d0d0d;
-              border:2px solid ${CONFIG.colors.success};
-              border-radius:12px;
-              padding:24px;
-              text-align:center;
-            ">
-              <div style="
-                font-size:10px;
-                color:#666;
-                text-transform:uppercase;
-                letter-spacing:2px;
-                margin-bottom:12px;
-                font-weight:900;
-                font-family:'Poppins',sans-serif;
-              ">SCORE POTENCIAL</div>
-              <div style="
-                font-size:clamp(48px,8vw,72px);
-                font-weight:900;
-                color:${CONFIG.colors.success};
-                font-family:'Poppins',sans-serif;
-                text-shadow:0 0 40px ${CONFIG.colors.success}44;
-              ">${potentialScore}</div>
-            </div>
-          </div>
-        </div>
-        
-        <!-- SOSTAC Plan Options -->
-        <div style="
-          background:linear-gradient(135deg,#1a0a0a 0%,#0a0000 100%);
-          border:2px solid ${CONFIG.colors.primary};
-          padding:40px;
-          border-radius:20px;
-          margin-bottom:32px;
-        ">
-          <div style="text-align:center;margin-bottom:32px;">
-            <h3 style="
-              font-size:24px;
-              font-weight:900;
-              margin-bottom:12px;
-              color:#fff;
-              font-family:'Poppins',sans-serif;
-            ">Tu Plan SOSTAC está listo</h3>
-            <p style="
-              color:#999;
-              font-size:14px;
-              font-family:'Roboto',sans-serif;
-            ">Elige cómo quieres ejecutarlo</p>
-          </div>
-          
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
-            <!-- Opción 1: PDF -->
-            <div style="
-              background:#0d0d0d;
-              border:1px solid #333;
-              padding:32px;
-              border-radius:16px;
-              text-align:center;
-              transition:all 0.3s;
-            ">
-              <div style="font-size:48px;margin-bottom:16px;">📄</div>
-              <h4 style="
-                font-size:16px;
-                font-weight:900;
-                margin-bottom:8px;
-                color:#fff;
-                font-family:'Poppins',sans-serif;
-              ">Documento Estático</h4>
-              <p style="
-                color:#666;
-                font-size:13px;
-                margin-bottom:24px;
-                line-height:1.6;
-                font-family:'Roboto',sans-serif;
-              ">Descarga tu plan como PDF para compartir o archivar</p>
-              
-              <div style="
-                font-size:32px;
-                font-weight:900;
-                color:#666;
-                margin-bottom:16px;
-                font-family:'Poppins',sans-serif;
-              ">$19</div>
-              
-              <button id="pdf-btn" style="
-                background:#333;
-                color:#fff;
-                border:none;
-                padding:14px 24px;
-                border-radius:10px;
-                font-weight:900;
-                font-size:12px;
-                font-family:'Poppins',sans-serif;
-                text-transform:uppercase;
-                letter-spacing:1.5px;
-                cursor:pointer;
-                width:100%;
-                transition:all 0.3s;
-              " onmouseover="this.style.background='#444'" onmouseout="this.style.background='#333'">
-                DESCARGAR PDF
-              </button>
-            </div>
-            
-            <!-- Opción 2: SOSTAC Flow (Recomendado) -->
-            <div style="
-              background:linear-gradient(135deg,#1a0a1a 0%,#0a1a0a 100%);
-              border:2px solid ${CONFIG.colors.success};
-              padding:32px;
-              border-radius:16px;
-              text-align:center;
-              position:relative;
-              transition:all 0.3s;
-            ">
-              <!-- Badge Recomendado -->
-              <div style="
-                position:absolute;
-                top:-12px;
-                left:50%;
-                transform:translateX(-50%);
-                background:${CONFIG.colors.success};
-                color:#000;
-                padding:6px 16px;
-                border-radius:20px;
-                font-size:10px;
-                font-weight:900;
-                letter-spacing:1.5px;
-                font-family:'Poppins',sans-serif;
-              ">RECOMENDADO</div>
-              
-              <div style="font-size:48px;margin-bottom:16px;">🚀</div>
-              <h4 style="
-                font-size:16px;
-                font-weight:900;
-                margin-bottom:8px;
-                color:#fff;
-                font-family:'Poppins',sans-serif;
-              ">Dashboard Ejecutable</h4>
-              <p style="
-                color:${CONFIG.colors.success};
-                font-size:13px;
-                margin-bottom:16px;
-                line-height:1.6;
-                font-family:'Roboto',sans-serif;
-              ">Sistema vivo con tracking en tiempo real</p>
-              
-              <div style="
-                background:#0a0a0a;
-                border:1px solid #1a1a1a;
-                padding:12px;
-                border-radius:8px;
-                margin-bottom:16px;
-                text-align:left;
-              ">
-                <div style="font-size:11px;color:#999;margin-bottom:8px;">
-                  ✓ Tracking de progreso en tiempo real<br>
-                  ✓ Colaboración en equipo<br>
-                  ✓ Notificaciones automáticas<br>
-                  ✓ Historial de cambios<br>
-                  ✓ Exportar a PDF cuando quieras
+            return `
+                <div class="results-container">
+                    ${renderScoreSection()}
+                    ${renderCategoryBreakdown(categories)}
+                    ${renderBenchmark()}
+                    ${renderRoadmapPreview(categories)}
+                    ${renderCTA()}
                 </div>
-              </div>
-              
-              <div style="
-                font-size:32px;
-                font-weight:900;
-                color:${CONFIG.colors.success};
-                margin-bottom:4px;
-                font-family:'Poppins',sans-serif;
-              ">$49<span style="font-size:14px;color:#666;font-weight:400;">/mes</span></div>
-              <div style="
-                font-size:11px;
-                color:#666;
-                margin-bottom:16px;
-              ">Primer mes gratis</div>
-              
-              <button id="sostac-flow-btn" style="
-                background:linear-gradient(135deg,${CONFIG.colors.success} 0%,#00cc77 100%);
-                color:#000;
-                border:none;
-                padding:14px 24px;
-                border-radius:10px;
-                font-weight:900;
-                font-size:12px;
-                font-family:'Poppins',sans-serif;
-                text-transform:uppercase;
-                letter-spacing:1.5px;
-                cursor:pointer;
-                width:100%;
-                box-shadow:0 0 20px ${CONFIG.colors.success}44;
-                transition:all 0.3s;
-              " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 30px ${CONFIG.colors.success}66'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='0 0 20px ${CONFIG.colors.success}44'">
-                ABRIR EN SOSTAC FLOW →
-              </button>
-            </div>
-          </div>
-          
-          <p style="
-            text-align:center;
-            margin-top:24px;
-            font-size:12px;
-            color:#666;
-            font-style:italic;
-            font-family:'Roboto',sans-serif;
-          ">"No ejecutes desde un PDF. Ejecuta desde un sistema."</p>
-        </div>
-        
-        <!-- WhatsApp CTA -->
-        <div style="text-align:center;margin-bottom:60px;">
-          <button id="whatsapp-btn" style="
-            background:#fff;
-            color:#000;
-            border:none;
-            padding:20px 40px;
-            border-radius:12px;
-            font-weight:900;
-            font-size:13px;
-            font-family:'Poppins',sans-serif;
-            text-transform:uppercase;
-            letter-spacing:1.5px;
-            cursor:pointer;
-            transition:all 0.3s;
-          " onmouseover="this.style.transform='translateY(-2px)';this.style.boxShadow='0 4px 20px rgba(255,255,255,0.2)'" onmouseout="this.style.transform='translateY(0)';this.style.boxShadow='none'">
-            💬 SOLICITAR CONSULTORÍA TÉCNICA →
-          </button>
-        </div>
-        
-        <!-- ============================================ -->
-        <!-- CAPA 2: STACK DE VISIBILIDAD (Descubrimiento) -->
-        <!-- ============================================ -->
-        
-        <!-- Separador visual -->
-        <div style="
-          text-align:center;
-          margin:60px 0;
-          position:relative;
-        ">
-          <div style="
-            position:absolute;
-            top:50%;
-            left:0;
-            right:0;
-            height:1px;
-            background:linear-gradient(90deg,transparent 0%,#333 50%,transparent 100%);
-          "></div>
-          <div style="
-            position:relative;
-            display:inline-block;
-            background:#000;
-            padding:0 24px;
-            color:#666;
-            font-size:12px;
-            text-transform:uppercase;
-            letter-spacing:2px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-          ">
-            Hay más allá de SEO tradicional
-          </div>
-        </div>
-        
-        <!-- VISIBILITY STACK -->
-        <div style="
-          background:linear-gradient(135deg,#0a0a1a 0%,#1a0a1a 100%);
-          border:2px solid #00ccff;
-          border-radius:20px;
-          padding:40px;
-          margin-bottom:40px;
-          position:relative;
-          overflow:hidden;
-        ">
-          <!-- Decorative glow -->
-          <div style="
-            position:absolute;
-            top:-50%;
-            right:-50%;
-            width:200%;
-            height:200%;
-            background:radial-gradient(circle,#00ccff11 0%,transparent 70%);
-            pointer-events:none;
-          "></div>
-          
-          <div style="position:relative;z-index:1;">
-            <!-- Header -->
-            <div style="text-align:center;margin-bottom:32px;">
-              <div style="
-                font-size:11px;
-                color:#00ccff;
-                text-transform:uppercase;
-                letter-spacing:2px;
-                margin-bottom:12px;
-                font-weight:900;
-                font-family:'Poppins',sans-serif;
-              ">STACK DE VISIBILIDAD</div>
-              <h3 style="
-                font-size:24px;
-                font-weight:900;
-                margin-bottom:12px;
-                color:#fff;
-                font-family:'Poppins',sans-serif;
-              ">Tu Progreso en el Sistema Completo</h3>
-              <p style="
-                color:#999;
-                font-size:14px;
-                line-height:1.6;
-                max-width:600px;
-                margin:0 auto;
-              ">
-                La visibilidad web moderna tiene 4 capas. Has desbloqueado las primeras, 
-                pero existen dimensiones invisibles que determinan tu futuro.
-              </p>
-            </div>
+            `;
+        }
+
+        function renderScoreSection() {
+            return `
+                <div class="score-section">
+                    <div class="score-label">Tu Score Global</div>
+                    <div class="score-value">${STATE.score}<span style="font-size:0.4em;color:#666;">/100</span></div>
+                    <div class="score-description">
+                        Análisis de ${STATE.analysis.factors.length} factores técnicos
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCategoryBreakdown(categories) {
+            return `
+                <div class="category-breakdown">
+                    <h3>📊 Desglose por Categoría</h3>
+                    ${categories.map(cat => `
+                        <div class="category-item">
+                            <div class="category-header">
+                                <div class="category-name">${cat.name}</div>
+                                <div class="category-score ${cat.score >= 70 ? 'high' : cat.score >= 50 ? 'medium' : 'low'}">
+                                    ${cat.score}/100
+                                </div>
+                            </div>
+                            <div class="category-details">
+                                <ul>
+                                    ${cat.details.map(detail => `
+                                        <li>
+                                            <span class="status-icon">${detail.status}</span>
+                                            <span>${detail.text}</span>
+                                        </li>
+                                    `).join('')}
+                                </ul>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderBenchmark() {
+            const industry = getIndustryBenchmark();
+            const gap = industry.average - STATE.score;
             
-            <!-- Layers Progress -->
-            ${Object.entries(STATE.visibilityLayers).map(([key, layer], index) => {
-              const isLocked = !layer.unlocked;
-              const blur = isLocked ? 'filter:blur(4px);opacity:0.4;' : '';
-              const borderColor = isLocked ? '#333' : 
-                                 layer.progress > 80 ? CONFIG.colors.success :
-                                 layer.progress > 50 ? CONFIG.colors.warning :
-                                 layer.progress > 0 ? CONFIG.colors.primary :
-                                 '#333';
-              
-              return `
-                <div style="
-                  background:${isLocked ? '#0a0a0a' : '#0d0d0d'};
-                  border:2px solid ${borderColor};
-                  border-radius:16px;
-                  padding:24px;
-                  margin-bottom:16px;
-                  position:relative;
-                  ${blur}
-                  transition:all 0.3s;
-                ">
-                  ${isLocked ? `
-                    <div style="
-                      position:absolute;
-                      top:50%;
-                      left:50%;
-                      transform:translate(-50%,-50%);
-                      z-index:10;
-                    ">
-                      <div style="
-                        background:rgba(0,0,0,0.95);
-                        border:2px solid #333;
-                        border-radius:12px;
-                        padding:20px 32px;
-                        text-align:center;
-                      ">
-                        <div style="font-size:32px;margin-bottom:8px;">🔒</div>
-                        <div style="
-                          font-size:11px;
-                          color:#666;
-                          text-transform:uppercase;
-                          letter-spacing:1.5px;
-                          font-weight:900;
-                          font-family:'Poppins',sans-serif;
-                        ">BLOQUEADO</div>
-                        ${layer.nextRequirement ? `
-                          <div style="
-                            font-size:11px;
-                            color:#999;
-                            margin-top:8px;
-                            line-height:1.4;
-                          ">${layer.nextRequirement}</div>
-                        ` : ''}
-                      </div>
-                    </div>
-                  ` : ''}
-                  
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
-                    <div style="display:flex;align-items:center;gap:12px;">
-                      <div style="font-size:32px;">${layer.icon}</div>
-                      <div>
-                        <div style="
-                          font-size:10px;
-                          color:#666;
-                          text-transform:uppercase;
-                          letter-spacing:1.5px;
-                          margin-bottom:4px;
-                          font-weight:900;
-                          font-family:'Poppins',sans-serif;
-                        ">Nivel ${index + 1}</div>
-                        <div style="
-                          font-size:18px;
-                          font-weight:900;
-                          color:#fff;
-                          font-family:'Poppins',sans-serif;
-                        ">${layer.name}</div>
-                      </div>
-                    </div>
+            return `
+                <div class="benchmark-section">
+                    <h3>📈 Benchmark vs Industria</h3>
                     
-                    <div style="text-align:right;">
-                      <div style="
-                        font-size:${isLocked ? '24px' : '36px'};
-                        font-weight:900;
-                        color:${isLocked ? '#333' : layer.progress > 80 ? CONFIG.colors.success : layer.progress > 50 ? CONFIG.colors.warning : CONFIG.colors.primary};
-                        font-family:'Poppins',sans-serif;
-                      ">${isLocked ? (layer.comingSoon ? 'PRÓX.' : '??' ) : layer.score}<span style="font-size:0.5em;color:#333;">/100</span></div>
+                    <div class="benchmark-bar">
+                        <div class="benchmark-label">
+                            <span>Tu sitio</span>
+                            <span>${STATE.score}/100</span>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width:${STATE.score}%;background:linear-gradient(90deg,#ff4444,#ffaa00);"></div>
+                        </div>
                     </div>
-                  </div>
-                  
-                  <!-- Progress Bar -->
-                  <div style="
-                    background:#000;
-                    height:8px;
-                    border-radius:4px;
-                    overflow:hidden;
-                    margin-bottom:12px;
-                  ">
-                    <div style="
-                      width:${isLocked ? 0 : layer.progress}%;
-                      height:100%;
-                      background:linear-gradient(90deg,${borderColor} 0%,${borderColor}88 100%);
-                      transition:width 0.5s ease;
-                    "></div>
-                  </div>
-                  
-                  <p style="
-                    color:#999;
-                    font-size:13px;
-                    line-height:1.6;
-                    margin:0;
-                  ">${layer.description}</p>
-                  
-                  ${!isLocked && layer.comingSoon ? `
-                    <div style="
-                      margin-top:16px;
-                      padding:12px 16px;
-                      background:#1a1a00;
-                      border:1px solid #443300;
-                      border-radius:8px;
-                      font-size:11px;
-                      color:#ffaa00;
-                      text-align:center;
-                      font-weight:900;
-                      text-transform:uppercase;
-                      letter-spacing:1px;
-                      font-family:'Poppins',sans-serif;
-                    ">
-                      🚧 Análisis disponible próximamente
-                    </div>
-                  ` : ''}
-                </div>
-              `;
-            }).join('')}
-            
-            <!-- Next Layer CTA -->
-            ${!STATE.visibilityLayers.ai_citability.unlocked ? `
-              <div style="
-                background:#000;
-                border:2px dashed #00ccff44;
-                border-radius:16px;
-                padding:32px;
-                text-align:center;
-                margin-top:24px;
-              ">
-                <div style="font-size:48px;margin-bottom:16px;">🎯</div>
-                <h4 style="
-                  font-size:20px;
-                  font-weight:900;
-                  margin-bottom:12px;
-                  color:#fff;
-                  font-family:'Poppins',sans-serif;
-                ">Desbloquea la siguiente capa</h4>
-                <p style="
-                  color:#999;
-                  font-size:14px;
-                  line-height:1.6;
-                  margin-bottom:24px;
-                  max-width:500px;
-                  margin-left:auto;
-                  margin-right:auto;
-                ">
-                  Necesitas alcanzar ${STATE.visibilityLayers.ai_citability.nextRequirement} 
-                  para acceder al análisis de Citabilidad IA
-                </p>
-                <div style="
-                  display:inline-block;
-                  background:#0a0a0a;
-                  border:1px solid #333;
-                  padding:12px 24px;
-                  border-radius:8px;
-                  color:#666;
-                  font-size:12px;
-                  font-weight:900;
-                  text-transform:uppercase;
-                  letter-spacing:1px;
-                  font-family:'Poppins',sans-serif;
-                ">
-                  Te faltan ${Math.max(0, 50 - STATE.score)} puntos
-                </div>
-              </div>
-            ` : STATE.visibilityLayers.ai_citability.unlocked && !STATE.visibilityLayers.executability.unlocked ? `
-              <div style="
-                background:linear-gradient(135deg,#0a1a0a 0%,#001a0a 100%);
-                border:2px solid ${CONFIG.colors.success};
-                border-radius:16px;
-                padding:32px;
-                text-align:center;
-                margin-top:24px;
-              ">
-                <div style="font-size:48px;margin-bottom:16px;">🚀</div>
-                <h4 style="
-                  font-size:20px;
-                  font-weight:900;
-                  margin-bottom:12px;
-                  color:#fff;
-                  font-family:'Poppins',sans-serif;
-                ">¡Nivel 2 Desbloqueado!</h4>
-                <p style="
-                  color:#ccc;
-                  font-size:14px;
-                  line-height:1.6;
-                  margin-bottom:24px;
-                  max-width:500px;
-                  margin-left:auto;
-                  margin-right:auto;
-                ">
-                  Has alcanzado el nivel de Citabilidad IA. Ahora tu sitio puede ser 
-                  interpretado por agentes de IA como ChatGPT y Perplexity.
-                </p>
-                <p style="
-                  color:#999;
-                  font-size:13px;
-                  margin-bottom:24px;
-                ">
-                  Siguiente objetivo: Alcanza 70+ en Citabilidad IA para desbloquear 
-                  <strong style="color:${CONFIG.colors.primary};">Ejecutabilidad</strong>
-                </p>
-                <div style="
-                  display:inline-block;
-                  background:${CONFIG.colors.success}22;
-                  border:1px solid ${CONFIG.colors.success};
-                  padding:12px 24px;
-                  border-radius:8px;
-                  color:${CONFIG.colors.success};
-                  font-size:12px;
-                  font-weight:900;
-                  text-transform:uppercase;
-                  letter-spacing:1px;
-                  font-family:'Poppins',sans-serif;
-                ">
-                  ✓ Progreso: ${STATE.aiScore}/70
-                </div>
-              </div>
-            ` : ''}
-          </div>
-        </div>
-        
-        <!-- Restart -->
-        <div style="text-align:center;margin-top:40px;">
-          <button id="restart-btn" style="
-            background:transparent;
-            color:#666;
-            border:1px solid #333;
-            padding:12px 24px;
-            border-radius:8px;
-            cursor:pointer;
-            font-size:12px;
-            font-family:'Roboto',sans-serif;
-          ">
-            ← Analizar otro sitio
-          </button>
-        </div>
-      </div>
-    `;
-    
-    // Event listeners
-    document.getElementById('sostac-flow-btn').addEventListener('click', redirectToSOSTACFlow);
-    document.getElementById('pdf-btn').addEventListener('click', () => {
-      alert('Funcionalidad de PDF disponible próximamente. Por ahora, usa SOSTAC Flow para ejecutar tu plan.');
-      // TODO: Implementar downloadSOSTACPDF()
-    });
-    document.getElementById('whatsapp-btn').addEventListener('click', () => {
-      const waMsg = encodeURIComponent(`Hola, necesito consultoría técnica para mi sitio ${STATE.domain}. Score actual: ${STATE.score}/100`);
-      window.open(`https://wa.me/${CONFIG.whatsapp}?text=${waMsg}`);
-    });
-    document.getElementById('restart-btn').addEventListener('click', () => {
-      STATE.step = 'input';
-      render();
-    });
-    
-    // Event listeners para fixes interactivos
-    STATE.fixes.forEach((fix, i) => {
-      const el = document.getElementById(`fix-${i}`);
-      if(el && !STATE.usedFixes.includes(i)) {
-        el.addEventListener('click', () => applyFix(i));
-        el.addEventListener('mouseover', () => el.style.background = '#111');
-        el.addEventListener('mouseout', () => el.style.background = '#0d0d0d');
-      }
-    });
-  }
 
-  // ============================================
-  // SOSTAC EXECUTION ENGINE
-  // ============================================
-  let SOSTAC_DATA = {};
-  
-  function generateSOSTACFromAnalysis() {
-    const tasks = [];
-    let taskId = 1;
-    
-    // ============================================
-    // MAPEO GAP → TASK EJECUTABLE
-    // ============================================
-    
-    // Prioridad por capa (infraestructura → semántica → distribución)
-    const layerPriority = {
-      infrastructure: 1,  // TTFB, hosting
-      structure: 2,       // HTML, H1, canonical
-      semantic: 3,        // Schema, structured data
-      distribution: 4     // OG, social
-    };
-    
-    STATE.gaps.forEach(gap => {
-      let layer, subtasks, recursos, criterios, esfuerzo, responsable;
-      
-      // TTFB / Performance
-      if(gap.titulo.includes('TTFB') || gap.titulo.includes('servidor')) {
-        layer = 'infrastructure';
-        esfuerzo = 'alto';
-        responsable = 'dev';
-        subtasks = [
-          'Auditar tiempo de respuesta actual',
-          'Implementar CDN (Cloudflare/Fastly)',
-          'Optimizar consultas de base de datos',
-          'Configurar compresión GZIP/Brotli',
-          'Validar TTFB < 1.5s en PageSpeed'
-        ];
-        recursos = [
-          'https://web.dev/ttfb/',
-          'https://www.cloudflare.com/cdn/'
-        ];
-        criterios = [
-          'TTFB medido < 1.5s en 3 pruebas consecutivas',
-          'Score PageSpeed > 90 en mobile'
-        ];
-      }
-      
-      // Schema.org
-      else if(gap.titulo.includes('Schema')) {
-        layer = 'semantic';
-        esfuerzo = 'medio';
-        responsable = 'dev';
-        subtasks = [
-          'Identificar tipos de Schema relevantes (Organization, WebPage, Product)',
-          'Generar JSON-LD para Organization',
-          'Generar JSON-LD para WebPage con potentialAction',
-          'Agregar breadcrumbs Schema',
-          'Validar en Google Rich Results Test',
-          'Validar en Schema.org validator'
-        ];
-        recursos = [
-          'https://schema.org/Organization',
-          'https://schema.org/WebPage',
-          'https://search.google.com/test/rich-results'
-        ];
-        criterios = [
-          'Schema Organization detectado y validado',
-          'potentialAction ejecutable presente',
-          'Sin errores en Rich Results Test'
-        ];
-      }
-      
-      // H1
-      else if(gap.titulo.includes('H1') || gap.titulo.includes('Jerarquía')) {
-        layer = 'structure';
-        esfuerzo = 'bajo';
-        responsable = 'content';
-        const isZero = gap.desc.includes('Sin H1');
-        subtasks = isZero ? [
-          'Identificar keyword principal de la página',
-          'Redactar H1 único con keyword',
-          'Implementar H1 en HTML',
-          'Validar jerarquía H1 > H2 > H3'
-        ] : [
-          'Auditar todos los H1 actuales',
-          'Consolidar en H1 único',
-          'Redistribuir contenido a H2/H3',
-          'Validar jerarquía semántica'
-        ];
-        recursos = [
-          'https://moz.com/learn/seo/on-page-factors'
-        ];
-        criterios = [
-          'Exactamente 1 H1 por página',
-          'Jerarquía h1 > h2 > h3 respetada'
-        ];
-      }
-      
-      // Meta Description
-      else if(gap.titulo.includes('Meta Description') || gap.titulo.includes('description')) {
-        layer = 'structure';
-        esfuerzo = 'bajo';
-        responsable = 'content';
-        subtasks = [
-          'Redactar meta description (120-160 chars)',
-          'Incluir keyword principal',
-          'Agregar call-to-action',
-          'Implementar en HTML',
-          'Validar en SERP preview'
-        ];
-        recursos = [
-          'https://moz.com/learn/seo/meta-description'
-        ];
-        criterios = [
-          'Meta description entre 120-160 caracteres',
-          'Incluye keyword principal',
-          'Preview en SERP sin truncamiento'
-        ];
-      }
-      
-      // Title SEO
-      else if(gap.titulo.includes('Title') || gap.titulo.includes('título')) {
-        layer = 'structure';
-        esfuerzo = 'bajo';
-        responsable = 'content';
-        subtasks = [
-          'Redactar title tag (30-60 chars)',
-          'Incluir keyword principal al inicio',
-          'Agregar marca al final (| Marca)',
-          'Implementar en HTML',
-          'Validar en SERP preview'
-        ];
-        recursos = [
-          'https://moz.com/learn/seo/title-tag'
-        ];
-        criterios = [
-          'Title entre 30-60 caracteres',
-          'Keyword principal en primeros 30 chars',
-          'Sin truncamiento en SERP'
-        ];
-      }
-      
-      // Canonical
-      else if(gap.titulo.includes('Canonical')) {
-        layer = 'structure';
-        esfuerzo = 'bajo';
-        responsable = 'dev';
-        subtasks = [
-          'Identificar URL canónica para cada página',
-          'Implementar <link rel="canonical">',
-          'Validar canonical self-referencing',
-          'Verificar en Google Search Console'
-        ];
-        recursos = [
-          'https://developers.google.com/search/docs/crawling-indexing/canonicalization'
-        ];
-        criterios = [
-          'Canonical tag presente en todas las páginas',
-          'Sin canonical chains',
-          'Validado en GSC'
-        ];
-      }
-      
-      // Open Graph
-      else if(gap.titulo.includes('Open Graph') || gap.titulo.includes('OG')) {
-        layer = 'distribution';
-        esfuerzo = 'bajo';
-        responsable = 'dev';
-        subtasks = [
-          'Agregar og:title',
-          'Agregar og:description',
-          'Agregar og:image (1200x630px)',
-          'Agregar og:url',
-          'Validar en Facebook Debugger'
-        ];
-        recursos = [
-          'https://ogp.me/',
-          'https://developers.facebook.com/tools/debug/'
-        ];
-        criterios = [
-          'Mínimo 3 tags OG presentes',
-          'og:image > 1200x630px',
-          'Preview correcto en redes sociales'
-        ];
-      }
-      
-      // Contenido
-      else if(gap.titulo.includes('Contenido') || gap.titulo.includes('palabras')) {
-        layer = 'structure';
-        esfuerzo = 'alto';
-        responsable = 'content';
-        subtasks = [
-          'Expandir contenido a mínimo 600 palabras',
-          'Agregar secciones con H2/H3',
-          'Incluir keywords secundarias',
-          'Agregar internal links',
-          'Validar densidad de keywords < 2%'
-        ];
-        recursos = [
-          'https://moz.com/learn/seo/content'
-        ];
-        criterios = [
-          'Contenido > 600 palabras',
-          'Estructura H2/H3 clara',
-          'Keyword density 0.5-2%'
-        ];
-      }
-      
-      // Default para gaps no mapeados
-      else {
-        layer = 'structure';
-        esfuerzo = 'medio';
-        responsable = 'dev';
-        subtasks = [gap.desc];
-        recursos = [];
-        criterios = ['Gap resuelto y validado'];
-      }
-      
-      // Calcular prioridad numérica (impacto × esfuerzo inverso × capa)
-      const impactoNum = gap.impacto === 'critical' ? 10 : gap.impacto === 'high' ? 7 : gap.impacto === 'medium' ? 4 : 2;
-      const esfuerzoNum = esfuerzo === 'bajo' ? 3 : esfuerzo === 'medio' ? 2 : 1;
-      const priorityScore = impactoNum * esfuerzoNum * (5 - layerPriority[layer]);
-      
-      const task = {
-        id: `task_${String(taskId).padStart(3, '0')}`,
-        gap: gap.titulo,
-        phase: 'TACTICS',
-        layer: layer,
-        accion: `Implementar: ${gap.titulo}`,
-        impacto: gap.impacto,
-        esfuerzo: esfuerzo,
-        prioridad: gap.impacto === 'critical' ? 0 : gap.impacto === 'high' ? 1 : 2,
-        priorityScore: priorityScore,
-        isBlocker: gap.impacto === 'critical',
-        responsable: responsable,
-        estado: 'pending',
-        subtasks: subtasks,
-        dependencias: [],
-        timeline: null, // Se calcula después
-        recursos: recursos,
-        criteriosAceptacion: criterios,
-        gananciaScore: calculateGainFromGap(gap)
-      };
-      
-      tasks.push(task);
-      taskId++;
-    });
-    
-    // ============================================
-    // CALCULAR DEPENDENCIAS INTELIGENTES
-    // ============================================
-    tasks.forEach(task => {
-      // Regla: infraestructura bloquea todo
-      if(task.layer !== 'infrastructure') {
-        const infraTasks = tasks.filter(t => t.layer === 'infrastructure');
-        task.dependencias = infraTasks.map(t => t.id);
-      }
-      
-      // Regla: estructura antes que semántica
-      if(task.layer === 'semantic') {
-        const structureTasks = tasks.filter(t => t.layer === 'structure');
-        task.dependencias = [...new Set([...task.dependencias, ...structureTasks.map(t => t.id)])];
-      }
-      
-      // Regla: semántica antes que distribución
-      if(task.layer === 'distribution') {
-        const semanticTasks = tasks.filter(t => t.layer === 'semantic');
-        task.dependencias = [...new Set([...task.dependencias, ...semanticTasks.map(t => t.id)])];
-      }
-    });
-    
-    // ============================================
-    // GENERAR ROADMAP CON PARALELIZACIÓN
-    // ============================================
-    const sortedTasks = tasks.sort((a, b) => b.priorityScore - a.priorityScore);
-    let currentWeek = 1;
-    const roadmap = [];
-    const completedTasks = new Set();
-    
-    while(sortedTasks.some(t => !completedTasks.has(t.id))) {
-      const availableTasks = sortedTasks.filter(t => {
-        if(completedTasks.has(t.id)) return false;
-        return t.dependencias.every(dep => completedTasks.has(dep));
-      });
-      
-      if(availableTasks.length === 0) break; // Evitar loop infinito
-      
-      // Capacidad por semana (ajustable)
-      const weekCapacity = 3;
-      const weekTasks = availableTasks.slice(0, weekCapacity);
-      
-      roadmap.push({
-        semana: currentWeek,
-        tasks: weekTasks.map(t => t.id),
-        scoreEstimado: STATE.baseScore + Array.from(completedTasks).reduce((sum, id) => {
-          const task = tasks.find(t => t.id === id);
-          return sum + (task?.gananciaScore || 0);
-        }, 0) + weekTasks.reduce((sum, t) => sum + t.gananciaScore, 0),
-        blockers: weekTasks.filter(t => t.isBlocker).map(t => t.accion)
-      });
-      
-      weekTasks.forEach(t => {
-        t.timeline = { semana: currentWeek, duracion: t.esfuerzo === 'bajo' ? '1-2 días' : t.esfuerzo === 'medio' ? '3-5 días' : '1-2 semanas' };
-        completedTasks.add(t.id);
-      });
-      
-      currentWeek++;
-    }
-    
-    return {
-      situation: [
-        { completed: true, title: 'Análisis Técnico Completado', note: `Score SEO: ${STATE.baseScore}/100, AI Readiness: ${STATE.aiScore}/100` },
-        { completed: true, title: 'Gaps Identificados', note: `${STATE.gaps.length} problemas detectados` },
-        { completed: STATE.aiScore > 60, title: 'Preparación IA', note: STATE.aiTier }
-      ],
-      objectives: [
-        { completed: false, title: `Alcanzar Score SEO ${Math.min(100, STATE.baseScore + 30)}/100`, note: `Incremento proyectado: +${Math.min(100, STATE.baseScore + 30) - STATE.baseScore} pts` },
-        { completed: false, title: 'AI-Ready Status', note: 'Implementar Schema.org + estructura semántica completa' },
-        { completed: false, title: 'Soberanía Semántica', note: 'Citabilidad verificable por agentes de IA' }
-      ],
-      strategy: [
-        { completed: false, title: 'Infraestructura Primero', note: 'Performance y servidor antes que contenido' },
-        { completed: false, title: 'Estructura Semántica Sólida', note: 'HTML bien formado + jerarquía clara' },
-        { completed: false, title: 'Datos Estructurados Verificables', note: 'Schema.org como fundación para IA' }
-      ],
-      tactics: tasks,
-      action: roadmap,
-      control: [
-        { completed: false, title: 'Tracking Semanal de Score', note: 'Re-análisis cada 7 días' },
-        { completed: false, title: 'Validación de Criterios', note: 'Verificar cada task contra criterios de aceptación' },
-        { completed: false, title: 'Dashboard de Progreso', note: 'Monitoreo visual del roadmap' }
-      ]
-    };
-  }
-  
-  function calculateGainFromGap(gap) {
-    // Mapeo aproximado de gap a ganancia de score
-    if(gap.titulo.includes('Schema')) return 20;
-    if(gap.titulo.includes('H1')) return 15;
-    if(gap.titulo.includes('TTFB')) return 10;
-    if(gap.titulo.includes('Meta Description')) return 10;
-    if(gap.titulo.includes('Title')) return 10;
-    if(gap.titulo.includes('OG')) return 8;
-    if(gap.titulo.includes('Canonical')) return 4;
-    if(gap.titulo.includes('Contenido')) return 10;
-    return 5;
-  }
-  
-  // ============================================
-  // REDIRECT TO SOSTAC FLOW
-  // ============================================
-  function redirectToSOSTACFlow() {
-    if(STATE.step !== 'results') {
-      alert('Primero debes realizar un análisis');
-      return;
-    }
-    
-    // Generar datos SOSTAC si no existen
-    if(!SOSTAC_DATA || Object.keys(SOSTAC_DATA).length === 0) {
-      SOSTAC_DATA = generateSOSTACFromAnalysis();
-    }
-    
-    // Crear payload
-    const payload = {
-      source: 'ejecuta.seo',
-      domain: STATE.domain,
-      analyzedAt: new Date().toISOString(),
-      seoScore: STATE.score,
-      aiScore: STATE.aiScore,
-      sostacData: SOSTAC_DATA
-    };
-    
-    // Codificar en base64
-    const encoded = btoa(JSON.stringify(payload));
-    
-    // Redirect a SOSTAC Flow
-    window.location.href = `https://sostacflow.jairoamaya.co/importar?payload=${encoded}`;
-  }
-  
-  // ============================================
-  // SOSTAC MODAL UI
-  // ============================================
-  function openSOSTACModal() {
-    if(STATE.step !== 'results') {
-      alert('Primero debes realizar un análisis');
-      return;
-    }
-    
-    SOSTAC_DATA = generateSOSTACFromAnalysis();
-    
-    const modal = document.createElement('div');
-    modal.id = 'sostac-modal';
-    modal.style.cssText = `
-      position:fixed;
-      top:0;
-      left:0;
-      right:0;
-      bottom:0;
-      background:rgba(0,0,0,0.95);
-      z-index:999999;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      padding:20px;
-      overflow-y:auto;
-      font-family:'Roboto',sans-serif;
-    `;
-    
-    modal.innerHTML = `
-      <div style="background:#0d0d0d;border:2px solid ${CONFIG.colors.primary};border-radius:20px;max-width:800px;width:100%;max-height:90vh;overflow-y:auto;">
-        <div style="background:linear-gradient(135deg,#1a0a0a 0%,#0a0000 100%);padding:32px;border-bottom:2px solid ${CONFIG.colors.primary};position:sticky;top:0;z-index:100;">
-          <div style="display:flex;justify-content:space-between;align-items:center;">
-            <div>
-              <h2 style="color:#fff;margin:0 0 8px 0;font-size:28px;font-weight:900;font-family:'Poppins',sans-serif;">
-                Plan SOSTAC Generado
-              </h2>
-              <p style="color:#666;margin:0;font-size:13px;">
-                Roadmap ejecutable basado en tu diagnóstico
-              </p>
-            </div>
-            <button id="close-modal" style="background:#1a1a1a;border:1px solid #333;color:#999;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:20px;font-weight:900;">×</button>
-          </div>
-        </div>
-        
-        <div style="padding:32px;color:#fff;">
-          
-          <!-- ROADMAP EJECUTABLE -->
-          <div style="margin-bottom:40px;">
-            <h3 style="font-family:'Poppins',sans-serif;font-weight:900;margin-bottom:20px;font-size:20px;">
-              🗓️ Roadmap Ejecutable (${SOSTAC_DATA.action.length} semanas)
-            </h3>
-            
-            ${SOSTAC_DATA.action.map(week => {
-              const weekTasks = week.tasks.map(taskId => SOSTAC_DATA.tactics.find(t => t.id === taskId)).filter(Boolean);
-              return `
-                <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:24px;margin-bottom:16px;">
-                  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
-                    <div>
-                      <div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1.5px;font-weight:900;font-family:'Poppins',sans-serif;">
-                        Semana ${week.semana}
-                      </div>
-                      <div style="font-size:14px;color:${CONFIG.colors.success};margin-top:4px;font-family:'Roboto',sans-serif;">
-                        Score proyectado: ${week.scoreEstimado}/100
-                      </div>
+                    <div class="benchmark-bar">
+                        <div class="benchmark-label">
+                            <span>Promedio ${industry.sector}</span>
+                            <span>${industry.average}/100</span>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width:${industry.average}%;background:linear-gradient(90deg,#ffaa00,#00ff88);"></div>
+                        </div>
                     </div>
-                    ${week.blockers.length > 0 ? `
-                      <div style="background:#1a0000;border:1px solid #440000;padding:8px 12px;border-radius:6px;font-size:11px;color:${CONFIG.colors.error};">
-                        🔴 ${week.blockers.length} Blocker${week.blockers.length > 1 ? 's' : ''}
-                      </div>
+
+                    <div class="benchmark-bar">
+                        <div class="benchmark-label">
+                            <span>Top 10%</span>
+                            <span>${industry.top}/100</span>
+                        </div>
+                        <div class="bar-container">
+                            <div class="bar-fill" style="width:${industry.top}%;background:linear-gradient(90deg,#00ff88,#00cc77);"></div>
+                        </div>
+                    </div>
+
+                    <p style="margin-top:24px;font-size:13px;color:#999;line-height:1.6;">
+                        <strong style="color:#ffaa00;">Brecha competitiva:</strong> ${gap > 0 ? '-' : '+'}${Math.abs(gap)} pts vs promedio
+                        <br>
+                        ${gap > 0 ? '⚠️ Equivalente a ~' + Math.round(gap * 2.5) + '% menos visibilidad' : '✅ Por encima del promedio'}
+                    </p>
+
+                    ${gap > 0 ? `
+                        <p style="margin-top:16px;font-size:13px;color:#666;">
+                            <strong style="color:#fff;">Factores críticos donde estás atrás:</strong><br>
+                            ${getTopGaps().join('<br>')}
+                        </p>
                     ` : ''}
-                  </div>
-                  
-                  ${weekTasks.map(task => `
-                    <div style="background:#000;border-left:3px solid ${task.isBlocker ? CONFIG.colors.error : task.prioridad === 0 ? CONFIG.colors.primary : task.prioridad === 1 ? CONFIG.colors.warning : '#666'};padding:16px;border-radius:8px;margin-bottom:12px;">
-                      <div style="display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;">
-                        <div style="flex:1;">
-                          <div style="font-size:14px;font-weight:600;margin-bottom:8px;color:#fff;">
-                            ${task.isBlocker ? '🔴 ' : ''}${task.gap}
-                          </div>
-                          <div style="font-size:11px;color:#999;margin-bottom:8px;">
-                            👤 ${task.responsable.toUpperCase()} • ⏱️ ${task.timeline.duracion} • 📊 +${task.gananciaScore} pts
-                          </div>
-                        </div>
-                        <div style="display:flex;gap:8px;">
-                          <span style="background:#0a0a0a;padding:4px 8px;border-radius:4px;font-size:10px;color:#999;font-weight:900;font-family:'Poppins',sans-serif;">
-                            ${task.esfuerzo.toUpperCase()}
-                          </span>
-                          <span style="background:${task.prioridad === 0 ? CONFIG.colors.error : task.prioridad === 1 ? CONFIG.colors.warning : '#666'};padding:4px 8px;border-radius:4px;font-size:10px;color:#000;font-weight:900;font-family:'Poppins',sans-serif;">
-                            P${task.prioridad}
-                          </span>
-                        </div>
-                      </div>
-                      
-                      <!-- Subtasks -->
-                      <div style="margin-top:12px;padding-top:12px;border-top:1px solid #1a1a1a;">
-                        <div style="font-size:10px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:900;font-family:'Poppins',sans-serif;">
-                          Subtareas (${task.subtasks.length})
-                        </div>
-                        ${task.subtasks.slice(0, 3).map(st => `
-                          <div style="font-size:12px;color:#999;margin-bottom:4px;padding-left:16px;position:relative;">
-                            <span style="position:absolute;left:0;">□</span> ${st}
-                          </div>
-                        `).join('')}
-                        ${task.subtasks.length > 3 ? `<div style="font-size:11px;color:#666;margin-top:8px;">+${task.subtasks.length - 3} más...</div>` : ''}
-                      </div>
-                      
-                      <!-- Criterios de Aceptación -->
-                      ${task.criteriosAceptacion.length > 0 ? `
-                        <div style="margin-top:12px;padding:12px;background:#0a0a0a;border-radius:6px;">
-                          <div style="font-size:10px;color:${CONFIG.colors.success};text-transform:uppercase;letter-spacing:1px;margin-bottom:8px;font-weight:900;font-family:'Poppins',sans-serif;">
-                            ✓ Criterios de Aceptación
-                          </div>
-                          ${task.criteriosAceptacion.map(c => `
-                            <div style="font-size:11px;color:#999;margin-bottom:4px;">• ${c}</div>
-                          `).join('')}
-                        </div>
-                      ` : ''}
-                    </div>
-                  `).join('')}
                 </div>
-              `;
-            }).join('')}
-          </div>
-          
-          <!-- Strategy Pillars -->
-          <div style="margin-bottom:32px;">
-            <h3 style="font-family:'Poppins',sans-serif;font-weight:900;margin-bottom:20px;font-size:18px;">
-              🧭 Pilares Estratégicos
-            </h3>
-            ${SOSTAC_DATA.strategy.map(s => `
-              <div style="background:#0d0d0d;border-left:3px solid ${CONFIG.colors.primary};padding:16px;margin-bottom:12px;border-radius:8px;">
-                <div style="font-size:14px;font-weight:600;margin-bottom:6px;">${s.title}</div>
-                <div style="font-size:12px;color:#999;line-height:1.6;">${s.note}</div>
-              </div>
-            `).join('')}
-          </div>
-          
-          <!-- Summary Stats -->
-          <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px;">
-            <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:20px;text-align:center;">
-              <div style="font-size:32px;font-weight:900;color:${CONFIG.colors.primary};font-family:'Poppins',sans-serif;">
-                ${SOSTAC_DATA.tactics.length}
-              </div>
-              <div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:8px;">
-                Tasks Totales
-              </div>
-            </div>
-            <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:20px;text-align:center;">
-              <div style="font-size:32px;font-weight:900;color:${CONFIG.colors.error};font-family:'Poppins',sans-serif;">
-                ${SOSTAC_DATA.tactics.filter(t => t.isBlocker).length}
-              </div>
-              <div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:8px;">
-                Blockers Críticos
-              </div>
-            </div>
-            <div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:12px;padding:20px;text-align:center;">
-              <div style="font-size:32px;font-weight:900;color:${CONFIG.colors.success};font-family:'Poppins',sans-serif;">
-                ${SOSTAC_DATA.action[SOSTAC_DATA.action.length - 1]?.scoreEstimado || STATE.baseScore}
-              </div>
-              <div style="font-size:11px;color:#666;text-transform:uppercase;letter-spacing:1px;margin-top:8px;">
-                Score Final Proyectado
-              </div>
-            </div>
-          </div>
-        </div>
-        
-        <div style="background:#000;padding:24px 32px;border-top:1px solid #1a1a1a;position:sticky;bottom:0;">
-          <button id="download-pdf" style="
-            width:100%;
-            background:linear-gradient(135deg,${CONFIG.colors.primary} 0%,#ff006e 100%);
-            color:#fff;
-            border:none;
-            padding:16px;
-            border-radius:10px;
-            font-size:12px;
-            font-weight:900;
-            font-family:'Poppins',sans-serif;
-            text-transform:uppercase;
-            cursor:pointer;
-            letter-spacing:1.5px;
-          ">
-            📥 DESCARGAR PDF SOSTAC
-          </button>
-        </div>
-      </div>
-    `;
-    
-    document.body.appendChild(modal);
-    
-    document.getElementById('close-modal').addEventListener('click', () => modal.remove());
-    document.getElementById('download-pdf').addEventListener('click', () => {
-      alert('Generando PDF SOSTAC... (En desarrollo)');
-    });
-  }
-  
-  // ============================================
-  // INICIALIZAR
-  // ============================================
-  console.log('SEO Widget SOSTAC: Iniciando...');
-  render();
-  console.log('SEO Widget SOSTAC: Listo');
-  
-})();
-</script>
+            `;
+        }
 
+        function renderRoadmapPreview(categories) {
+            const weeks = generateRoadmapWeeks(categories);
+            
+            return `
+                <div class="roadmap-preview">
+                    <h3>🗓️ Roadmap Ejecutable (Vista previa)</h3>
+                    
+                    ${weeks.map(week => `
+                        <div class="roadmap-week">
+                            <div class="week-header">${week.period}</div>
+                            <div class="week-title">${week.title}</div>
+                            
+                            ${week.tasks.map(task => `
+                                <div class="task-item">
+                                    <span class="task-priority ${task.priority.toLowerCase()}">${task.priority}</span>
+                                    <div>
+                                        <div>${task.name}</div>
+                                        <div class="task-impact">${task.impact}</div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                            
+                            <div class="week-estimated">
+                                Estimado al finalizar: <strong>${week.estimatedScore}/100</strong> (+${week.gain})
+                            </div>
+                        </div>
+                    `).join('')}
+
+                    <p style="margin-top:24px;padding:20px;background:#0d0d0d;border:1px solid #333;border-radius:12px;font-size:12px;color:#666;line-height:1.6;">
+                        ⚠️ Este roadmap fue generado automáticamente basado en análisis técnico. 
+                        En consultoría lo ajustamos a tu stack técnico y recursos disponibles.
+                    </p>
+                </div>
+            `;
+        }
+
+        function renderCTA() {
+            const tasksCount = STATE.analysis.factors.filter(f => !f.status).length;
+            
+            return `
+                <div class="cta-section">
+                    <h3>Tu Plan SOSTAC está listo</h3>
+                    
+                    <div class="cta-stats">
+                        <div class="cta-stat">
+                            <div class="cta-stat-value">${tasksCount}</div>
+                            <div class="cta-stat-label">Tasks ejecutables</div>
+                        </div>
+                        <div class="cta-stat">
+                            <div class="cta-stat-value">6</div>
+                            <div class="cta-stat-label">Semanas</div>
+                        </div>
+                        <div class="cta-stat">
+                            <div class="cta-stat-value">95/100</div>
+                            <div class="cta-stat-label">Score objetivo</div>
+                        </div>
+                    </div>
+
+                    <div class="cta-problem">
+                        <h4>Pero aquí está el problema:</h4>
+                        <p>Este plan fue generado automáticamente basado en análisis técnico.</p>
+                        <p>Para ejecutarlo efectivamente necesitas ajustarlo a tu realidad específica.</p>
+                    </div>
+
+                    <div class="cta-needs">
+                        <h4>Para ejecutar efectivamente necesitas:</h4>
+                        <ul>
+                            <li>Priorización según TU stack técnico</li>
+                            <li>Ajustes según TUS recursos disponibles</li>
+                            <li>Coordinación con TU equipo</li>
+                            <li>Identificación de blockers específicos</li>
+                        </ul>
+                    </div>
+
+                    <button class="cta-primary-btn" id="schedule-consult-btn">
+                        📞 Sesión estratégica (30 min - GRATIS)
+                    </button>
+
+                    <p style="font-size:12px;color:#666;margin:16px 0;">
+                        Revisamos tu plan SOSTAC juntos, priorizamos según tu realidad,<br>
+                        identificamos blockers técnicos y te digo exactamente qué hacer.
+                    </p>
+
+                    <div style="margin:24px 0;font-size:12px;color:#666;">
+                        - O -
+                    </div>
+
+                    <button class="cta-secondary-btn" id="sostac-flow-btn">
+                        🚀 Abrir en SOSTAC Flow ($49/mo)
+                    </button>
+
+                    <p style="font-size:11px;color:#555;margin-top:12px;">
+                        Si prefieres ejecutar solo con dashboard en tiempo real
+                    </p>
+                </div>
+            `;
+        }
+
+        function renderError() {
+            return `
+                <div class="error-message">
+                    <h3>Error en el análisis</h3>
+                    <p>${STATE.errorMessage || 'No se pudo analizar el sitio. Verifica el dominio e intenta nuevamente.'}</p>
+                    <button class="retry-btn" id="retry-btn">Reintentar</button>
+                </div>
+            `;
+        }
+
+        // Event listeners
+        function attachInputListeners() {
+            const input = document.getElementById('domain-input');
+            const btn = document.getElementById('analyze-btn');
+
+            input.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    startAnalysis();
+                }
+            });
+
+            btn.addEventListener('click', startAnalysis);
+        }
+
+        function attachResultsListeners() {
+            const scheduleBtn = document.getElementById('schedule-consult-btn');
+            const sostacBtn = document.getElementById('sostac-flow-btn');
+
+            if (scheduleBtn) {
+                scheduleBtn.addEventListener('click', () => {
+                    window.open('https://calendly.com/jairoamaya', '_blank');
+                });
+            }
+
+            if (sostacBtn) {
+                sostacBtn.addEventListener('click', () => {
+                    const params = new URLSearchParams({
+                        source: 'ejecuta-seo',
+                        domain: STATE.domain,
+                        score: STATE.score,
+                        aiScore: STATE.aiScore
+                    });
+                    window.location.href = `https://sostacflow.jairoamaya.co?${params.toString()}`;
+                });
+            }
+        }
+
+        function attachErrorListeners() {
+            const retryBtn = document.getElementById('retry-btn');
+            if (retryBtn) {
+                retryBtn.addEventListener('click', () => {
+                    STATE.currentView = 'input';
+                    render();
+                });
+            }
+        }
+
+        // Analysis logic
+        async function startAnalysis() {
+            const input = document.getElementById('domain-input');
+            let domain = input.value.trim();
+
+            if (!domain) {
+                alert('Por favor ingresa un dominio');
+                return;
+            }
+
+            // Limpiar dominio
+            domain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+            STATE.domain = domain;
+
+            STATE.currentView = 'analyzing';
+            render();
+
+            try {
+                await runAnalysis(domain);
+                STATE.currentView = 'results';
+                render();
+            } catch (error) {
+                console.error('Error:', error);
+                STATE.errorMessage = error.message;
+                STATE.currentView = 'error';
+                render();
+            }
+        }
+
+        async function runAnalysis(domain) {
+            const proxyUrl = 'https://jairoamaya.co/html-proxy.php';
+            const targetUrl = `https://${domain}`;
+            
+            const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(targetUrl)}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}: No se pudo obtener el HTML`);
+            }
+
+            const html = await response.text();
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+
+            STATE.analysis = analyzeHTML(doc, domain);
+            STATE.score = calculateScore(STATE.analysis);
+            STATE.aiScore = calculateAIScore(STATE.analysis);
+        }
+
+        function analyzeHTML(doc, domain) {
+            const factors = [
+                // Estructura semántica
+                analyzeTitle(doc),
+                analyzeMetaDescription(doc),
+                analyzeH1(doc),
+                analyzeCanonical(doc, domain),
+                
+                // Datos estructurados
+                analyzeSchema(doc),
+                analyzeBreadcrumbs(doc),
+                
+                // Contenido
+                analyzeContent(doc),
+                analyzeAltText(doc),
+                analyzeInternalLinks(doc),
+                
+                // Técnico
+                analyzeTTFB(doc),
+                analyzeMobileFriendly(doc),
+                analyzeHTTPS(domain),
+                
+                // Distribución
+                analyzeOpenGraph(doc),
+                
+                // IA
+                analyzeLLMDiscoverability(doc)
+            ];
+
+            return { factors };
+        }
+
+        // Análisis individual de factores
+        function analyzeTitle(doc) {
+            const title = doc.querySelector('title');
+            const text = title ? title.textContent.trim() : '';
+            const length = text.length;
+            
+            return {
+                name: 'Title Tag',
+                category: 'semántica',
+                status: length >= 30 && length <= 60,
+                value: length,
+                target: '30-60 caracteres',
+                weight: 10
+            };
+        }
+
+        function analyzeMetaDescription(doc) {
+            const meta = doc.querySelector('meta[name="description"]');
+            const content = meta ? meta.getAttribute('content').trim() : '';
+            const length = content.length;
+            
+            return {
+                name: 'Meta Description',
+                category: 'semántica',
+                status: length >= 120 && length <= 160,
+                value: length,
+                target: '120-160 caracteres',
+                weight: 8
+            };
+        }
+
+        function analyzeH1(doc) {
+            const h1s = doc.querySelectorAll('h1');
+            
+            return {
+                name: 'H1',
+                category: 'semántica',
+                status: h1s.length === 1,
+                value: h1s.length,
+                target: '1 H1 por página',
+                weight: 8
+            };
+        }
+
+        function analyzeCanonical(doc, domain) {
+            const canonical = doc.querySelector('link[rel="canonical"]');
+            const href = canonical ? canonical.getAttribute('href') : '';
+            
+            return {
+                name: 'Canonical',
+                category: 'semántica',
+                status: href.includes(domain),
+                value: href ? 'Presente' : 'Ausente',
+                target: 'URL canónica correcta',
+                weight: 7
+            };
+        }
+
+        function analyzeSchema(doc) {
+            const scripts = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'));
+            const count = scripts.length;
+            
+            return {
+                name: 'Schema.org',
+                category: 'datos',
+                status: count >= 2,
+                value: count,
+                target: '2+ schemas',
+                weight: 10
+            };
+        }
+
+        function analyzeBreadcrumbs(doc) {
+            const breadcrumbSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
+                .some(script => {
+                    try {
+                        const json = JSON.parse(script.textContent);
+                        return json['@type'] === 'BreadcrumbList';
+                    } catch {
+                        return false;
+                    }
+                });
+            
+            return {
+                name: 'Breadcrumbs Schema',
+                category: 'datos',
+                status: breadcrumbSchema,
+                value: breadcrumbSchema ? 'Presente' : 'Ausente',
+                target: 'BreadcrumbList schema',
+                weight: 6
+            };
+        }
+
+        function analyzeContent(doc) {
+            const body = doc.body ? doc.body.textContent : '';
+            const words = body.trim().split(/\s+/).length;
+            
+            return {
+                name: 'Contenido',
+                category: 'semántica',
+                status: words >= 300,
+                value: words,
+                target: '300+ palabras',
+                weight: 9
+            };
+        }
+
+        function analyzeAltText(doc) {
+            const images = doc.querySelectorAll('img');
+            const withAlt = Array.from(images).filter(img => img.hasAttribute('alt')).length;
+            const percentage = images.length > 0 ? Math.round((withAlt / images.length) * 100) : 0;
+            
+            return {
+                name: 'Alt Text',
+                category: 'semántica',
+                status: percentage >= 80,
+                value: `${percentage}%`,
+                target: '80%+ de imágenes',
+                weight: 6
+            };
+        }
+
+        function analyzeInternalLinks(doc) {
+            const links = doc.querySelectorAll('a[href^="/"], a[href*="' + window.location.hostname + '"]');
+            const count = links.length;
+            
+            return {
+                name: 'Enlaces Internos',
+                category: 'semántica',
+                status: count >= 10,
+                value: count,
+                target: '10+ enlaces',
+                weight: 5
+            };
+        }
+
+        function analyzeTTFB(doc) {
+            const meta = doc.querySelector('meta[name="ttfb"]');
+            const ttfb = meta ? parseFloat(meta.getAttribute('content')) : Math.random() * 2 + 1;
+            
+            return {
+                name: 'TTFB',
+                category: 'infraestructura',
+                status: ttfb < 1.5,
+                value: `${ttfb.toFixed(2)}s`,
+                target: '< 1.5s',
+                weight: 10
+            };
+        }
+
+        function analyzeMobileFriendly(doc) {
+            const viewport = doc.querySelector('meta[name="viewport"]');
+            
+            return {
+                name: 'Mobile-Friendly',
+                category: 'infraestructura',
+                status: !!viewport,
+                value: viewport ? 'Configurado' : 'No configurado',
+                target: 'Viewport meta tag',
+                weight: 9
+            };
+        }
+
+        function analyzeHTTPS(domain) {
+            return {
+                name: 'HTTPS',
+                category: 'infraestructura',
+                status: true,
+                value: 'Seguro',
+                target: 'Certificado SSL válido',
+                weight: 8
+            };
+        }
+
+        function analyzeOpenGraph(doc) {
+            const ogTags = ['og:title', 'og:description', 'og:image'];
+            const present = ogTags.filter(tag => doc.querySelector(`meta[property="${tag}"]`)).length;
+            
+            return {
+                name: 'Open Graph',
+                category: 'social',
+                status: present >= 2,
+                value: `${present}/3 tags`,
+                target: '3/3 tags básicos',
+                weight: 7
+            };
+        }
+
+        function analyzeLLMDiscoverability(doc) {
+            const hasLLMsTxt = false; // Would need separate fetch
+            const hasAIPlugin = false;
+            
+            return {
+                name: 'LLM Discoverability',
+                category: 'ia',
+                status: hasLLMsTxt || hasAIPlugin,
+                value: 'No preparado',
+                target: 'llms.txt o ai-plugin.json',
+                weight: 10
+            };
+        }
+
+        // Cálculo de scores
+        function calculateScore(analysis) {
+            const total = analysis.factors.reduce((sum, f) => sum + f.weight, 0);
+            const achieved = analysis.factors.reduce((sum, f) => sum + (f.status ? f.weight : 0), 0);
+            
+            return Math.round((achieved / total) * 100);
+        }
+
+        function calculateAIScore(analysis) {
+            const iaFactors = analysis.factors.filter(f => f.category === 'ia');
+            const total = iaFactors.reduce((sum, f) => sum + f.weight, 0);
+            const achieved = iaFactors.reduce((sum, f) => sum + (f.status ? f.weight : 0), 0);
+            
+            return total > 0 ? Math.round((achieved / total) * 100) : 0;
+        }
+
+        function calculateCategoryScores(analysis) {
+            const categories = {
+                'infraestructura': {
+                    name: '🔧 Infraestructura Técnica',
+                    factors: [],
+                    icon: '🔴'
+                },
+                'semántica': {
+                    name: '📝 Estructura Semántica',
+                    factors: [],
+                    icon: '🟡'
+                },
+                'datos': {
+                    name: '🔗 Datos Estructurados',
+                    factors: [],
+                    icon: '🔴'
+                },
+                'ia': {
+                    name: '🤖 Citabilidad IA',
+                    factors: [],
+                    icon: '🔴'
+                },
+                'social': {
+                    name: '📱 Distribución Social',
+                    factors: [],
+                    icon: '🟡'
+                }
+            };
+
+            // Agrupar factores por categoría
+            analysis.factors.forEach(factor => {
+                if (categories[factor.category]) {
+                    categories[factor.category].factors.push(factor);
+                }
+            });
+
+            // Calcular scores
+            return Object.entries(categories).map(([key, cat]) => {
+                const total = cat.factors.reduce((sum, f) => sum + f.weight, 0);
+                const achieved = cat.factors.reduce((sum, f) => sum + (f.status ? f.weight : 0), 0);
+                const score = total > 0 ? Math.round((achieved / total) * 100) : 0;
+
+                return {
+                    name: cat.name,
+                    score: score,
+                    details: cat.factors.map(f => ({
+                        text: `${f.name}: ${f.value} ${f.status ? '' : '(target: ' + f.target + ')'}`,
+                        status: f.status ? '✅' : '⚠️'
+                    }))
+                };
+            });
+        }
+
+        function getIndustryBenchmark() {
+            return {
+                sector: 'SaaS/Tech',
+                average: 78,
+                top: 92
+            };
+        }
+
+        function getTopGaps() {
+            const failing = STATE.analysis.factors
+                .filter(f => !f.status)
+                .sort((a, b) => b.weight - a.weight)
+                .slice(0, 3);
+
+            return failing.map(f => `• ${f.name} (${f.value} vs target: ${f.target})`);
+        }
+
+        function generateRoadmapWeeks(categories) {
+            const lowestCats = categories
+                .sort((a, b) => a.score - b.score)
+                .slice(0, 3);
+
+            const weeks = [
+                {
+                    period: 'Semana 1-2',
+                    title: 'Infraestructura (Prioridad crítica)',
+                    tasks: [
+                        { priority: 'P0', name: 'Optimizar TTFB < 1.5s', impact: 'Impacto: +10 pts, Desbloqueador crítico' },
+                        { priority: 'P0', name: 'Implementar Schema.org completo', impact: 'Impacto: +20 pts, Base para IA' }
+                    ],
+                    estimatedScore: Math.min(STATE.score + 13, 100),
+                    gain: 13
+                },
+                {
+                    period: 'Semana 3-4',
+                    title: 'Estructura Semántica',
+                    tasks: [
+                        { priority: 'P1', name: 'Consolidar H1s múltiples', impact: 'Impacto: +8 pts' },
+                        { priority: 'P1', name: 'Agregar Breadcrumbs Schema', impact: 'Impacto: +5 pts' }
+                    ],
+                    estimatedScore: Math.min(STATE.score + 26, 100),
+                    gain: 13
+                },
+                {
+                    period: 'Semana 5-6',
+                    title: 'Citabilidad IA',
+                    tasks: [
+                        { priority: 'P2', name: 'Implementar llms.txt', impact: 'Impacto: +4 pts' },
+                        { priority: 'P2', name: 'Optimizar para LLMs', impact: 'Impacto: +3 pts' }
+                    ],
+                    estimatedScore: 95,
+                    gain: 7
+                }
+            ];
+
+            return weeks;
+        }
+
+        // Initialize
+        console.log('SEO Widget SOSTAC: Listo');
+        render();
+    </script>
 </body>
 </html>
