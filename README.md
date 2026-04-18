@@ -87,3 +87,4 @@ Type: CNAME
 Name: ejecuta
 Value: cname.vercel-dns.com
 TTL: 3600 (o automático)
+<!-- trigger deploy -->
