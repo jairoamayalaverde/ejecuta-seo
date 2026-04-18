@@ -597,8 +597,15 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         console.log('SEO Widget SOSTAC: Iniciando...');
+
+        // Configuración Supabase
+        const SUPABASE_URL = 'https://hompawsonronlgrvujjb.supabase.co';
+        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbXBhd3NvbnJvbmxncnZ1ampiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5ODI0MTMsImV4cCI6MjA4MzU1ODQxM30.UicwlthUkU9Ey5KltrZwdK7ZkTxHcYr4hr5foDUCW0A';
+        
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Estado global
         const STATE = {
@@ -609,6 +616,9 @@
             issues: [],
             analysis: null
         };
+
+        // Datos SOSTAC generados
+        let SOSTAC_DATA = null;
 
         // Render functions
         function render() {
@@ -904,14 +914,18 @@
             }
 
             if (sostacBtn) {
-                sostacBtn.addEventListener('click', () => {
-                    const params = new URLSearchParams({
-                        source: 'ejecuta-seo',
-                        domain: STATE.domain,
-                        score: STATE.score,
-                        aiScore: STATE.aiScore
-                    });
-                    window.location.href = `https://sostacflow.jairoamaya.co?${params.toString()}`;
+                sostacBtn.addEventListener('click', async () => {
+                    sostacBtn.disabled = true;
+                    sostacBtn.textContent = 'Creando proyecto...';
+                    
+                    try {
+                        await createSOSTACProject();
+                    } catch (error) {
+                        console.error('Error:', error);
+                        sostacBtn.disabled = false;
+                        sostacBtn.textContent = '🚀 Abrir en SOSTAC Flow ($49/mo)';
+                        alert('Error al crear el proyecto. Por favor, intenta nuevamente.');
+                    }
                 });
             }
         }
@@ -1338,6 +1352,125 @@
         // Initialize
         console.log('SEO Widget SOSTAC: Listo');
         render();
+
+        // ============================================================
+        // INTEGRACIÓN SOSTAC FLOW
+        // ============================================================
+
+        function generateSOSTACFromAnalysis() {
+            if (!STATE.analysis) return null;
+
+            const failingFactors = STATE.analysis.factors.filter(f => !f.status);
+            
+            return {
+                situation: [
+                    { title: `Análisis completo de ${STATE.domain}`, completed: true, note: `Score SEO: ${STATE.score}/100, AI: ${STATE.aiScore}/100` },
+                    { title: `${failingFactors.length} factores requieren atención`, completed: true, note: 'Identificados mediante análisis técnico automatizado' }
+                ],
+                objectives: [
+                    { title: 'Alcanzar score 95/100', completed: false, note: `Actual: ${STATE.score}/100` },
+                    { title: 'Mejorar citabilidad IA', completed: false, note: `Actual: ${STATE.aiScore}/100` }
+                ],
+                strategy: [
+                    { title: 'Optimización técnica priorizada', completed: false, note: 'Ejecutar en 6 semanas' },
+                    { title: 'Implementación de estándares modernos', completed: false, note: 'Schema.org + LLM readiness' }
+                ],
+                tactics: failingFactors.map((factor, idx) => ({
+                    id: `task_${idx + 1}`,
+                    gap: factor.name,
+                    prioridad: factor.weight >= 9 ? 0 : factor.weight >= 7 ? 1 : 2,
+                    esfuerzo: factor.weight >= 9 ? 'alto' : 'medio',
+                    responsable: factor.category === 'infraestructura' ? 'dev' : factor.category === 'datos' ? 'seo' : 'contenido',
+                    subtasks: [
+                        `Revisar estado actual: ${factor.value}`,
+                        `Implementar solución`,
+                        `Validar resultado (target: ${factor.target})`
+                    ],
+                    criteriosAceptacion: [factor.target],
+                    gananciaScore: factor.weight,
+                    timeline: { semana: Math.ceil((idx + 1) / 4) }
+                })),
+                action: generateWeeklyPlan(failingFactors),
+                control: [
+                    { title: 'Tracking semanal de métricas', completed: false, note: 'Dashboard SOSTAC Flow' },
+                    { title: 'Revisión quincenal de progreso', completed: false, note: 'Score actual vs objetivo' }
+                ]
+            };
+        }
+
+        function generateWeeklyPlan(failingFactors) {
+            const weeks = [];
+            let currentScore = STATE.score;
+            
+            for (let week = 1; week <= 6; week++) {
+                const tasksForWeek = failingFactors
+                    .filter((_, idx) => Math.ceil((idx + 1) / 4) === week)
+                    .map((_, idx) => `task_${failingFactors.findIndex(f => Math.ceil((failingFactors.indexOf(f) + 1) / 4) === week) + 1}`);
+                
+                const weekGain = failingFactors
+                    .filter((_, idx) => Math.ceil((idx + 1) / 4) === week)
+                    .reduce((sum, f) => sum + f.weight, 0);
+                
+                currentScore = Math.min(currentScore + weekGain, 100);
+                
+                weeks.push({
+                    semana: week,
+                    tasks: tasksForWeek,
+                    scoreEstimado: Math.round(currentScore),
+                    blockers: []
+                });
+            }
+            
+            return weeks;
+        }
+
+        async function createSOSTACProject() {
+            // Generar datos SOSTAC si no existen
+            if (!SOSTAC_DATA) {
+                SOSTAC_DATA = generateSOSTACFromAnalysis();
+            }
+
+            // Verificar sesión (o crear usuario temporal)
+            let session = (await supabaseClient.auth.getSession()).data.session;
+            
+            if (!session) {
+                // Auto-signup con email temporal
+                const tempEmail = `${STATE.domain.replace(/\./g, '-')}@ejecuta.seo`;
+                const tempPassword = Math.random().toString(36).slice(-12);
+                
+                const { data, error } = await supabaseClient.auth.signUp({
+                    email: tempEmail,
+                    password: tempPassword
+                });
+
+                if (error) throw error;
+                session = data.session;
+            }
+
+            // Crear proyecto en Supabase
+            const { data: project, error: projectError } = await supabaseClient
+                .from('projects')
+                .insert({
+                    name: `SEO Plan - ${STATE.domain}`,
+                    client: STATE.domain,
+                    data: SOSTAC_DATA,
+                    metadata: {
+                        source: 'ejecuta.seo',
+                        originalDomain: STATE.domain,
+                        seoScore: STATE.score,
+                        aiScore: STATE.aiScore,
+                        analyzedAt: new Date().toISOString()
+                    },
+                    user_id: session.user.id
+                })
+                .select()
+                .single();
+
+            if (projectError) throw projectError;
+
+            // Redirect a SOSTAC Flow con el proyecto creado
+            window.location.href = `https://sostacflow.jairoamaya.co?project=${project.id}&welcome=true`;
+        }
     </script>
 </body>
 </html>
