@@ -597,15 +597,8 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         console.log('SEO Widget SOSTAC: Iniciando...');
-
-        // Configuración Supabase
-        const SUPABASE_URL = 'https://hompawsonronlgrvujjb.supabase.co';
-        const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhvbXBhd3NvbnJvbmxncnZ1ampiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5ODI0MTMsImV4cCI6MjA4MzU1ODQxM30.UicwlthUkU9Ey5KltrZwdK7ZkTxHcYr4hr5foDUCW0A';
-        
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
         // Estado global
         const STATE = {
@@ -921,17 +914,17 @@
             }
 
             if (sostacBtn) {
-                sostacBtn.addEventListener('click', async () => {
+                sostacBtn.addEventListener('click', () => {
                     sostacBtn.disabled = true;
-                    sostacBtn.textContent = 'Creando proyecto...';
+                    sostacBtn.textContent = 'Redirigiendo...';
                     
                     try {
-                        await createSOSTACProject();
+                        createSOSTACProject();
                     } catch (error) {
                         console.error('Error:', error);
                         sostacBtn.disabled = false;
                         sostacBtn.textContent = '🚀 Abrir en SOSTAC Flow ($49/mo)';
-                        alert('Error al crear el proyecto. Por favor, intenta nuevamente.');
+                        alert('Error al preparar el proyecto. Por favor, intenta nuevamente.');
                     }
                 });
             }
@@ -1431,92 +1424,28 @@
             return weeks;
         }
 
-        async function createSOSTACProject() {
+        function createSOSTACProject() {
             // Generar datos SOSTAC si no existen
             if (!SOSTAC_DATA) {
                 SOSTAC_DATA = generateSOSTACFromAnalysis();
             }
 
-            // Verificar sesión existente
-            let session = (await supabaseClient.auth.getSession()).data.session;
-            
-            if (!session) {
-                // Generar email válido usando hash del dominio
-                const domainHash = btoa(STATE.domain).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
-                const tempEmail = `user-${domainHash}@ejecuta.seo`;
-                const tempPassword = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12);
-                
-                try {
-                    const { data, error } = await supabaseClient.auth.signUp({
-                        email: tempEmail,
-                        password: tempPassword,
-                        options: {
-                            data: {
-                                source: 'ejecuta.seo',
-                                domain: STATE.domain,
-                                created_at: new Date().toISOString()
-                            }
-                        }
-                    });
-
-                    if (error) {
-                        // Si el usuario ya existe, intentar login
-                        if (error.message.includes('already registered')) {
-                            const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
-                                email: tempEmail,
-                                password: tempPassword
-                            });
-                            
-                            if (signInError) {
-                                // Si el login falla, usar signInAnonymously como fallback
-                                const { data: anonData, error: anonError } = await supabaseClient.auth.signInAnonymously();
-                                if (anonError) throw anonError;
-                                session = anonData.session;
-                            } else {
-                                session = signInData.session;
-                            }
-                        } else {
-                            throw error;
-                        }
-                    } else {
-                        session = data.session;
-                    }
-                } catch (authError) {
-                    console.error('Auth error:', authError);
-                    // Fallback: crear proyecto sin usuario (si RLS lo permite)
-                    session = null;
-                }
-            }
-
-            // Crear proyecto en Supabase
-            const projectData = {
-                name: `SEO Plan - ${STATE.domain}`,
-                client: STATE.domain,
-                data: SOSTAC_DATA,
-                metadata: {
-                    source: 'ejecuta.seo',
-                    originalDomain: STATE.domain,
-                    seoScore: STATE.score,
-                    aiScore: STATE.aiScore,
-                    analyzedAt: new Date().toISOString()
-                }
+            // Crear payload con todos los datos
+            const payload = {
+                source: 'ejecuta.seo',
+                domain: STATE.domain,
+                analyzedAt: new Date().toISOString(),
+                seoScore: STATE.score,
+                aiScore: STATE.aiScore,
+                sostacData: SOSTAC_DATA
             };
 
-            // Solo agregar user_id si tenemos sesión
-            if (session && session.user) {
-                projectData.user_id = session.user.id;
-            }
+            // Encodear payload en base64
+            const encoded = btoa(JSON.stringify(payload));
 
-            const { data: project, error: projectError } = await supabaseClient
-                .from('projects')
-                .insert(projectData)
-                .select()
-                .single();
-
-            if (projectError) throw projectError;
-
-            // Redirect a SOSTAC Flow con el proyecto creado
-            window.location.href = `https://sostacflow.jairoamaya.co?project=${project.id}&welcome=true`;
+            // Redirect a SOSTAC Flow
+            // SOSTAC Flow se encargará de crear el proyecto en Supabase
+            window.location.href = `https://sostacflow.jairoamaya.co/importar?payload=${encoded}`;
         }
     </script>
 </body>
