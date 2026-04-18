@@ -690,6 +690,13 @@
         function renderScoreSection() {
             return `
                 <div class="score-section">
+                    <div style="
+                        font-size: 16px;
+                        color: #00ff88;
+                        font-weight: 700;
+                        margin-bottom: 8px;
+                        font-family: 'Poppins', sans-serif;
+                    ">${STATE.domain}</div>
                     <div class="score-label">Tu Score Global</div>
                     <div class="score-value">${STATE.score}<span style="font-size:0.4em;color:#666;">/100</span></div>
                     <div class="score-description">
@@ -1430,39 +1437,79 @@
                 SOSTAC_DATA = generateSOSTACFromAnalysis();
             }
 
-            // Verificar sesión (o crear usuario temporal)
+            // Verificar sesión existente
             let session = (await supabaseClient.auth.getSession()).data.session;
             
             if (!session) {
-                // Auto-signup con email temporal
-                const tempEmail = `${STATE.domain.replace(/\./g, '-')}@ejecuta.seo`;
-                const tempPassword = Math.random().toString(36).slice(-12);
+                // Generar email válido usando hash del dominio
+                const domainHash = btoa(STATE.domain).replace(/[^a-zA-Z0-9]/g, '').substring(0, 20);
+                const tempEmail = `user-${domainHash}@ejecuta.seo`;
+                const tempPassword = Math.random().toString(36).slice(-12) + Math.random().toString(36).slice(-12);
                 
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: tempEmail,
-                    password: tempPassword
-                });
+                try {
+                    const { data, error } = await supabaseClient.auth.signUp({
+                        email: tempEmail,
+                        password: tempPassword,
+                        options: {
+                            data: {
+                                source: 'ejecuta.seo',
+                                domain: STATE.domain,
+                                created_at: new Date().toISOString()
+                            }
+                        }
+                    });
 
-                if (error) throw error;
-                session = data.session;
+                    if (error) {
+                        // Si el usuario ya existe, intentar login
+                        if (error.message.includes('already registered')) {
+                            const { data: signInData, error: signInError } = await supabaseClient.auth.signInWithPassword({
+                                email: tempEmail,
+                                password: tempPassword
+                            });
+                            
+                            if (signInError) {
+                                // Si el login falla, usar signInAnonymously como fallback
+                                const { data: anonData, error: anonError } = await supabaseClient.auth.signInAnonymously();
+                                if (anonError) throw anonError;
+                                session = anonData.session;
+                            } else {
+                                session = signInData.session;
+                            }
+                        } else {
+                            throw error;
+                        }
+                    } else {
+                        session = data.session;
+                    }
+                } catch (authError) {
+                    console.error('Auth error:', authError);
+                    // Fallback: crear proyecto sin usuario (si RLS lo permite)
+                    session = null;
+                }
             }
 
             // Crear proyecto en Supabase
+            const projectData = {
+                name: `SEO Plan - ${STATE.domain}`,
+                client: STATE.domain,
+                data: SOSTAC_DATA,
+                metadata: {
+                    source: 'ejecuta.seo',
+                    originalDomain: STATE.domain,
+                    seoScore: STATE.score,
+                    aiScore: STATE.aiScore,
+                    analyzedAt: new Date().toISOString()
+                }
+            };
+
+            // Solo agregar user_id si tenemos sesión
+            if (session && session.user) {
+                projectData.user_id = session.user.id;
+            }
+
             const { data: project, error: projectError } = await supabaseClient
                 .from('projects')
-                .insert({
-                    name: `SEO Plan - ${STATE.domain}`,
-                    client: STATE.domain,
-                    data: SOSTAC_DATA,
-                    metadata: {
-                        source: 'ejecuta.seo',
-                        originalDomain: STATE.domain,
-                        seoScore: STATE.score,
-                        aiScore: STATE.aiScore,
-                        analyzedAt: new Date().toISOString()
-                    },
-                    user_id: session.user.id
-                })
+                .insert(projectData)
                 .select()
                 .single();
 
