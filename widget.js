@@ -16,7 +16,7 @@ const CONFIG = {
     // Credenciales EmailJS
     emailjs: {
         serviceId: 'service_per05pl',
-        templateId: 'template Análisis SEO',
+        templateId: 'template_analisis_seo',  // Sin espacios
         publicKey: 'lmZm9EQP7anHuS8if'
     },
     
@@ -1265,9 +1265,10 @@ async function handleLeadSubmit(e) {
             domain: STATE.domain,
             score: STATE.score,
             score_level: scoreData.label,
-            top_issues: topInterventions.map(i => 
-                `• ${i.message.split('\n')[0]}`
-            ).join('\n'),
+            top_issues: topInterventions.map(i => {
+                const message = i.message || i.description || 'Factor requiere optimización';
+                return `• ${message.split('\n')[0]}`;
+            }).join('\n'),
             roadmap_summary: STATE.roadmap.map(r => 
                 `${r.period}: ${r.title} (Score estimado: ${r.estimatedScore}/100)`
             ).join('\n\n')
@@ -1320,7 +1321,8 @@ function createSOSTACProject() {
         sostacData: generateSOSTACData()
     };
 
-    const encoded = btoa(JSON.stringify(payload));
+    // Fix para UTF-8: convertir a base64 correctamente
+    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
     window.location.href = `https://sostacflow.jairoamaya.co/importar?payload=${encoded}`;
 }
 
