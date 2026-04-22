@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Diagnóstico Técnico de Visibilidad | Jairo Amaya</title>
+    <title>Ejecuta.SEO | Diagnóstico Técnico de Visibilidad IA</title>
+    <meta name="description" content="Analiza 30+ factores técnicos de tu sitio web y descubre qué está bloqueando tu visibilidad en Google y ChatGPT">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -15,117 +16,113 @@
         }
 
         body {
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             background: #000;
             color: #fff;
             min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
             padding: 20px;
+            line-height: 1.5;
         }
 
-        #seo-diagnostic-widget {
-            width: 100%;
-            max-width: 700px;
+        .container {
+            max-width: 1200px;
             margin: 0 auto;
         }
 
-        .widget-header {
+        /* HERO INPUT */
+        .hero-section {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 60px;
         }
 
-        .widget-header h1 {
-            font-size: clamp(28px, 5vw, 42px);
+        .hero-section h1 {
+            font-size: clamp(32px, 6vw, 56px);
             font-weight: 900;
-            margin-bottom: 12px;
-            background: linear-gradient(135deg, #fff 0%, #999 100%);
+            line-height: 1.1;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff 0%, #ec4899 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
 
-        .widget-header p {
+        .hero-section p {
+            font-size: clamp(16px, 3vw, 20px);
             color: #999;
-            font-size: 14px;
-            font-weight: 400;
+            margin-bottom: 40px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .input-container {
-            background: rgb(0, 0, 0);
-            border: 2px solid #222;
+        .input-box {
+            background: #0a0a0a;
+            border: 2px solid #1f1f1f;
             border-radius: 20px;
             padding: 40px;
-            margin-bottom: 32px;
+            max-width: 600px;
+            margin: 0 auto;
             transition: all 0.3s ease;
         }
 
-        .input-container:hover {
-            border-color: #333;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.05);
+        .input-box:hover {
+            border-color: #ec4899;
+            box-shadow: 0 0 40px rgba(236, 72, 153, 0.15);
         }
 
-        .input-group {
-            margin-bottom: 24px;
-        }
-
-        .input-group label {
+        .input-box label {
             display: block;
-            font-size: 11px;
-            color: #999;
+            font-size: 13px;
+            font-weight: 700;
+            color: #666;
             text-transform: uppercase;
             letter-spacing: 1.5px;
-            margin-bottom: 12px;
-            font-weight: 600;
+            margin-bottom: 16px;
         }
 
-        .input-group input {
+        .input-box input {
             width: 100%;
-            background: #0d0d0d;
-            border: 1px solid #333;
-            padding: 16px 20px;
+            background: #000;
+            border: 2px solid #222;
+            padding: 20px 24px;
             border-radius: 12px;
             color: #fff;
-            font-size: 16px;
-            font-family: 'Poppins', sans-serif;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 24px;
             transition: all 0.2s ease;
         }
 
-        .input-group input:focus {
+        .input-box input:focus {
             outline: none;
-            border-color: #00ff88;
-            box-shadow: 0 0 0 3px rgba(0, 255, 136, 0.1);
+            border-color: #ec4899;
+            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
         }
 
-        .input-group input::placeholder {
-            color: #555;
+        .input-box input::placeholder {
+            color: #444;
         }
 
         .analyze-btn {
             width: 100%;
-            background: linear-gradient(135deg, #00ff88 0%, #00cc77 100%);
-            color: #000;
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+            color: #fff;
             border: none;
-            padding: 18px 32px;
+            padding: 20px 32px;
             border-radius: 12px;
             font-weight: 900;
-            font-size: 13px;
-            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 0 20px rgba(0, 255, 136, 0.3);
+            box-shadow: 0 10px 40px rgba(236, 72, 153, 0.3);
         }
 
         .analyze-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.5);
-        }
-
-        .analyze-btn:active {
-            transform: translateY(0);
+            box-shadow: 0 15px 50px rgba(236, 72, 153, 0.4);
         }
 
         .analyze-btn:disabled {
@@ -134,22 +131,23 @@
             transform: none;
         }
 
+        /* LOADING */
         .loading-state {
             text-align: center;
-            padding: 60px 40px;
-            background: rgb(0, 0, 0);
-            border: 2px solid #222;
-            border-radius: 20px;
+            padding: 80px 40px;
+            background: #0a0a0a;
+            border: 2px solid #1f1f1f;
+            border-radius: 24px;
         }
 
-        .loading-spinner {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #222;
-            border-top: 4px solid #00ff88;
+        .spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid #1f1f1f;
+            border-top: 6px solid #ec4899;
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin: 0 auto 24px;
+            margin: 0 auto 32px;
         }
 
         @keyframes spin {
@@ -158,140 +156,281 @@
         }
 
         .loading-text {
-            font-size: 14px;
-            color: #999;
-            margin-bottom: 8px;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 12px;
         }
 
         .loading-domain {
-            font-size: 18px;
-            font-weight: 700;
-            color: #00ff88;
-        }
-
-        .results-container {
-            background: rgb(0, 0, 0);
-            border: 2px solid #222;
-            border-radius: 20px;
-            padding: 40px;
-        }
-
-        .score-section {
-            text-align: center;
-            padding: 40px 0;
-            border-bottom: 1px solid #222;
-            margin-bottom: 40px;
-        }
-
-        .score-label {
-            font-size: 12px;
-            color: #999;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 16px;
-            font-weight: 700;
-        }
-
-        .score-value {
-            font-size: clamp(64px, 12vw, 96px);
+            font-size: 24px;
             font-weight: 900;
-            background: linear-gradient(135deg, #00ff88 0%, #00cc77 100%);
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            background-clip: text;
+        }
+
+        .loading-progress {
+            max-width: 400px;
+            margin: 32px auto 0;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #1f1f1f;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ec4899 0%, #a855f7 100%);
+            transition: width 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .progress-label {
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* RESULTS HERO */
+        .results-hero {
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%);
+            border: 3px solid #ec4899;
+            border-radius: 32px;
+            padding: 60px 40px;
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .results-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .score-label-top {
+            position: relative;
+            z-index: 1;
+            font-size: 11px;
+            font-weight: 900;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            margin-bottom: 8px;
+        }
+
+        .score-value-hero {
+            position: relative;
+            z-index: 1;
+            font-size: clamp(96px, 20vw, 160px);
+            font-weight: 900;
             line-height: 1;
             margin-bottom: 16px;
         }
 
-        .score-description {
+        .score-value-hero .number {
+            background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .score-value-hero .max {
+            font-size: 0.35em;
+            color: #333;
+        }
+
+        .score-value-hero .indicator {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: #10b981;
+            border-radius: 50%;
+            margin-left: 16px;
+            vertical-align: middle;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+        }
+
+        .score-value-hero .indicator.warning { background: #f59e0b; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+        .score-value-hero .indicator.critical { background: #ef4444; box-shadow: 0 0 20px rgba(239, 68, 68, 0.5); }
+
+        .score-status {
+            position: relative;
+            z-index: 1;
+            display: inline-block;
+            padding: 8px 24px;
+            background: rgba(16, 185, 129, 0.2);
+            border: 2px solid #10b981;
+            border-radius: 24px;
             font-size: 14px;
-            color: #666;
+            font-weight: 900;
+            color: #10b981;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 16px;
         }
 
-        /* Nuevos estilos FASE 2 */
-        .category-breakdown {
-            margin: 40px 0;
-        }
+        .score-status.warning { background: rgba(245, 158, 11, 0.2); border-color: #f59e0b; color: #f59e0b; }
+        .score-status.critical { background: rgba(239, 68, 68, 0.2); border-color: #ef4444; color: #ef4444; }
 
-        .category-breakdown h3 {
+        .score-domain {
+            position: relative;
+            z-index: 1;
             font-size: 18px;
             font-weight: 700;
+            color: #999;
+        }
+
+        /* IMPACT METRICS */
+        .impact-section {
+            background: #0a0a0a;
+            border: 2px solid #1f1f1f;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
+        }
+
+        .impact-title {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        .impact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+        }
+
+        .impact-card {
+            text-align: center;
+            padding: 24px;
+            background: #000;
+            border: 1px solid #1f1f1f;
+            border-radius: 16px;
+        }
+
+        .impact-value {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+
+        .impact-value.good { color: #10b981; }
+        .impact-value.warning { color: #f59e0b; }
+        .impact-value.bad { color: #ef4444; }
+
+        .impact-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* CATEGORY BREAKDOWN */
+        .category-section {
+            margin-bottom: 40px;
+        }
+
+        .category-section h3 {
+            font-size: 20px;
+            font-weight: 900;
             margin-bottom: 24px;
             color: #fff;
         }
 
         .category-item {
-            background: #0d0d0d;
-            border: 1px solid #222;
-            border-radius: 12px;
-            padding: 20px;
+            background: #0a0a0a;
+            border: 2px solid #1f1f1f;
+            border-radius: 16px;
+            padding: 24px;
             margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .category-item:hover {
+            border-color: #333;
         }
 
         .category-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 12px;
+            margin-bottom: 16px;
         }
 
         .category-name {
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 700;
             color: #fff;
         }
 
         .category-score {
-            font-size: 20px;
+            font-size: 24px;
             font-weight: 900;
-            font-family: 'Poppins', sans-serif;
         }
 
-        .category-score.high { color: #00ff88; }
-        .category-score.medium { color: #ffaa00; }
-        .category-score.low { color: #ff4444; }
+        .category-score.high { color: #10b981; }
+        .category-score.medium { color: #f59e0b; }
+        .category-score.low { color: #ef4444; }
 
         .category-details {
-            font-size: 12px;
-            color: #666;
+            font-size: 13px;
+            color: #999;
             line-height: 1.8;
         }
 
+        .category-details ul {
+            list-style: none;
+        }
+
         .category-details li {
-            margin-bottom: 4px;
+            margin-bottom: 8px;
             display: flex;
             align-items: center;
             gap: 8px;
         }
 
-        .status-icon {
-            font-size: 14px;
-        }
-
+        /* BENCHMARK */
         .benchmark-section {
-            background: linear-gradient(135deg, #1a0a0a 0%, #0a1a0a 100%);
-            border: 2px solid #333;
-            border-radius: 16px;
-            padding: 32px;
-            margin: 40px 0;
+            background: linear-gradient(135deg, #0a1a0a 0%, #1a0a0a 100%);
+            border: 2px solid #10b981;
+            border-radius: 24px;
+            padding: 40px;
+            margin-bottom: 40px;
         }
 
         .benchmark-section h3 {
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 24px;
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 32px;
             color: #fff;
         }
 
         .benchmark-bar {
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
 
         .benchmark-label {
             display: flex;
             justify-content: space-between;
             margin-bottom: 8px;
-            font-size: 13px;
+            font-size: 14px;
         }
 
         .benchmark-label span:first-child {
@@ -317,36 +456,37 @@
             transition: width 1s ease;
         }
 
-        .roadmap-preview {
-            margin: 40px 0;
+        /* ROADMAP */
+        .roadmap-section {
+            margin-bottom: 40px;
         }
 
-        .roadmap-preview h3 {
-            font-size: 18px;
-            font-weight: 700;
+        .roadmap-section h3 {
+            font-size: 20px;
+            font-weight: 900;
             margin-bottom: 24px;
             color: #fff;
         }
 
         .roadmap-week {
-            background: #0d0d0d;
-            border-left: 4px solid #00ff88;
-            border-radius: 8px;
-            padding: 20px;
+            background: #0a0a0a;
+            border-left: 4px solid #10b981;
+            border-radius: 12px;
+            padding: 24px;
             margin-bottom: 16px;
         }
 
         .week-header {
-            font-size: 12px;
-            color: #00ff88;
+            font-size: 11px;
+            color: #10b981;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 12px;
-            font-weight: 700;
+            font-weight: 900;
         }
 
         .week-title {
-            font-size: 16px;
+            font-size: 18px;
             font-weight: 700;
             color: #fff;
             margin-bottom: 16px;
@@ -357,1096 +497,346 @@
             align-items: flex-start;
             gap: 12px;
             margin-bottom: 12px;
-            font-size: 13px;
-            color: #999;
+            font-size: 14px;
+            color: #ccc;
         }
 
         .task-priority {
-            background: #ff4444;
-            color: #000;
-            padding: 2px 8px;
+            padding: 4px 8px;
             border-radius: 4px;
             font-size: 10px;
             font-weight: 900;
             flex-shrink: 0;
+            text-transform: uppercase;
         }
 
-        .task-priority.p0 { background: #ff4444; }
-        .task-priority.p1 { background: #ffaa00; }
-        .task-priority.p2 { background: #00ff88; }
-
-        .task-impact {
-            font-size: 11px;
-            color: #666;
-        }
+        .task-priority.p0 { background: #ef4444; color: #000; }
+        .task-priority.p1 { background: #f59e0b; color: #000; }
+        .task-priority.p2 { background: #10b981; color: #000; }
 
         .week-estimated {
             margin-top: 16px;
             padding-top: 16px;
             border-top: 1px solid #222;
-            font-size: 12px;
+            font-size: 13px;
             color: #999;
         }
 
         .week-estimated strong {
-            color: #00ff88;
+            color: #10b981;
         }
 
-        .cta-section {
-            background: linear-gradient(135deg, #0a1a0a 0%, #1a0a0a 100%);
-            border: 2px solid #00ff88;
-            border-radius: 20px;
-            padding: 40px;
-            margin-top: 40px;
+        /* LEAD CAPTURE */
+        .lead-capture {
+            background: linear-gradient(135deg, #1a0a1a 0%, #0a0a1a 100%);
+            border: 3px solid #ec4899;
+            border-radius: 32px;
+            padding: 60px 40px;
+            margin-bottom: 40px;
             text-align: center;
         }
 
-        .cta-section h3 {
-            font-size: 24px;
+        .lead-capture h2 {
+            font-size: clamp(28px, 5vw, 42px);
             font-weight: 900;
             margin-bottom: 16px;
-            color: #fff;
         }
 
-        .cta-stats {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin: 24px 0;
-        }
-
-        .cta-stat {
-            text-align: center;
-        }
-
-        .cta-stat-value {
-            font-size: 24px;
-            font-weight: 900;
-            color: #00ff88;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .cta-stat-label {
-            font-size: 11px;
-            color: #666;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .cta-problem {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid #ff4444;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 24px 0;
-            text-align: left;
-        }
-
-        .cta-problem h4 {
-            font-size: 14px;
-            color: #ff4444;
-            margin-bottom: 12px;
-            font-weight: 700;
-        }
-
-        .cta-problem p {
-            font-size: 13px;
+        .lead-capture p {
+            font-size: 18px;
             color: #999;
-            line-height: 1.6;
-            margin-bottom: 8px;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .cta-needs {
-            background: #0d0d0d;
-            border-radius: 12px;
-            padding: 24px;
-            margin: 24px 0;
-            text-align: left;
-        }
-
-        .cta-needs h4 {
-            font-size: 14px;
-            color: #fff;
-            margin-bottom: 16px;
-            font-weight: 700;
-        }
-
-        .cta-needs ul {
+        .lead-capture ul {
             list-style: none;
+            text-align: left;
+            max-width: 500px;
+            margin: 0 auto 40px;
         }
 
-        .cta-needs li {
-            font-size: 13px;
-            color: #999;
-            margin-bottom: 8px;
-            padding-left: 24px;
+        .lead-capture li {
+            font-size: 15px;
+            color: #ccc;
+            margin-bottom: 12px;
+            padding-left: 32px;
             position: relative;
         }
 
-        .cta-needs li:before {
-            content: '•';
-            color: #00ff88;
-            font-size: 20px;
+        .lead-capture li::before {
+            content: '✓';
             position: absolute;
             left: 0;
+            color: #10b981;
+            font-weight: 900;
+            font-size: 20px;
         }
 
-        .cta-primary-btn {
+        .lead-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 568px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .lead-form input {
             width: 100%;
-            background: linear-gradient(135deg, #00ff88 0%, #00cc77 100%);
-            color: #000;
+            background: #000;
+            border: 2px solid #333;
+            padding: 18px 20px;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 16px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s ease;
+        }
+
+        .lead-form input:focus {
+            outline: none;
+            border-color: #ec4899;
+            box-shadow: 0 0 0 4px rgba(236, 72, 153, 0.1);
+        }
+
+        .lead-form input::placeholder {
+            color: #444;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
             border: none;
             padding: 20px 32px;
             border-radius: 12px;
             font-weight: 900;
-            font-size: 14px;
-            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             cursor: pointer;
-            margin-bottom: 16px;
-            box-shadow: 0 0 30px rgba(0, 255, 136, 0.4);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 40px rgba(16, 185, 129, 0.3);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 50px rgba(16, 185, 129, 0.4);
+        }
+
+        .privacy-note {
+            font-size: 12px;
+            color: #666;
+            margin-top: 16px;
+        }
+
+        /* CTA SECTION */
+        .cta-section {
+            background: linear-gradient(135deg, #0a1a0a 0%, #1a0a0a 100%);
+            border: 2px solid #10b981;
+            border-radius: 32px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .cta-section h3 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+
+        .cta-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .cta-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cta-option {
+            background: #0a0a0a;
+            border: 2px solid #1f1f1f;
+            border-radius: 20px;
+            padding: 32px;
+            text-align: left;
             transition: all 0.3s ease;
         }
 
-        .cta-primary-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+        .cta-option:hover {
+            border-color: #10b981;
+            transform: translateY(-4px);
         }
 
-        .cta-secondary-btn {
+        .cta-option.featured {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(16, 185, 129, 0.02) 100%);
+        }
+
+        .cta-badge {
+            display: inline-block;
+            background: #10b981;
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 16px;
+        }
+
+        .cta-option h4 {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+
+        .cta-option p {
+            font-size: 14px;
+            color: #999;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .cta-btn {
             width: 100%;
-            background: transparent;
-            color: #00ff88;
-            border: 2px solid #00ff88;
             padding: 16px 32px;
             border-radius: 12px;
-            font-weight: 700;
-            font-size: 13px;
-            font-family: 'Poppins', sans-serif;
+            font-weight: 900;
+            font-size: 14px;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             cursor: pointer;
             transition: all 0.3s ease;
+            border: none;
         }
 
-        .cta-secondary-btn:hover {
-            background: rgba(0, 255, 136, 0.1);
+        .cta-btn.primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
         }
 
+        .cta-btn.secondary {
+            background: transparent;
+            color: #10b981;
+            border: 2px solid #10b981;
+        }
+
+        /* SUCCESS STATE */
+        .success-message {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
+            border: 2px solid #10b981;
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background: #10b981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            font-size: 48px;
+        }
+
+        .success-message h2 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 16px;
+            color: #10b981;
+        }
+
+        .success-message p {
+            font-size: 16px;
+            color: #999;
+        }
+
+        /* ERROR STATE */
         .error-message {
-            background: rgba(255, 68, 68, 0.1);
-            border: 2px solid #ff4444;
-            border-radius: 12px;
-            padding: 24px;
+            background: rgba(239, 68, 68, 0.1);
+            border: 2px solid #ef4444;
+            border-radius: 20px;
+            padding: 32px;
             text-align: center;
         }
 
         .error-message h3 {
-            color: #ff4444;
-            font-size: 18px;
+            color: #ef4444;
+            font-size: 20px;
             margin-bottom: 12px;
         }
 
-        .error-message p {
-            color: #999;
-            font-size: 14px;
-            margin-bottom: 24px;
-        }
-
         .retry-btn {
-            background: #ff4444;
+            background: #ef4444;
             color: #fff;
             border: none;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 8px;
             font-weight: 700;
             font-size: 13px;
             cursor: pointer;
+            margin-top: 20px;
             text-transform: uppercase;
             letter-spacing: 1px;
-        }
-
-        @media (max-width: 768px) {
-            .input-container,
-            .results-container,
-            .loading-state {
-                padding: 24px;
-            }
-
-            .cta-stats {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-
-            .benchmark-label {
-                font-size: 11px;
-            }
         }
     </style>
 </head>
 <body>
-    <div id="seo-diagnostic-widget">
-        <div class="widget-header">
-            <h1>Diagnóstico Técnico de Visibilidad</h1>
-            <p>Análisis real sin simulaciones ni datos falsos</p>
+    <div class="container">
+        <div class="hero-section">
+            <h1>¿Tu sitio está invisible para Google y ChatGPT?</h1>
+            <p>Análisis técnico de 30+ factores que determinan tu visibilidad en buscadores tradicionales y sistemas de IA</p>
         </div>
 
-        <div id="app-content">
-            <!-- Estado inicial: Input -->
-        </div>
+        <div id="app"></div>
     </div>
 
+    <script src="./widget.js"></script>
+    
+    <!-- Auto-resize para iframe -->
     <script>
-        console.log('SEO Widget SOSTAC: Iniciando...');
-
-        // Estado global
-        const STATE = {
-            currentView: 'input',
-            domain: '',
-            score: 0,
-            aiScore: 0,
-            issues: [],
-            analysis: null
-        };
-
-        // Datos SOSTAC generados
-        let SOSTAC_DATA = null;
-
-        // Render functions
-        function render() {
-            console.log('Rendering...', STATE.currentView);
-            const container = document.getElementById('app-content');
-
-            switch (STATE.currentView) {
-                case 'input':
-                    container.innerHTML = renderInput();
-                    attachInputListeners();
-                    break;
-                case 'analyzing':
-                    container.innerHTML = renderAnalyzing();
-                    break;
-                case 'results':
-                    container.innerHTML = renderResults();
-                    attachResultsListeners();
-                    break;
-                case 'error':
-                    container.innerHTML = renderError();
-                    attachErrorListeners();
-                    break;
+        function notifyParentOfHeight() {
+            const height = document.body.scrollHeight;
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'ejecuta-seo-resize',
+                    height: height
+                }, '*');
             }
         }
 
-        function renderInput() {
-            return `
-                <div class="input-container">
-                    <div class="input-group">
-                        <label for="domain-input">Sitio web a analizar</label>
-                        <input 
-                            type="text" 
-                            id="domain-input" 
-                            placeholder="tudominio.com"
-                            value="${STATE.domain}"
-                        />
-                    </div>
-                    <button class="analyze-btn" id="analyze-btn">
-                        Escanear sitio →
-                    </button>
-                </div>
-            `;
-        }
-
-        function renderAnalyzing() {
-            return `
-                <div class="loading-state">
-                    <div class="loading-spinner"></div>
-                    <div class="loading-text">Analizando tu sitio...</div>
-                    <div class="loading-domain">${STATE.domain}</div>
-                </div>
-            `;
-        }
-
-        function renderResults() {
-            const categories = calculateCategoryScores(STATE.analysis);
-            
-            return `
-                <div class="results-container">
-                    ${renderScoreSection()}
-                    ${renderCategoryBreakdown(categories)}
-                    ${renderBenchmark()}
-                    ${renderRoadmapPreview(categories)}
-                    ${renderCTA()}
-                </div>
-            `;
-        }
-
-        function renderScoreSection() {
-            return `
-                <div class="score-section">
-                    <div style="
-                        font-size: 16px;
-                        color: #00ff88;
-                        font-weight: 700;
-                        margin-bottom: 8px;
-                        font-family: 'Poppins', sans-serif;
-                    ">${STATE.domain}</div>
-                    <div class="score-label">Tu Score Global</div>
-                    <div class="score-value">${STATE.score}<span style="font-size:0.4em;color:#666;">/100</span></div>
-                    <div class="score-description">
-                        Análisis de ${STATE.analysis.factors.length} factores técnicos
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderCategoryBreakdown(categories) {
-            return `
-                <div class="category-breakdown">
-                    <h3>📊 Desglose por Categoría</h3>
-                    ${categories.map(cat => `
-                        <div class="category-item">
-                            <div class="category-header">
-                                <div class="category-name">${cat.name}</div>
-                                <div class="category-score ${cat.score >= 70 ? 'high' : cat.score >= 50 ? 'medium' : 'low'}">
-                                    ${cat.score}/100
-                                </div>
-                            </div>
-                            <div class="category-details">
-                                <ul>
-                                    ${cat.details.map(detail => `
-                                        <li>
-                                            <span class="status-icon">${detail.status}</span>
-                                            <span>${detail.text}</span>
-                                        </li>
-                                    `).join('')}
-                                </ul>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-        }
-
-        function renderBenchmark() {
-            const industry = getIndustryBenchmark();
-            const gap = industry.average - STATE.score;
-            
-            return `
-                <div class="benchmark-section">
-                    <h3>📈 Benchmark vs Industria</h3>
-                    
-                    <div class="benchmark-bar">
-                        <div class="benchmark-label">
-                            <span>Tu sitio</span>
-                            <span>${STATE.score}/100</span>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-fill" style="width:${STATE.score}%;background:linear-gradient(90deg,#ff4444,#ffaa00);"></div>
-                        </div>
-                    </div>
-
-                    <div class="benchmark-bar">
-                        <div class="benchmark-label">
-                            <span>Promedio ${industry.sector}</span>
-                            <span>${industry.average}/100</span>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-fill" style="width:${industry.average}%;background:linear-gradient(90deg,#ffaa00,#00ff88);"></div>
-                        </div>
-                    </div>
-
-                    <div class="benchmark-bar">
-                        <div class="benchmark-label">
-                            <span>Top 10%</span>
-                            <span>${industry.top}/100</span>
-                        </div>
-                        <div class="bar-container">
-                            <div class="bar-fill" style="width:${industry.top}%;background:linear-gradient(90deg,#00ff88,#00cc77);"></div>
-                        </div>
-                    </div>
-
-                    <p style="margin-top:24px;font-size:13px;color:#999;line-height:1.6;">
-                        <strong style="color:#ffaa00;">Brecha competitiva:</strong> ${gap > 0 ? '-' : '+'}${Math.abs(gap)} pts vs promedio
-                        <br>
-                        ${gap > 0 ? '⚠️ Equivalente a ~' + Math.round(gap * 2.5) + '% menos visibilidad' : '✅ Por encima del promedio'}
-                    </p>
-
-                    ${gap > 0 ? `
-                        <p style="margin-top:16px;font-size:13px;color:#666;">
-                            <strong style="color:#fff;">Factores críticos donde estás atrás:</strong><br>
-                            ${getTopGaps().join('<br>')}
-                        </p>
-                    ` : ''}
-                </div>
-            `;
-        }
-
-        function renderRoadmapPreview(categories) {
-            const weeks = generateRoadmapWeeks(categories);
-            
-            return `
-                <div class="roadmap-preview">
-                    <h3>🗓️ Roadmap Ejecutable (Vista previa)</h3>
-                    
-                    ${weeks.map(week => `
-                        <div class="roadmap-week">
-                            <div class="week-header">${week.period}</div>
-                            <div class="week-title">${week.title}</div>
-                            
-                            ${week.tasks.map(task => `
-                                <div class="task-item">
-                                    <span class="task-priority ${task.priority.toLowerCase()}">${task.priority}</span>
-                                    <div>
-                                        <div>${task.name}</div>
-                                        <div class="task-impact">${task.impact}</div>
-                                    </div>
-                                </div>
-                            `).join('')}
-                            
-                            <div class="week-estimated">
-                                Estimado al finalizar: <strong>${week.estimatedScore}/100</strong> (+${week.gain})
-                            </div>
-                        </div>
-                    `).join('')}
-
-                    <p style="margin-top:24px;padding:20px;background:#0d0d0d;border:1px solid #333;border-radius:12px;font-size:12px;color:#666;line-height:1.6;">
-                        ⚠️ Este roadmap fue generado automáticamente basado en análisis técnico. 
-                        En consultoría lo ajustamos a tu stack técnico y recursos disponibles.
-                    </p>
-                </div>
-            `;
-        }
-
-        function renderCTA() {
-            const tasksCount = STATE.analysis.factors.filter(f => !f.status).length;
-            
-            return `
-                <div class="cta-section">
-                    <h3>Tu Plan SOSTAC está listo</h3>
-                    
-                    <div class="cta-stats">
-                        <div class="cta-stat">
-                            <div class="cta-stat-value">${tasksCount}</div>
-                            <div class="cta-stat-label">Tasks ejecutables</div>
-                        </div>
-                        <div class="cta-stat">
-                            <div class="cta-stat-value">6</div>
-                            <div class="cta-stat-label">Semanas</div>
-                        </div>
-                        <div class="cta-stat">
-                            <div class="cta-stat-value">95/100</div>
-                            <div class="cta-stat-label">Score objetivo</div>
-                        </div>
-                    </div>
-
-                    <div class="cta-problem">
-                        <h4>Pero aquí está el problema:</h4>
-                        <p>Este plan fue generado automáticamente basado en análisis técnico.</p>
-                        <p>Para ejecutarlo efectivamente necesitas ajustarlo a tu realidad específica.</p>
-                    </div>
-
-                    <div class="cta-needs">
-                        <h4>Para ejecutar efectivamente necesitas:</h4>
-                        <ul>
-                            <li>Priorización según TU stack técnico</li>
-                            <li>Ajustes según TUS recursos disponibles</li>
-                            <li>Coordinación con TU equipo</li>
-                            <li>Identificación de blockers específicos</li>
-                        </ul>
-                    </div>
-
-                    <button class="cta-primary-btn" id="schedule-consult-btn">
-                        📞 Sesión estratégica (30 min - GRATIS)
-                    </button>
-
-                    <p style="font-size:12px;color:#666;margin:16px 0;">
-                        Revisamos tu plan SOSTAC juntos, priorizamos según tu realidad,<br>
-                        identificamos blockers técnicos y te digo exactamente qué hacer.
-                    </p>
-
-                    <div style="margin:24px 0;font-size:12px;color:#666;">
-                        - O -
-                    </div>
-
-                    <button class="cta-secondary-btn" id="sostac-flow-btn">
-                        🚀 Abrir en SOSTAC Flow ($49/mo)
-                    </button>
-
-                    <p style="font-size:11px;color:#555;margin-top:12px;">
-                        Si prefieres ejecutar solo con dashboard en tiempo real
-                    </p>
-                </div>
-            `;
-        }
-
-        function renderError() {
-            return `
-                <div class="error-message">
-                    <h3>Error en el análisis</h3>
-                    <p>${STATE.errorMessage || 'No se pudo analizar el sitio. Verifica el dominio e intenta nuevamente.'}</p>
-                    <button class="retry-btn" id="retry-btn">Reintentar</button>
-                </div>
-            `;
-        }
-
-        // Event listeners
-        function attachInputListeners() {
-            const input = document.getElementById('domain-input');
-            const btn = document.getElementById('analyze-btn');
-
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    startAnalysis();
-                }
-            });
-
-            btn.addEventListener('click', startAnalysis);
-        }
-
-        function attachResultsListeners() {
-            const scheduleBtn = document.getElementById('schedule-consult-btn');
-            const sostacBtn = document.getElementById('sostac-flow-btn');
-
-            if (scheduleBtn) {
-                scheduleBtn.addEventListener('click', () => {
-                    window.open('https://calendly.com/jairoamaya', '_blank');
-                });
-            }
-
-            if (sostacBtn) {
-                sostacBtn.addEventListener('click', () => {
-                    sostacBtn.disabled = true;
-                    sostacBtn.textContent = 'Redirigiendo...';
-                    
-                    try {
-                        createSOSTACProject();
-                    } catch (error) {
-                        console.error('Error:', error);
-                        sostacBtn.disabled = false;
-                        sostacBtn.textContent = '🚀 Abrir en SOSTAC Flow ($49/mo)';
-                        alert('Error al preparar el proyecto. Por favor, intenta nuevamente.');
-                    }
-                });
-            }
-        }
-
-        function attachErrorListeners() {
-            const retryBtn = document.getElementById('retry-btn');
-            if (retryBtn) {
-                retryBtn.addEventListener('click', () => {
-                    STATE.currentView = 'input';
-                    render();
-                });
-            }
-        }
-
-        // Analysis logic
-        async function startAnalysis() {
-            const input = document.getElementById('domain-input');
-            let domain = input.value.trim();
-
-            if (!domain) {
-                alert('Por favor ingresa un dominio');
-                return;
-            }
-
-            // Limpiar dominio
-            domain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
-            STATE.domain = domain;
-
-            STATE.currentView = 'analyzing';
-            render();
-
-            try {
-                await runAnalysis(domain);
-                STATE.currentView = 'results';
-                render();
-            } catch (error) {
-                console.error('Error:', error);
-                STATE.errorMessage = error.message;
-                STATE.currentView = 'error';
-                render();
-            }
-        }
-
-        async function runAnalysis(domain) {
-            const proxyUrl = 'https://jairoamaya.co/html-proxy.php';
-            const targetUrl = `https://${domain}`;
-            
-            const response = await fetch(`${proxyUrl}?url=${encodeURIComponent(targetUrl)}`);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}: No se pudo obtener el HTML`);
-            }
-
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
-
-            STATE.analysis = analyzeHTML(doc, domain);
-            STATE.score = calculateScore(STATE.analysis);
-            STATE.aiScore = calculateAIScore(STATE.analysis);
-        }
-
-        function analyzeHTML(doc, domain) {
-            const factors = [
-                // Estructura semántica
-                analyzeTitle(doc),
-                analyzeMetaDescription(doc),
-                analyzeH1(doc),
-                analyzeCanonical(doc, domain),
-                
-                // Datos estructurados
-                analyzeSchema(doc),
-                analyzeBreadcrumbs(doc),
-                
-                // Contenido
-                analyzeContent(doc),
-                analyzeAltText(doc),
-                analyzeInternalLinks(doc),
-                
-                // Técnico
-                analyzeTTFB(doc),
-                analyzeMobileFriendly(doc),
-                analyzeHTTPS(domain),
-                
-                // Distribución
-                analyzeOpenGraph(doc),
-                
-                // IA
-                analyzeLLMDiscoverability(doc)
-            ];
-
-            return { factors };
-        }
-
-        // Análisis individual de factores
-        function analyzeTitle(doc) {
-            const title = doc.querySelector('title');
-            const text = title ? title.textContent.trim() : '';
-            const length = text.length;
-            
-            return {
-                name: 'Title Tag',
-                category: 'semántica',
-                status: length >= 30 && length <= 60,
-                value: length,
-                target: '30-60 caracteres',
-                weight: 10
-            };
-        }
-
-        function analyzeMetaDescription(doc) {
-            const meta = doc.querySelector('meta[name="description"]');
-            const content = meta ? meta.getAttribute('content').trim() : '';
-            const length = content.length;
-            
-            return {
-                name: 'Meta Description',
-                category: 'semántica',
-                status: length >= 120 && length <= 160,
-                value: length,
-                target: '120-160 caracteres',
-                weight: 8
-            };
-        }
-
-        function analyzeH1(doc) {
-            const h1s = doc.querySelectorAll('h1');
-            
-            return {
-                name: 'H1',
-                category: 'semántica',
-                status: h1s.length === 1,
-                value: h1s.length,
-                target: '1 H1 por página',
-                weight: 8
-            };
-        }
-
-        function analyzeCanonical(doc, domain) {
-            const canonical = doc.querySelector('link[rel="canonical"]');
-            const href = canonical ? canonical.getAttribute('href') : '';
-            
-            return {
-                name: 'Canonical',
-                category: 'semántica',
-                status: href.includes(domain),
-                value: href ? 'Presente' : 'Ausente',
-                target: 'URL canónica correcta',
-                weight: 7
-            };
-        }
-
-        function analyzeSchema(doc) {
-            const scripts = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'));
-            const count = scripts.length;
-            
-            return {
-                name: 'Schema.org',
-                category: 'datos',
-                status: count >= 2,
-                value: count,
-                target: '2+ schemas',
-                weight: 10
-            };
-        }
-
-        function analyzeBreadcrumbs(doc) {
-            const breadcrumbSchema = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'))
-                .some(script => {
-                    try {
-                        const json = JSON.parse(script.textContent);
-                        return json['@type'] === 'BreadcrumbList';
-                    } catch {
-                        return false;
-                    }
-                });
-            
-            return {
-                name: 'Breadcrumbs Schema',
-                category: 'datos',
-                status: breadcrumbSchema,
-                value: breadcrumbSchema ? 'Presente' : 'Ausente',
-                target: 'BreadcrumbList schema',
-                weight: 6
-            };
-        }
-
-        function analyzeContent(doc) {
-            const body = doc.body ? doc.body.textContent : '';
-            const words = body.trim().split(/\s+/).length;
-            
-            return {
-                name: 'Contenido',
-                category: 'semántica',
-                status: words >= 300,
-                value: words,
-                target: '300+ palabras',
-                weight: 9
-            };
-        }
-
-        function analyzeAltText(doc) {
-            const images = doc.querySelectorAll('img');
-            const withAlt = Array.from(images).filter(img => img.hasAttribute('alt')).length;
-            const percentage = images.length > 0 ? Math.round((withAlt / images.length) * 100) : 0;
-            
-            return {
-                name: 'Alt Text',
-                category: 'semántica',
-                status: percentage >= 80,
-                value: `${percentage}%`,
-                target: '80%+ de imágenes',
-                weight: 6
-            };
-        }
-
-        function analyzeInternalLinks(doc) {
-            const links = doc.querySelectorAll('a[href^="/"], a[href*="' + window.location.hostname + '"]');
-            const count = links.length;
-            
-            return {
-                name: 'Enlaces Internos',
-                category: 'semántica',
-                status: count >= 10,
-                value: count,
-                target: '10+ enlaces',
-                weight: 5
-            };
-        }
-
-        function analyzeTTFB(doc) {
-            const meta = doc.querySelector('meta[name="ttfb"]');
-            const ttfb = meta ? parseFloat(meta.getAttribute('content')) : Math.random() * 2 + 1;
-            
-            return {
-                name: 'TTFB',
-                category: 'infraestructura',
-                status: ttfb < 1.5,
-                value: `${ttfb.toFixed(2)}s`,
-                target: '< 1.5s',
-                weight: 10
-            };
-        }
-
-        function analyzeMobileFriendly(doc) {
-            const viewport = doc.querySelector('meta[name="viewport"]');
-            
-            return {
-                name: 'Mobile-Friendly',
-                category: 'infraestructura',
-                status: !!viewport,
-                value: viewport ? 'Configurado' : 'No configurado',
-                target: 'Viewport meta tag',
-                weight: 9
-            };
-        }
-
-        function analyzeHTTPS(domain) {
-            return {
-                name: 'HTTPS',
-                category: 'infraestructura',
-                status: true,
-                value: 'Seguro',
-                target: 'Certificado SSL válido',
-                weight: 8
-            };
-        }
-
-        function analyzeOpenGraph(doc) {
-            const ogTags = ['og:title', 'og:description', 'og:image'];
-            const present = ogTags.filter(tag => doc.querySelector(`meta[property="${tag}"]`)).length;
-            
-            return {
-                name: 'Open Graph',
-                category: 'social',
-                status: present >= 2,
-                value: `${present}/3 tags`,
-                target: '3/3 tags básicos',
-                weight: 7
-            };
-        }
-
-        function analyzeLLMDiscoverability(doc) {
-            const hasLLMsTxt = false; // Would need separate fetch
-            const hasAIPlugin = false;
-            
-            return {
-                name: 'LLM Discoverability',
-                category: 'ia',
-                status: hasLLMsTxt || hasAIPlugin,
-                value: 'No preparado',
-                target: 'llms.txt o ai-plugin.json',
-                weight: 10
-            };
-        }
-
-        // Cálculo de scores
-        function calculateScore(analysis) {
-            const total = analysis.factors.reduce((sum, f) => sum + f.weight, 0);
-            const achieved = analysis.factors.reduce((sum, f) => sum + (f.status ? f.weight : 0), 0);
-            
-            return Math.round((achieved / total) * 100);
-        }
-
-        function calculateAIScore(analysis) {
-            const iaFactors = analysis.factors.filter(f => f.category === 'ia');
-            const total = iaFactors.reduce((sum, f) => sum + f.weight, 0);
-            const achieved = iaFactors.reduce((sum, f) => sum + (f.status ? f.weight : 0), 0);
-            
-            return total > 0 ? Math.round((achieved / total) * 100) : 0;
-        }
-
-        function calculateCategoryScores(analysis) {
-            const categories = {
-                'infraestructura': {
-                    name: '🔧 Infraestructura Técnica',
-                    factors: [],
-                    icon: '🔴'
-                },
-                'semántica': {
-                    name: '📝 Estructura Semántica',
-                    factors: [],
-                    icon: '🟡'
-                },
-                'datos': {
-                    name: '🔗 Datos Estructurados',
-                    factors: [],
-                    icon: '🔴'
-                },
-                'ia': {
-                    name: '🤖 Citabilidad IA',
-                    factors: [],
-                    icon: '🔴'
-                },
-                'social': {
-                    name: '📱 Distribución Social',
-                    factors: [],
-                    icon: '🟡'
-                }
-            };
-
-            // Agrupar factores por categoría
-            analysis.factors.forEach(factor => {
-                if (categories[factor.category]) {
-                    categories[factor.category].factors.push(factor);
-                }
-            });
-
-            // Calcular scores
-            return Object.entries(categories).map(([key, cat]) => {
-                const total = cat.factors.reduce((sum, f) => sum + f.weight, 0);
-                const achieved = cat.factors.reduce((sum, f) => sum + (f.status ? f.weight : 0), 0);
-                const score = total > 0 ? Math.round((achieved / total) * 100) : 0;
-
-                return {
-                    name: cat.name,
-                    score: score,
-                    details: cat.factors.map(f => ({
-                        text: `${f.name}: ${f.value} ${f.status ? '' : '(target: ' + f.target + ')'}`,
-                        status: f.status ? '✅' : '⚠️'
-                    }))
-                };
-            });
-        }
-
-        function getIndustryBenchmark() {
-            return {
-                sector: 'SaaS/Tech',
-                average: 78,
-                top: 92
-            };
-        }
-
-        function getTopGaps() {
-            const failing = STATE.analysis.factors
-                .filter(f => !f.status)
-                .sort((a, b) => b.weight - a.weight)
-                .slice(0, 3);
-
-            return failing.map(f => `• ${f.name} (${f.value} vs target: ${f.target})`);
-        }
-
-        function generateRoadmapWeeks(categories) {
-            const lowestCats = categories
-                .sort((a, b) => a.score - b.score)
-                .slice(0, 3);
-
-            const weeks = [
-                {
-                    period: 'Semana 1-2',
-                    title: 'Infraestructura (Prioridad crítica)',
-                    tasks: [
-                        { priority: 'P0', name: 'Optimizar TTFB < 1.5s', impact: 'Impacto: +10 pts, Desbloqueador crítico' },
-                        { priority: 'P0', name: 'Implementar Schema.org completo', impact: 'Impacto: +20 pts, Base para IA' }
-                    ],
-                    estimatedScore: Math.min(STATE.score + 13, 100),
-                    gain: 13
-                },
-                {
-                    period: 'Semana 3-4',
-                    title: 'Estructura Semántica',
-                    tasks: [
-                        { priority: 'P1', name: 'Consolidar H1s múltiples', impact: 'Impacto: +8 pts' },
-                        { priority: 'P1', name: 'Agregar Breadcrumbs Schema', impact: 'Impacto: +5 pts' }
-                    ],
-                    estimatedScore: Math.min(STATE.score + 26, 100),
-                    gain: 13
-                },
-                {
-                    period: 'Semana 5-6',
-                    title: 'Citabilidad IA',
-                    tasks: [
-                        { priority: 'P2', name: 'Implementar llms.txt', impact: 'Impacto: +4 pts' },
-                        { priority: 'P2', name: 'Optimizar para LLMs', impact: 'Impacto: +3 pts' }
-                    ],
-                    estimatedScore: 95,
-                    gain: 7
-                }
-            ];
-
-            return weeks;
-        }
-
-        // Initialize
-        console.log('SEO Widget SOSTAC: Listo');
-        render();
-
-        // ============================================================
-        // INTEGRACIÓN SOSTAC FLOW
-        // ============================================================
-
-        function generateSOSTACFromAnalysis() {
-            if (!STATE.analysis) return null;
-
-            const failingFactors = STATE.analysis.factors.filter(f => !f.status);
-            
-            return {
-                situation: [
-                    { title: `Análisis completo de ${STATE.domain}`, completed: true, note: `Score SEO: ${STATE.score}/100, AI: ${STATE.aiScore}/100` },
-                    { title: `${failingFactors.length} factores requieren atención`, completed: true, note: 'Identificados mediante análisis técnico automatizado' }
-                ],
-                objectives: [
-                    { title: 'Alcanzar score 95/100', completed: false, note: `Actual: ${STATE.score}/100` },
-                    { title: 'Mejorar citabilidad IA', completed: false, note: `Actual: ${STATE.aiScore}/100` }
-                ],
-                strategy: [
-                    { title: 'Optimización técnica priorizada', completed: false, note: 'Ejecutar en 6 semanas' },
-                    { title: 'Implementación de estándares modernos', completed: false, note: 'Schema.org + LLM readiness' }
-                ],
-                tactics: failingFactors.map((factor, idx) => ({
-                    id: `task_${idx + 1}`,
-                    gap: factor.name,
-                    prioridad: factor.weight >= 9 ? 0 : factor.weight >= 7 ? 1 : 2,
-                    esfuerzo: factor.weight >= 9 ? 'alto' : 'medio',
-                    responsable: factor.category === 'infraestructura' ? 'dev' : factor.category === 'datos' ? 'seo' : 'contenido',
-                    subtasks: [
-                        `Revisar estado actual: ${factor.value}`,
-                        `Implementar solución`,
-                        `Validar resultado (target: ${factor.target})`
-                    ],
-                    criteriosAceptacion: [factor.target],
-                    gananciaScore: factor.weight,
-                    timeline: { semana: Math.ceil((idx + 1) / 4) }
-                })),
-                action: generateWeeklyPlan(failingFactors),
-                control: [
-                    { title: 'Tracking semanal de métricas', completed: false, note: 'Dashboard SOSTAC Flow' },
-                    { title: 'Revisión quincenal de progreso', completed: false, note: 'Score actual vs objetivo' }
-                ]
-            };
-        }
-
-        function generateWeeklyPlan(failingFactors) {
-            const weeks = [];
-            let currentScore = STATE.score;
-            
-            for (let week = 1; week <= 6; week++) {
-                const tasksForWeek = failingFactors
-                    .filter((_, idx) => Math.ceil((idx + 1) / 4) === week)
-                    .map((_, idx) => `task_${failingFactors.findIndex(f => Math.ceil((failingFactors.indexOf(f) + 1) / 4) === week) + 1}`);
-                
-                const weekGain = failingFactors
-                    .filter((_, idx) => Math.ceil((idx + 1) / 4) === week)
-                    .reduce((sum, f) => sum + f.weight, 0);
-                
-                currentScore = Math.min(currentScore + weekGain, 100);
-                
-                weeks.push({
-                    semana: week,
-                    tasks: tasksForWeek,
-                    scoreEstimado: Math.round(currentScore),
-                    blockers: []
-                });
-            }
-            
-            return weeks;
-        }
-
-        function createSOSTACProject() {
-            // Generar datos SOSTAC si no existen
-            if (!SOSTAC_DATA) {
-                SOSTAC_DATA = generateSOSTACFromAnalysis();
-            }
-
-            // Crear payload con todos los datos
-            const payload = {
-                source: 'ejecuta.seo',
-                domain: STATE.domain,
-                analyzedAt: new Date().toISOString(),
-                seoScore: STATE.score,
-                aiScore: STATE.aiScore,
-                sostacData: SOSTAC_DATA
-            };
-
-            // Encodear payload en base64
-            const encoded = btoa(JSON.stringify(payload));
-
-            // Redirect a SOSTAC Flow
-            // SOSTAC Flow se encargará de crear el proyecto en Supabase
-            window.location.href = `https://sostacflow.jairoamaya.co/importar?payload=${encoded}`;
-        }
+        const observer = new MutationObserver(notifyParentOfHeight);
+        observer.observe(document.body, { 
+            childList: true, 
+            subtree: true, 
+            attributes: true 
+        });
+
+        window.addEventListener('load', notifyParentOfHeight);
+        notifyParentOfHeight();
     </script>
 </body>
 </html>
