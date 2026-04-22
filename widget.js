@@ -1214,7 +1214,7 @@ async function handleLeadSubmit(e) {
         };
         
         // ✅ ENVIAR A PHP BACKEND
-        const response = await fetch('https://jairoamaya.co/pdf-generator.php', {
+        const response = await fetch('https://jairoamaya.co/api/pdf-generator.php', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
