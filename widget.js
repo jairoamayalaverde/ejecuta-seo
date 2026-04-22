@@ -6,19 +6,7 @@
 
 const CONFIG = {
     proxyUrl: 'https://jairoamaya.co/html-proxy.php',
-    
-    // Credenciales Supabase
-    supabase: {
-        url: 'https://vrhztgfgbjirmpbbdcks.supabase.co',
-        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyaHp0Z2ZnYmppcm1wYmJkY2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODMxODUsImV4cCI6MjA4NjE1OTE4NX0.wkkxiZcLaADcGBLFvnAECHKLD7uLTinlVnvN4VjYElU'
-    },
-    
-    // Credenciales EmailJS
-    emailjs: {
-        serviceId: 'service_per05pl',
-        templateId: 'template_y4oyibo',
-        publicKey: 'lmZm9EQP7anHuS8if'
-    },
+    pdfGeneratorUrl: 'https://jairoamaya.co/pdf-generator.php',
     
     // Pesos recalibrados: 70% Fundamentos + 20% Optimización + 10% Vanguardia
     analysisFactors: {
@@ -381,26 +369,18 @@ function renderCTAs() {
     
     return `
         <div class="cta-section">
-            <h3>¿Cómo quieres ejecutar este plan?</h3>
+            <h3>¿Listo para implementar estas mejoras?</h3>
             <p style="font-size:16px;color:#999;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;">
-                Tienes ${tasksCount} tareas identificadas. Elige cómo prefieres implementarlas:
+                Tienes ${tasksCount} tareas identificadas. Agenda una sesión estratégica para priorizarlas según tu contexto específico.
             </p>
             
             <div class="cta-options">
-                <div class="cta-option featured">
-                    <span class="cta-badge">Recomendado</span>
-                    <h4>📞 Sesión Estratégica</h4>
-                    <p>30 minutos revisando tu plan SOSTAC, priorizando según tu stack técnico y recursos, identificando blockers específicos.</p>
+                <div class="cta-option featured" style="max-width:500px;margin:0 auto;">
+                    <span class="cta-badge">Sesión Gratuita</span>
+                    <h4>📞 Hablemos de tu Roadmap</h4>
+                    <p>30 minutos revisando tu análisis, priorizando según tu stack técnico y recursos, identificando quick wins.</p>
                     <button class="cta-btn primary" id="schedule-btn">
-                        Agendar Gratis
-                    </button>
-                </div>
-                
-                <div class="cta-option">
-                    <h4>🚀 SOSTAC Flow</h4>
-                    <p>Dashboard de ejecución en tiempo real. Importa este análisis y gestiona todo desde una sola plataforma. $49/mes.</p>
-                    <button class="cta-btn secondary" id="sostac-btn">
-                        Abrir en SOSTAC Flow
+                        Agendar por WhatsApp
                     </button>
                 </div>
             </div>
@@ -412,8 +392,8 @@ function renderSuccess() {
     return `
         <div class="success-message">
             <div class="success-icon">✓</div>
-            <h2>¡Reporte Enviado!</h2>
-            <p>Revisa tu email en los próximos 5 minutos. Te enviamos tu diagnóstico completo + plan SOSTAC ejecutable.</p>
+            <h2>¡Análisis Enviado!</h2>
+            <p>Revisa tu email en los próximos 5 minutos. Te enviamos tu diagnóstico técnico completo + roadmap priorizado.</p>
             <p style="margin-top: 24px; color: #666;">
                 ¿No lo ves? Revisa spam/promociones.
             </p>
@@ -451,7 +431,6 @@ function attachInputListeners() {
 function attachResultsListeners() {
     const form = document.getElementById('lead-form');
     const scheduleBtn = document.getElementById('schedule-btn');
-    const sostacBtn = document.getElementById('sostac-btn');
     
     if (form) {
         form.addEventListener('submit', handleLeadSubmit);
@@ -460,12 +439,6 @@ function attachResultsListeners() {
     if (scheduleBtn) {
         scheduleBtn.addEventListener('click', () => {
             window.open('https://wa.me/573012963640?text=Hola%20Jairo%2C%20analicé%20mi%20sitio%20con%20Ejecuta.SEO%20y%20me%20gustaría%20agendar%20una%20sesión%20estratégica', '_blank');
-        });
-    }
-    
-    if (sostacBtn) {
-        sostacBtn.addEventListener('click', () => {
-            createSOSTACProject();
         });
     }
 }
@@ -1209,13 +1182,14 @@ async function handleLeadSubmit(e) {
     }
     
     const originalBtnText = btn.innerHTML;
-    btn.innerHTML = '⏳ ENVIANDO...';
+    btn.innerHTML = '⏳ GENERANDO PDF...';
     btn.disabled = true;
 
     try {
-        // ✅ 1. PREPARAR DATOS
+        // ✅ PREPARAR DATOS COMPLETOS PARA PDF
         const scoreData = getScoreLevel(STATE.score);
-        const leadData = {
+        
+        const payload = {
             name: name,
             email: email,
             domain: STATE.domain,
@@ -1228,7 +1202,7 @@ async function handleLeadSubmit(e) {
                     factor: i.factor,
                     category: i.category,
                     impact: i.impact,
-                    message: i.message
+                    message: i.message || i.description || 'Factor requiere optimización'
                 })),
                 roadmap: STATE.roadmap.map(item => ({
                     period: item.period,
@@ -1239,61 +1213,33 @@ async function handleLeadSubmit(e) {
             }
         };
         
-        // ✅ 2. GUARDAR EN SUPABASE
-        const supabaseResponse = await fetch(`${CONFIG.supabase.url}/rest/v1/ejecuta_seo_leads`, {
+        // ✅ ENVIAR A PHP BACKEND
+        const response = await fetch('https://jairoamaya.co/pdf-generator.php', {
             method: 'POST',
             headers: {
-                'apikey': CONFIG.supabase.key,
-                'Authorization': `Bearer ${CONFIG.supabase.key}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=minimal'
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify(leadData)
+            body: JSON.stringify(payload)
         });
         
-        if (!supabaseResponse.ok) {
-            console.error('❌ Error Supabase:', await supabaseResponse.text());
-        } else {
-            console.log('✅ Lead guardado en Supabase');
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
-        // ✅ 3. FORMATEAR DATOS PARA EMAIL
-        const topInterventions = STATE.interventions.slice(0, 5);
-        const emailData = {
-            to_name: name,
-            to_email: email,
-            domain: STATE.domain,
-            score: STATE.score,
-            score_level: scoreData.label,
-            top_issues: topInterventions.map(i => {
-                const message = i.message || i.description || 'Factor requiere optimización';
-                return `• ${message.split('\n')[0]}`;
-            }).join('\n'),
-            roadmap_summary: STATE.roadmap.map(r => 
-                `${r.period}: ${r.title} (Score estimado: ${r.estimatedScore}/100)`
-            ).join('\n\n')
-        };
+        const result = await response.json();
         
-        // ✅ 4. ENVIAR EMAIL VÍA EMAILJS
-        await emailjs.send(
-            CONFIG.emailjs.serviceId,
-            CONFIG.emailjs.templateId,
-            emailData,
-            CONFIG.emailjs.publicKey
-        );
+        console.log('✅ Resultado:', result);
         
-        console.log('✅ Email enviado correctamente');
-        
-        // ✅ 5. TRACKING ANALYTICS
+        // ✅ TRACKING ANALYTICS
         if (typeof gtag !== 'undefined') {
             gtag('event', 'generate_lead', {
                 event_category: 'Lead',
-                event_label: 'SEO Report',
+                event_label: 'SEO Report PDF',
                 value: STATE.score
             });
         }
         
-        // ✅ 6. MOSTRAR ÉXITO
+        // ✅ MOSTRAR ÉXITO
         STATE.view = 'success';
         render();
         
@@ -1301,7 +1247,7 @@ async function handleLeadSubmit(e) {
         console.error('❌ Error completo:', error);
         btn.disabled = false;
         btn.innerHTML = originalBtnText;
-        alert('Error al enviar el análisis. Por favor intenta nuevamente.');
+        alert('Error al generar el análisis. Por favor intenta nuevamente.');
     }
 }
 
