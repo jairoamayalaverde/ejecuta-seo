@@ -176,6 +176,6 @@ https://sostacflow.jairoamaya.co/importar?payload=...
 
 ---
 
-**Autor:** Jairo Amaya  
+**Autor:** Jairo Amaya   
 **Version:** 2.0.0  
 **Última actualización:** Abril 2026
