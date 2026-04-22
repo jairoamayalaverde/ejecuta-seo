@@ -16,7 +16,7 @@ const CONFIG = {
     // Credenciales EmailJS
     emailjs: {
         serviceId: 'service_per05pl',
-        templateId: 'template_analisis_seo',  // Sin espacios
+        templateId: 'template_y4oyibo',
         publicKey: 'lmZm9EQP7anHuS8if'
     },
     
