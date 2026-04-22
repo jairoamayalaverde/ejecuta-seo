@@ -5,7 +5,7 @@
 // ============================================================
 
 const CONFIG = {
-    proxyUrl: 'https://jairoamaya.co/html-proxy-widget.php',
+    proxyUrl: 'https://jairoamaya.co/html-proxy.php',
     
     // 30+ factores organizados por categoría
     analysisFactors: {
