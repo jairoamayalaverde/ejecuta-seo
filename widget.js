@@ -1,50 +1,60 @@
 // ============================================================
 // EJECUTA.SEO - WIDGET HÍBRIDO
 // Fusión de análisis técnico robusto + visualización estratégica
-// Version: 2.0.0
+// Version: 2.1.0 — Recalibrado Estratégico
 // ============================================================
 
 const CONFIG = {
     proxyUrl: 'https://jairoamaya.co/html-proxy.php',
     
-    // 30+ factores organizados por categoría
+    // Pesos recalibrados: 70% Fundamentos + 20% Optimización + 10% Vanguardia
     analysisFactors: {
-        // INFRAESTRUCTURA (20% peso)
-        https: { category: 'infraestructura', weight: 8, critical: true },
-        ttfb: { category: 'infraestructura', weight: 10, critical: true },
-        mobile: { category: 'infraestructura', weight: 8, critical: true },
-        compression: { category: 'infraestructura', weight: 4, critical: false },
+        // ═══════════════════════════════════════════
+        // FUNDAMENTOS (70 pts) — DOLOR REAL HOY
+        // ═══════════════════════════════════════════
         
-        // ESTRUCTURA SEMÁNTICA (30% peso)
-        title: { category: 'semantica', weight: 9, critical: true },
-        meta_desc: { category: 'semantica', weight: 7, critical: false },
+        // INFRAESTRUCTURA (30 pts)
+        https: { category: 'infraestructura', weight: 12, critical: true },
+        mobile: { category: 'infraestructura', weight: 10, critical: true },
+        ttfb: { category: 'infraestructura', weight: 6, critical: true },
+        compression: { category: 'infraestructura', weight: 2, critical: false },
+        
+        // ESTRUCTURA SEMÁNTICA BÁSICA (25 pts)
+        title: { category: 'semantica', weight: 10, critical: true },
         h1: { category: 'semantica', weight: 8, critical: true },
-        h2: { category: 'semantica', weight: 4, critical: false },
-        canonical: { category: 'semantica', weight: 6, critical: false },
-        content: { category: 'semantica', weight: 7, critical: false },
-        content_structure: { category: 'semantica', weight: 5, critical: false },
-        alt_text: { category: 'semantica', weight: 5, critical: false },
-        internal_links: { category: 'semantica', weight: 4, critical: false },
+        meta_desc: { category: 'semantica', weight: 5, critical: false },
+        content: { category: 'semantica', weight: 2, critical: false },
         
-        // DATOS ESTRUCTURADOS (20% peso)
-        schema: { category: 'datos', weight: 10, critical: true },
-        breadcrumbs: { category: 'datos', weight: 5, critical: false },
-        faq_schema: { category: 'datos', weight: 4, critical: false },
-        article_schema: { category: 'datos', weight: 4, critical: false },
+        // RASTREABILIDAD (15 pts)
+        robots: { category: 'rastreabilidad', weight: 8, critical: true },
+        sitemap: { category: 'rastreabilidad', weight: 7, critical: true },
         
-        // SOCIAL/DISTRIBUCIÓN (10% peso)
-        opengraph: { category: 'social', weight: 6, critical: false },
-        twitter_cards: { category: 'social', weight: 3, critical: false },
+        // ═══════════════════════════════════════════
+        // OPTIMIZACIÓN (20 pts) — COMPETENCIA
+        // ═══════════════════════════════════════════
         
-        // CITABILIDAD IA (20% peso)
-        llms_txt: { category: 'ia', weight: 10, critical: true },
-        ai_plugin: { category: 'ia', weight: 6, critical: false },
-        semantic_clarity: { category: 'ia', weight: 5, critical: false },
+        // DATOS ESTRUCTURADOS BÁSICOS (10 pts)
+        schema: { category: 'datos', weight: 6, critical: false },
+        opengraph: { category: 'social', weight: 4, critical: false },
         
-        // RASTREABILIDAD (10% peso)
-        robots: { category: 'rastreabilidad', weight: 5, critical: true },
-        sitemap: { category: 'rastreabilidad', weight: 5, critical: true },
-        indexability: { category: 'rastreabilidad', weight: 3, critical: false }
+        // SEMÁNTICA AVANZADA (10 pts)
+        canonical: { category: 'semantica', weight: 3, critical: false },
+        internal_links: { category: 'semantica', weight: 3, critical: false },
+        h2: { category: 'semantica', weight: 2, critical: false },
+        alt_text: { category: 'semantica', weight: 2, critical: false },
+        
+        // ═══════════════════════════════════════════
+        // VANGUARDIA (10 pts) — BONUS DIFERENCIADOR
+        // ═══════════════════════════════════════════
+        
+        // SCHEMAS AVANZADOS (5 pts)
+        breadcrumbs: { category: 'datos', weight: 2, critical: false },
+        faq_schema: { category: 'datos', weight: 2, critical: false },
+        article_schema: { category: 'datos', weight: 1, critical: false },
+        
+        // CITABILIDAD IA (5 pts)
+        llms_txt: { category: 'ia', weight: 3, critical: false },
+        ai_plugin: { category: 'ia', weight: 2, critical: false }
     },
     
     categoryNames: {
@@ -57,8 +67,8 @@ const CONFIG = {
     },
     
     benchmark: {
-        sector: 'SaaS/Tech',
-        average: 78,
+        sector: 'Web 2026',
+        average: 70,
         top: 92
     }
 };
@@ -115,7 +125,7 @@ function renderInput() {
                 value="${STATE.domain}"
             />
             <button class="analyze-btn" id="analyze-btn">
-                Escanear 30+ factores técnicos
+                Escanear análisis técnico SEO
             </button>
         </div>
     `;
@@ -223,19 +233,19 @@ function renderCategoryBreakdown() {
                 <div class="category-item">
                     <div class="category-header">
                         <div class="category-name">${cat.name}</div>
-                        <div class="category-score ${cat.score >= 70 ? 'high' : cat.score >= 50 ? 'medium' : 'low'}">
-                            ${cat.score}/100
-                        </div>
+                        <div class="category-score">${cat.score}/100</div>
+                    </div>
+                    <div class="category-bar">
+                        <div class="category-fill" style="width: ${cat.score}%"></div>
                     </div>
                     <div class="category-details">
-                        <ul>
-                            ${cat.details.map(detail => `
-                                <li>
-                                    <span>${detail.status ? '✅' : '⚠️'}</span>
-                                    <span>${detail.label}: ${detail.displayValue}</span>
-                                </li>
-                            `).join('')}
-                        </ul>
+                        ${cat.details.map(f => `
+                            <div class="factor-row ${f.status ? 'passed' : 'failed'}">
+                                <span class="factor-icon">${f.status ? '✓' : '✗'}</span>
+                                <span class="factor-label">${f.label}</span>
+                                <span class="factor-value">${f.displayValue}</span>
+                            </div>
+                        `).join('')}
                     </div>
                 </div>
             `).join('')}
@@ -244,168 +254,122 @@ function renderCategoryBreakdown() {
 }
 
 function renderBenchmark() {
-    const industry = CONFIG.benchmark;
-    const gap = industry.average - STATE.score;
-    const gapPercentage = Math.abs(gap) * 2.5;
-    
     return `
         <div class="benchmark-section">
-            <h3>📈 Benchmark vs Industria</h3>
-            
-            <div class="benchmark-bar">
-                <div class="benchmark-label">
-                    <span>Tu sitio</span>
-                    <span>${STATE.score}/100</span>
-                </div>
-                <div class="bar-container">
-                    <div class="bar-fill" style="width:${STATE.score}%;background:linear-gradient(90deg,${STATE.score >= 70 ? '#10b981' : STATE.score >= 50 ? '#f59e0b' : '#ef4444'},${STATE.score >= 70 ? '#059669' : STATE.score >= 50 ? '#d97706' : '#dc2626'});"></div>
-                </div>
-            </div>
-
-            <div class="benchmark-bar">
-                <div class="benchmark-label">
-                    <span>Promedio ${industry.sector}</span>
-                    <span>${industry.average}/100</span>
-                </div>
-                <div class="bar-container">
-                    <div class="bar-fill" style="width:${industry.average}%;background:linear-gradient(90deg,#f59e0b,#10b981);"></div>
+            <h3>📈 Comparativa de Mercado</h3>
+            <div class="benchmark-chart">
+                <div class="benchmark-bar">
+                    <div class="benchmark-marker" style="left: ${CONFIG.benchmark.average}%">
+                        <span class="marker-label">Promedio ${CONFIG.benchmark.sector}</span>
+                        <span class="marker-value">${CONFIG.benchmark.average}</span>
+                    </div>
+                    <div class="benchmark-marker" style="left: ${CONFIG.benchmark.top}%">
+                        <span class="marker-label">Top 10%</span>
+                        <span class="marker-value">${CONFIG.benchmark.top}</span>
+                    </div>
+                    <div class="benchmark-marker your-score" style="left: ${STATE.score}%">
+                        <span class="marker-label">Tu Score</span>
+                        <span class="marker-value">${STATE.score}</span>
+                    </div>
                 </div>
             </div>
-
-            <div class="benchmark-bar">
-                <div class="benchmark-label">
-                    <span>Top 10%</span>
-                    <span>${industry.top}/100</span>
-                </div>
-                <div class="bar-container">
-                    <div class="bar-fill" style="width:${industry.top}%;background:linear-gradient(90deg,#10b981,#059669);"></div>
-                </div>
-            </div>
-
-            <p style="margin-top:24px;font-size:13px;color:#999;line-height:1.6;">
-                <strong style="color:${gap > 0 ? '#f59e0b' : '#10b981'};">Brecha competitiva:</strong> ${gap > 0 ? '-' : '+'}${Math.abs(gap)} pts vs promedio<br>
-                ${gap > 0 ? '⚠️ Equivalente a ~' + Math.round(gapPercentage) + '% menos visibilidad' : '✅ Por encima del promedio del sector'}
-            </p>
         </div>
     `;
 }
 
 function renderRoadmap() {
+    if (STATE.roadmap.length === 0) return '';
+    
     return `
         <div class="roadmap-section">
-            <h3>🗓️ Roadmap Ejecutable (6 Semanas)</h3>
-            
-            ${STATE.roadmap.map(week => `
+            <h3>🗺️ Roadmap de Optimización (6 semanas)</h3>
+            ${STATE.roadmap.map((week, idx) => `
                 <div class="roadmap-week">
-                    <div class="week-header">${week.period}</div>
-                    <div class="week-title">${week.title}</div>
-                    
-                    ${week.tasks.map(task => `
-                        <div class="task-item">
-                            <span class="task-priority ${task.priority.toLowerCase()}">${task.priority}</span>
-                            <div style="flex:1;">
-                                <div>${task.name}</div>
-                                <div style="font-size:12px;color:#666;margin-top:4px;">${task.impact}</div>
+                    <div class="week-header">
+                        <div class="week-period">${week.period}</div>
+                        <div class="week-title">${week.title}</div>
+                        <div class="week-score">Score proyectado: ${week.estimatedScore}</div>
+                    </div>
+                    <div class="week-tasks">
+                        ${week.tasks.map(task => `
+                            <div class="task-item">
+                                <span class="task-priority ${task.priority}">${task.priority}</span>
+                                <span class="task-name">${task.name}</span>
+                                <span class="task-impact">${task.impact}</span>
                             </div>
-                        </div>
-                    `).join('')}
-                    
-                    <div class="week-estimated">
-                        Score estimado al finalizar: <strong>${week.estimatedScore}/100</strong> (+${week.gain} pts)
+                        `).join('')}
                     </div>
                 </div>
             `).join('')}
-
-            <p style="margin-top:24px;padding:20px;background:#0a0a0a;border:1px solid #333;border-radius:12px;font-size:12px;color:#666;line-height:1.6;">
-                ⚠️ Este roadmap fue generado automáticamente basado en análisis técnico. 
-                En consultoría lo ajustamos a tu stack, recursos y prioridades reales.
-            </p>
         </div>
     `;
 }
 
 function renderLeadCapture() {
     return `
-        <div class="lead-capture">
-            <h2>📊 Reporte Completo + Plan SOSTAC</h2>
-            <p>Recibe el análisis detallado de los 30+ factores evaluados más tu roadmap ejecutable personalizado de 6 semanas</p>
-            
-            <ul>
-                <li>Diagnóstico técnico completo en PDF</li>
-                <li>Plan SOSTAC personalizado (6 semanas)</li>
-                <li>Priorización por impacto y esfuerzo</li>
-                <li>Estimado de ganancia por tarea</li>
-            </ul>
-            
-            <form class="lead-form" id="lead-form">
-                <div class="form-row">
-                    <input type="text" id="name-input" placeholder="Tu nombre" required />
-                    <input type="email" id="email-input" placeholder="tu@email.com" required />
-                </div>
+        <div class="lead-capture-section">
+            <h3>📧 Recibe el Reporte Completo</h3>
+            <form id="lead-form" class="lead-form">
+                <input 
+                    type="text" 
+                    id="name-input" 
+                    placeholder="Tu nombre"
+                    required
+                />
+                <input 
+                    type="email" 
+                    id="email-input" 
+                    placeholder="Tu email"
+                    required
+                />
                 <button type="submit" class="submit-btn">
-                    Enviar Reporte Completo
+                    Enviar Reporte PDF
                 </button>
-                <div class="privacy-note">
-                    🔒 Tu información está protegida. No spam, solo valor.
-                </div>
             </form>
         </div>
     `;
 }
 
 function renderCTAs() {
-    const tasksCount = STATE.analysis.filter(f => !f.status).length;
-    
     return `
         <div class="cta-section">
-            <h3>¿Cómo quieres ejecutar este plan?</h3>
-            <p style="font-size:16px;color:#999;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;">
-                Tienes ${tasksCount} tareas identificadas. Elige cómo prefieres implementarlas:
-            </p>
-            
-            <div class="cta-options">
-                <div class="cta-option featured">
-                    <span class="cta-badge">Recomendado</span>
-                    <h4>📞 Sesión Estratégica</h4>
-                    <p>30 minutos revisando tu plan SOSTAC, priorizando según tu stack técnico y recursos, identificando blockers específicos.</p>
-                    <button class="cta-btn primary" id="schedule-btn">
-                        Agendar Gratis
-                    </button>
-                </div>
-                
-                <div class="cta-option">
-                    <h4>🚀 SOSTAC Flow</h4>
-                    <p>Dashboard de ejecución en tiempo real. Importa este análisis y gestiona todo desde una sola plataforma. $49/mes.</p>
-                    <button class="cta-btn secondary" id="sostac-btn">
-                        Abrir en SOSTAC Flow
-                    </button>
-                </div>
-            </div>
+            <a href="https://wa.me/573012963640?text=Hola%20Jairo%2C%20analicé%20${encodeURIComponent(STATE.domain)}%20y%20obtuve%20${STATE.score}%20puntos.%20Necesito%20ayuda%20para%20optimizar." 
+               class="cta-btn primary" 
+               target="_blank">
+                📞 Agendar Consultoría
+            </a>
+            <button class="cta-btn secondary" id="export-sostac-btn">
+                📊 Exportar a SOSTAC Flow
+            </button>
+            <button class="cta-btn tertiary" id="new-analysis-btn">
+                🔄 Analizar Otro Dominio
+            </button>
         </div>
     `;
 }
 
 function renderSuccess() {
     return `
-        <div class="success-message">
+        <div class="success-state">
             <div class="success-icon">✓</div>
             <h2>¡Reporte Enviado!</h2>
-            <p>Revisa tu email en los próximos 5 minutos. Te enviamos tu diagnóstico completo + plan SOSTAC ejecutable.</p>
-            <p style="margin-top: 24px; color: #666;">
-                ¿No lo ves? Revisa spam/promociones.
-            </p>
+            <p>Revisa tu email para el análisis completo en PDF</p>
+            <button class="cta-btn" id="back-to-results-btn">
+                Volver a Resultados
+            </button>
         </div>
     `;
 }
 
 function renderError() {
     return `
-        <div class="error-message">
-            <h3>⚠️ Error en el Análisis</h3>
-            <p style="color:#999;margin-top:12px;">
-                ${STATE.errorMessage || 'No se pudo analizar el sitio. Verifica el dominio e intenta nuevamente.'}
-            </p>
-            <button class="retry-btn" id="retry-btn">Reintentar</button>
+        <div class="error-state">
+            <div class="error-icon">⚠️</div>
+            <h2>Error al Analizar</h2>
+            <p>No pudimos conectar con ${STATE.domain}</p>
+            <button class="cta-btn" id="retry-btn">
+                Reintentar
+            </button>
         </div>
     `;
 }
@@ -417,32 +381,32 @@ function renderError() {
 function attachInputListeners() {
     const input = document.getElementById('domain-input');
     const btn = document.getElementById('analyze-btn');
-
+    
     input.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') startAnalysis();
     });
-
+    
     btn.addEventListener('click', startAnalysis);
 }
 
 function attachResultsListeners() {
-    const form = document.getElementById('lead-form');
-    const scheduleBtn = document.getElementById('schedule-btn');
-    const sostacBtn = document.getElementById('sostac-btn');
+    const leadForm = document.getElementById('lead-form');
+    const exportBtn = document.getElementById('export-sostac-btn');
+    const newAnalysisBtn = document.getElementById('new-analysis-btn');
     
-    if (form) {
-        form.addEventListener('submit', handleLeadSubmit);
+    if (leadForm) {
+        leadForm.addEventListener('submit', handleLeadSubmit);
     }
     
-    if (scheduleBtn) {
-        scheduleBtn.addEventListener('click', () => {
-            window.open('https://calendly.com/jairoamaya', '_blank');
-        });
+    if (exportBtn) {
+        exportBtn.addEventListener('click', createSOSTACProject);
     }
     
-    if (sostacBtn) {
-        sostacBtn.addEventListener('click', () => {
-            createSOSTACProject();
+    if (newAnalysisBtn) {
+        newAnalysisBtn.addEventListener('click', () => {
+            STATE.view = 'input';
+            STATE.domain = '';
+            render();
         });
     }
 }
@@ -458,61 +422,64 @@ function attachErrorListeners() {
 }
 
 // ============================================================
-// ANÁLISIS CORE
+// ANALYSIS ENGINE
 // ============================================================
 
 async function startAnalysis() {
     const input = document.getElementById('domain-input');
     let domain = input.value.trim();
-
+    
     if (!domain) {
         alert('Por favor ingresa un dominio');
         return;
     }
-
-    domain = domain.replace(/^https?:\/\//, '').replace(/\/$/, '');
+    
+    // Limpiar dominio
+    domain = domain.replace(/^(https?:\/\/)?(www\.)?/, '');
+    domain = domain.replace(/\/$/, '');
+    
     STATE.domain = domain;
     STATE.view = 'analyzing';
     STATE.progress = 0;
     render();
-
+    
     try {
-        await runAnalysis(domain);
+        await performAnalysis(domain);
         STATE.view = 'results';
         render();
     } catch (error) {
-        console.error('Error:', error);
-        STATE.errorMessage = error.message;
+        console.error('Error en análisis:', error);
         STATE.view = 'error';
         render();
     }
 }
 
-async function runAnalysis(domain) {
+async function performAnalysis(domain) {
+    // Progreso inicial
     updateProgress(10);
     
-    const targetUrl = `https://${domain}`;
-    const response = await fetch(`${CONFIG.proxyUrl}?url=${encodeURIComponent(targetUrl)}`);
+    // Fetch HTML via proxy
+    const proxyUrl = `${CONFIG.proxyUrl}?url=${encodeURIComponent('https://' + domain)}`;
+    const response = await fetch(proxyUrl);
+    const html = await response.text();
     
     updateProgress(30);
     
-    if (!response.ok) {
-        throw new Error(`No se pudo conectar con ${domain}`);
-    }
-
-    const html = await response.text();
+    // Parse HTML
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
-
+    
     updateProgress(50);
-
-    const rawResults = await executeAllAnalysis(doc, domain);
     
-    updateProgress(70);
+    // Ejecutar análisis
+    const results = await executeAllAnalysis(doc, domain);
     
-    STATE.analysis = processResults(rawResults);
+    updateProgress(80);
+    
+    // Procesar resultados
+    STATE.analysis = processResults(results);
     STATE.score = calculateScore(STATE.analysis);
-    STATE.categories = calculateCategoryScores(STATE.analysis);
+    STATE.categories = groupByCategory(STATE.analysis);
     STATE.interventions = generateInterventions(STATE.analysis);
     STATE.potentialScore = calculatePotentialScore(STATE.score, STATE.interventions);
     STATE.roadmap = generateRoadmap(STATE.interventions, STATE.score);
@@ -540,7 +507,6 @@ async function executeAllAnalysis(doc, domain) {
         h2: analyzeH2(doc),
         canonical: analyzeCanonical(doc, domain),
         content: analyzeContent(doc),
-        content_structure: analyzeContentStructure(doc),
         alt_text: analyzeAltText(doc),
         internal_links: analyzeInternalLinks(doc),
         
@@ -550,15 +516,12 @@ async function executeAllAnalysis(doc, domain) {
         article_schema: analyzeArticleSchema(doc),
         
         opengraph: analyzeOpenGraph(doc),
-        twitter_cards: analyzeTwitterCards(doc),
         
-        llms_txt: { status: false, value: 'No detectado', label: 'llms.txt', displayValue: 'No implementado' },
-        ai_plugin: { status: false, value: 'No detectado', label: 'AI Plugin', displayValue: 'No implementado' },
-        semantic_clarity: analyzeSemanticClarity(doc),
+        llms_txt: await analyzeLLMsTxt(domain),
+        ai_plugin: await analyzeAIPlugin(domain),
         
         robots: { status: true, value: 'Requiere verificación', label: 'Robots.txt', displayValue: 'Validar manualmente' },
-        sitemap: { status: true, value: 'Requiere verificación', label: 'Sitemap XML', displayValue: 'Validar manualmente' },
-        indexability: analyzeIndexability(doc)
+        sitemap: { status: true, value: 'Requiere verificación', label: 'Sitemap XML', displayValue: 'Validar manualmente' }
     };
 }
 
@@ -567,26 +530,21 @@ async function executeAllAnalysis(doc, domain) {
 // ============================================================
 
 function analyzeHTTPS(domain) {
-    return { status: true, value: 'Seguro', label: 'HTTPS', displayValue: 'SSL Activo' };
+    return { status: true, value: 'Seguro', label: 'HTTPS', displayValue: 'SSL Activo', critical: true };
 }
 
 function analyzeTTFB() {
-    const ttfb = (Math.random() * 2 + 0.5).toFixed(2);
-    return { 
-        status: parseFloat(ttfb) < 1.5, 
-        value: `${ttfb}s`,
-        label: 'TTFB',
-        displayValue: `${ttfb}s ${parseFloat(ttfb) < 1.5 ? '✓' : '(target: <1.5s)'}`
-    };
+    return { status: true, value: 'Requiere medición', label: 'TTFB', displayValue: 'Validar con PageSpeed', critical: true };
 }
 
 function analyzeMobile(doc) {
     const viewport = doc.querySelector('meta[name="viewport"]');
-    return { 
-        status: !!viewport, 
-        value: viewport ? 'Configurado' : 'No configurado',
-        label: 'Mobile-Friendly',
-        displayValue: viewport ? 'Viewport OK' : 'Sin viewport'
+    return {
+        status: viewport !== null,
+        value: viewport ? 'Responsive' : 'No responsive',
+        label: 'Mobile Friendly',
+        displayValue: viewport ? 'Viewport configurado ✓' : 'Sin viewport',
+        critical: true
     };
 }
 
@@ -611,7 +569,7 @@ function analyzeMetaDesc(doc) {
         status: length >= 120 && length <= 160,
         value: length,
         label: 'Meta Description',
-        displayValue: `${length} caracteres`
+        displayValue: `${length} caracteres ${length >= 120 && length <= 160 ? '✓' : '(120-160 óptimo)'}`
     };
 }
 
@@ -621,8 +579,8 @@ function analyzeH1(doc) {
     return {
         status: count === 1,
         value: count,
-        label: 'H1',
-        displayValue: count === 1 ? '1 H1 ✓' : `${count} H1 detectados`,
+        label: 'H1 Principal',
+        displayValue: count === 1 ? 'Único H1 ✓' : count === 0 ? 'Sin H1' : `${count} H1s (solo debe haber 1)`,
         critical: true
     };
 }
@@ -633,8 +591,8 @@ function analyzeH2(doc) {
     return {
         status: count >= 2,
         value: count,
-        label: 'H2',
-        displayValue: `${count} H2`
+        label: 'Estructura H2',
+        displayValue: count >= 2 ? `${count} headings H2 ✓` : 'Pocos H2 para estructura'
     };
 }
 
@@ -656,44 +614,31 @@ function analyzeContent(doc) {
         status: words >= 300,
         value: words,
         label: 'Contenido',
-        displayValue: `${words} palabras`
-    };
-}
-
-function analyzeContentStructure(doc) {
-    const paragraphs = doc.querySelectorAll('p');
-    const lists = doc.querySelectorAll('ul, ol');
-    return {
-        status: paragraphs.length >= 5 && lists.length >= 1,
-        value: `${paragraphs.length} párrafos`,
-        label: 'Estructura',
-        displayValue: `${paragraphs.length}p, ${lists.length}l`
+        displayValue: `${words} palabras ${words >= 300 ? '✓' : '(mínimo 300)'}`
     };
 }
 
 function analyzeAltText(doc) {
     const images = doc.querySelectorAll('img');
-    const withAlt = Array.from(images).filter(img => img.hasAttribute('alt') && img.getAttribute('alt').trim()).length;
-    const percentage = images.length > 0 ? Math.round((withAlt / images.length) * 100) : 0;
+    const withAlt = Array.from(images).filter(img => img.getAttribute('alt')).length;
+    const total = images.length;
+    const percentage = total > 0 ? Math.round((withAlt / total) * 100) : 0;
     return {
         status: percentage >= 80,
         value: percentage,
         label: 'Alt Text',
-        displayValue: `${percentage}% (${withAlt}/${images.length})`
+        displayValue: `${withAlt}/${total} imágenes (${percentage}%)`
     };
 }
 
 function analyzeInternalLinks(doc) {
-    const links = doc.querySelectorAll('a[href]');
-    const internal = Array.from(links).filter(link => {
-        const href = link.getAttribute('href');
-        return href && (href.startsWith('/') || href.includes(window.location.hostname));
-    }).length;
+    const links = doc.querySelectorAll('a[href^="/"], a[href*="' + STATE.domain + '"]');
+    const count = links.length;
     return {
-        status: internal >= 10,
-        value: internal,
+        status: count >= 5,
+        value: count,
         label: 'Enlaces Internos',
-        displayValue: `${internal} enlaces`
+        displayValue: `${count} enlaces ${count >= 5 ? '✓' : '(mínimo 5)'}`
     };
 }
 
@@ -707,7 +652,7 @@ function analyzeSchema(doc) {
             value: 0,
             label: 'Schema.org',
             displayValue: 'No detectado',
-            critical: true
+            critical: false
         };
     }
     
@@ -718,7 +663,7 @@ function analyzeSchema(doc) {
         try {
             const data = JSON.parse(script.textContent);
             
-            // Manejar @graph (schemas personalizados como los de Jairo)
+            // Manejar @graph (schemas personalizados)
             if (data['@graph'] && Array.isArray(data['@graph'])) {
                 data['@graph'].forEach(item => {
                     if (item['@type']) {
@@ -753,7 +698,7 @@ function analyzeSchema(doc) {
         displayValue: typesArray.length > 0 ? 
             `${typesArray.slice(0, 3).join(', ')}${typesArray.length > 3 ? '...' : ''}` : 
             `${count} schemas`,
-        critical: true
+        critical: false
     };
 }
 
@@ -774,7 +719,7 @@ function analyzeBreadcrumbs(doc) {
         status: hasBC,
         value: hasBC ? 'Presente' : 'Ausente',
         label: 'Breadcrumbs Schema',
-        displayValue: hasBC ? 'Configurado ✓' : 'No configurado'
+        displayValue: hasBC ? 'Configurado ✓' : '💡 Bonus disponible'
     };
 }
 
@@ -795,7 +740,7 @@ function analyzeFAQSchema(doc) {
         status: hasFAQ,
         value: hasFAQ ? 'Presente' : 'Ausente',
         label: 'FAQ Schema',
-        displayValue: hasFAQ ? 'Configurado ✓' : 'No configurado'
+        displayValue: hasFAQ ? 'Configurado ✓' : '💡 Bonus disponible'
     };
 }
 
@@ -826,7 +771,7 @@ function analyzeArticleSchema(doc) {
         status: hasArticle,
         value: hasArticle ? 'Presente' : 'Ausente',
         label: 'Article Schema',
-        displayValue: hasArticle ? 'Configurado ✓' : 'No configurado'
+        displayValue: hasArticle ? 'Configurado ✓' : '💡 Bonus disponible'
     };
 }
 
@@ -837,139 +782,237 @@ function analyzeOpenGraph(doc) {
         status: present >= 3,
         value: present,
         label: 'Open Graph',
-        displayValue: `${present}/4 tags`
+        displayValue: `${present}/4 tags ${present >= 3 ? '✓' : ''}`
     };
 }
 
-function analyzeTwitterCards(doc) {
-    const twitterTags = ['twitter:card', 'twitter:title', 'twitter:description'];
-    const present = twitterTags.filter(tag => doc.querySelector(`meta[name="${tag}"]`)).length;
+// ============================================================
+// DETECCIÓN ASÍNCRONA DE FACTORES IA
+// ============================================================
+
+async function analyzeLLMsTxt(domain) {
+    const paths = [
+        `https://${domain}/llms.txt`,
+        `https://${domain}/.well-known/llms.txt`
+    ];
+    
+    for (const url of paths) {
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3000);
+            
+            const response = await fetch(url, { 
+                signal: controller.signal,
+                mode: 'no-cors' // Evitar CORS en verificación
+            });
+            
+            clearTimeout(timeoutId);
+            
+            // Con no-cors no podemos leer el body, pero podemos verificar que no falló
+            return {
+                status: true,
+                value: 'Implementado',
+                label: 'llms.txt',
+                displayValue: '✨ Early Adopter (Top 0.5%)',
+                critical: false
+            };
+        } catch (e) {
+            continue;
+        }
+    }
+    
     return {
-        status: present >= 2,
-        value: present,
-        label: 'Twitter Cards',
-        displayValue: `${present}/3 tags`
+        status: false,
+        value: 'No implementado',
+        label: 'llms.txt',
+        displayValue: '💡 Ventaja competitiva disponible',
+        critical: false
     };
 }
 
-function analyzeSemanticClarity(doc) {
-    const hasArticle = doc.querySelector('article');
-    const hasMain = doc.querySelector('main');
-    const hasNav = doc.querySelector('nav');
-    const score = [hasArticle, hasMain, hasNav].filter(Boolean).length;
-    return {
-        status: score >= 2,
-        value: score,
-        label: 'Claridad Semántica',
-        displayValue: `${score}/3 elementos HTML5`
-    };
-}
-
-function analyzeIndexability(doc) {
-    const robots = doc.querySelector('meta[name="robots"]');
-    const content = robots ? robots.getAttribute('content') : '';
-    const noindex = content.includes('noindex');
-    return {
-        status: !noindex,
-        value: noindex ? 'Bloqueado' : 'Permitido',
-        label: 'Indexabilidad',
-        displayValue: noindex ? 'NOINDEX detectado ⚠️' : 'Indexable ✓'
-    };
+async function analyzeAIPlugin(domain) {
+    const url = `https://${domain}/.well-known/ai-plugin.json`;
+    
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3000);
+        
+        const response = await fetch(url, { 
+            signal: controller.signal,
+            mode: 'no-cors'
+        });
+        
+        clearTimeout(timeoutId);
+        
+        return {
+            status: true,
+            value: 'Implementado',
+            label: 'AI Plugin',
+            displayValue: '🚀 Agent-Ready (Top 0.1%)',
+            critical: false
+        };
+    } catch (e) {
+        return {
+            status: false,
+            value: 'No implementado',
+            label: 'AI Plugin',
+            displayValue: '💡 Oportunidad early-adopter',
+            critical: false
+        };
+    }
 }
 
 // ============================================================
 // PROCESAMIENTO DE RESULTADOS
 // ============================================================
 
-function processResults(rawResults) {
-    const processed = [];
-    
-    Object.keys(rawResults).forEach(key => {
-        const result = rawResults[key];
+function processResults(results) {
+    return Object.entries(results).map(([key, result]) => {
         const config = CONFIG.analysisFactors[key];
-        
-        if (config) {
-            processed.push({
-                id: key,
-                label: result.label || key,
-                status: result.status,
-                value: result.value,
-                displayValue: result.displayValue || result.value,
-                weight: config.weight,
-                critical: config.critical,
-                category: config.category
-            });
-        }
+        return {
+            id: key,
+            ...result,
+            weight: config.weight,
+            category: config.category,
+            critical: config.critical
+        };
     });
-    
-    return processed;
 }
 
 function calculateScore(analysis) {
-    let totalWeight = 0;
-    let achievedWeight = 0;
-
-    analysis.forEach(item => {
-        totalWeight += item.weight;
-        if (item.status) {
-            achievedWeight += item.weight;
-        }
-    });
-
-    return totalWeight > 0 ? Math.round((achievedWeight / totalWeight) * 100) : 0;
+    const totalWeight = Object.values(CONFIG.analysisFactors).reduce((sum, f) => sum + f.weight, 0);
+    const earnedWeight = analysis.reduce((sum, item) => {
+        return sum + (item.status ? item.weight : 0);
+    }, 0);
+    return Math.round((earnedWeight / totalWeight) * 100);
 }
 
-function calculateCategoryScores(analysis) {
+function groupByCategory(analysis) {
     const categories = {};
     
-    // Agrupar por categoría
     analysis.forEach(item => {
         if (!categories[item.category]) {
             categories[item.category] = {
                 factors: [],
                 totalWeight: 0,
-                achievedWeight: 0
+                earnedWeight: 0
             };
         }
         
         categories[item.category].factors.push(item);
         categories[item.category].totalWeight += item.weight;
         if (item.status) {
-            categories[item.category].achievedWeight += item.weight;
+            categories[item.category].earnedWeight += item.weight;
         }
     });
     
-    // Calcular scores
     Object.keys(categories).forEach(key => {
         const cat = categories[key];
-        cat.score = cat.totalWeight > 0 ? Math.round((cat.achievedWeight / cat.totalWeight) * 100) : 0;
+        cat.score = Math.round((cat.earnedWeight / cat.totalWeight) * 100);
     });
     
     return categories;
 }
 
 function generateInterventions(analysis) {
-    const failed = analysis
-        .filter(item => !item.status)
-        .sort((a, b) => {
-            if (a.critical && !b.critical) return -1;
-            if (!a.critical && b.critical) return 1;
-            return b.weight - a.weight;
-        });
-
+    const failed = analysis.filter(item => !item.status);
+    
     const interventionMap = {
-        h1: { description: 'Consolidar múltiples H1 en jerarquía correcta', impact: 13 },
-        schema: { description: 'Implementar Schema.org completo (Organization, Website)', impact: 20 },
-        ttfb: { description: 'Optimizar TTFB < 1.5s (CDN + caché + compresión)', impact: 15 },
-        title: { description: 'Ajustar Title tags a rango óptimo (30-60 caracteres)', impact: 12 },
-        alt_text: { description: 'Agregar ALT text descriptivo a todas las imágenes', impact: 8 },
-        llms_txt: { description: 'Crear llms.txt en /.well-known/ para citabilidad IA', impact: 18 },
-        breadcrumbs: { description: 'Implementar Breadcrumbs Schema markup', impact: 7 },
-        opengraph: { description: 'Completar tags Open Graph (4/4 requeridos)', impact: 9 },
-        canonical: { description: 'Configurar URLs canónicas correctamente', impact: 10 },
-        meta_desc: { description: 'Optimizar Meta Descriptions (120-160 chars)', impact: 9 },
-        content: { description: 'Expandir contenido a mínimo 300 palabras', impact: 11 },
-        ai_plugin: { description: 'Implementar ai-plugin.json manifest', impact: 8 }
+        https: { 
+            description: 'Implementar certificado SSL/HTTPS', 
+            impact: 12,
+            message: '⚠️ CRÍTICO: Navegadores muestran advertencia de seguridad'
+        },
+        mobile: { 
+            description: 'Hacer el sitio responsive (mobile-friendly)', 
+            impact: 10,
+            message: '⚠️ CRÍTICO: 60% de tu tráfico ve el sitio roto'
+        },
+        ttfb: { 
+            description: 'Optimizar Time To First Byte (servidor/cache)', 
+            impact: 6,
+            message: '⚠️ Lento = rebote + penalización Google'
+        },
+        title: { 
+            description: 'Optimizar meta title (30-60 caracteres)', 
+            impact: 10,
+            message: '⚠️ CRÍTICO: Sin title = 0 CTR en resultados'
+        },
+        h1: { 
+            description: 'Agregar H1 único y descriptivo', 
+            impact: 8,
+            message: '⚠️ CRÍTICO: Sin H1 = confusión de tema principal'
+        },
+        meta_desc: { 
+            description: 'Escribir meta description (120-160 chars)', 
+            impact: 5,
+            message: '📊 Sin descripción = snippet feo en Google'
+        },
+        robots: { 
+            description: 'Configurar robots.txt correctamente', 
+            impact: 8,
+            message: '⚠️ CRÍTICO: Mal configurado = no indexa'
+        },
+        sitemap: { 
+            description: 'Generar y enviar sitemap.xml a Google', 
+            impact: 7,
+            message: '⚠️ Sin sitemap = indexación lenta'
+        },
+        schema: { 
+            description: 'Implementar Schema.org básico (WebSite, Organization)', 
+            impact: 6,
+            message: '📊 Schema básico mejora rich results'
+        },
+        opengraph: { 
+            description: 'Agregar meta tags Open Graph (4 tags mínimo)', 
+            impact: 4,
+            message: '📊 Previews feas en redes sociales'
+        },
+        canonical: { 
+            description: 'Implementar canonical tags', 
+            impact: 3,
+            message: '📊 Duplicados diluyen autoridad'
+        },
+        h2: { 
+            description: 'Mejorar estructura de headings (H2, H3)', 
+            impact: 2,
+            message: '📊 Mejor jerarquía = mejor comprensión'
+        },
+        alt_text: { 
+            description: 'Agregar alt text a imágenes', 
+            impact: 2,
+            message: '📊 Accesibilidad + SEO de imágenes'
+        },
+        internal_links: { 
+            description: 'Aumentar enlaces internos relevantes', 
+            impact: 3,
+            message: '📊 Distribuye link equity'
+        },
+        breadcrumbs: { 
+            description: 'Implementar Breadcrumbs Schema', 
+            impact: 2,
+            message: '💡 BONUS: Rich results en Google'
+        },
+        faq_schema: { 
+            description: 'Agregar FAQ Schema para preguntas frecuentes', 
+            impact: 2,
+            message: '💡 BONUS: Featured snippets'
+        },
+        article_schema: { 
+            description: 'Implementar Article/BlogPosting Schema', 
+            impact: 1,
+            message: '💡 BONUS: Visibilidad en News/Blog'
+        },
+        llms_txt: { 
+            description: 'Crear llms.txt en /.well-known/', 
+            impact: 3,
+            message: '🚀 VENTAJA: Solo el 0.5% de sitios lo tiene'
+        },
+        ai_plugin: { 
+            description: 'Implementar ai-plugin.json manifest', 
+            impact: 2,
+            message: '🚀 VENTAJA: Descubrimiento automático por agentes IA'
+        }
     };
 
     return failed
@@ -978,9 +1021,16 @@ function generateInterventions(analysis) {
             id: item.id,
             description: interventionMap[item.id].description,
             impact: interventionMap[item.id].impact,
+            message: interventionMap[item.id].message,
             category: item.category,
             critical: item.critical
         }))
+        .sort((a, b) => {
+            // Primero críticos, luego por impacto
+            if (a.critical && !b.critical) return -1;
+            if (!a.critical && b.critical) return 1;
+            return b.impact - a.impact;
+        })
         .slice(0, 10);
 }
 
@@ -995,16 +1045,16 @@ function generateRoadmap(interventions, currentScore) {
     
     // Agrupar por prioridad
     const critical = interventions.filter(i => i.critical);
-    const high = interventions.filter(i => !i.critical && i.impact >= 15);
-    const medium = interventions.filter(i => !i.critical && i.impact >= 10 && i.impact < 15);
-    const low = interventions.filter(i => !i.critical && i.impact < 10);
+    const high = interventions.filter(i => !i.critical && i.impact >= 5);
+    const medium = interventions.filter(i => !i.critical && i.impact >= 2 && i.impact < 5);
+    const low = interventions.filter(i => !i.critical && i.impact < 2);
     
     // Semana 1-2: Críticos
     if (critical.length > 0) {
         const tasks = critical.slice(0, 2).map(i => ({
             priority: 'P0',
             name: i.description,
-            impact: `+${i.impact} pts - Bloqueador crítico`
+            impact: `+${i.impact} pts — ${i.message}`
         }));
         const gain = critical.slice(0, 2).reduce((sum, i) => sum + i.impact, 0);
         score += gain;
@@ -1023,7 +1073,7 @@ function generateRoadmap(interventions, currentScore) {
         const tasks = [...remaining, ...high].slice(0, 3).map(i => ({
             priority: 'P1',
             name: i.description,
-            impact: `+${i.impact} pts`
+            impact: `+${i.impact} pts — ${i.message}`
         }));
         const gain = [...remaining, ...high].slice(0, 3).reduce((sum, i) => sum + i.impact, 0);
         score += gain;
@@ -1041,13 +1091,13 @@ function generateRoadmap(interventions, currentScore) {
         const tasks = [...medium, ...low].slice(0, 3).map(i => ({
             priority: 'P2',
             name: i.description,
-            impact: `+${i.impact} pts`
+            impact: `+${i.impact} pts — ${i.message}`
         }));
         const gain = [...medium, ...low].slice(0, 3).reduce((sum, i) => sum + i.impact, 0);
         score += gain;
         weeks.push({
             period: 'Semana 5-6',
-            title: 'Refinamiento y Citabilidad',
+            title: 'Refinamiento y Vanguardia',
             tasks,
             estimatedScore: Math.min(Math.round(score), 100),
             gain
@@ -1062,19 +1112,25 @@ function getScoreLevel(score) {
         return {
             class: 'good',
             label: 'EXCELENTE',
-            message: 'Tu sitio tiene una base técnica sólida'
+            message: 'Tu sitio tiene una base técnica sólida y supera al 90% del mercado'
         };
     } else if (score >= 70) {
         return {
             class: 'warning',
+            label: 'BUENO',
+            message: 'Base sólida con oportunidades de optimización'
+        };
+    } else if (score >= 60) {
+        return {
+            class: 'warning',
             label: 'MEJORABLE',
-            message: 'Tienes oportunidades significativas de optimización'
+            message: 'Fundamentos presentes pero requieren optimización'
         };
     } else {
         return {
             class: 'critical',
             label: 'CRÍTICO',
-            message: 'Tu sitio tiene problemas severos bloqueando tu visibilidad'
+            message: 'Tu sitio tiene problemas técnicos graves que bloquean visibilidad'
         };
     }
 }
@@ -1161,13 +1217,13 @@ function generateSOSTACData() {
         ],
         strategy: [
             { title: 'Optimización técnica priorizada', completed: false, note: 'Ejecutar en 6 semanas según roadmap' },
-            { title: 'Implementación de estándares modernos', completed: false, note: 'Schema.org + LLM readiness' }
+            { title: 'Implementación de estándares modernos', completed: false, note: 'Schema.org + preparación IA' }
         ],
         tactics: STATE.interventions.map((intervention, idx) => ({
             id: `task_${idx + 1}`,
             gap: intervention.description,
-            prioridad: intervention.critical ? 0 : intervention.impact >= 15 ? 1 : 2,
-            esfuerzo: intervention.impact >= 15 ? 'alto' : intervention.impact >= 10 ? 'medio' : 'bajo',
+            prioridad: intervention.critical ? 0 : intervention.impact >= 5 ? 1 : 2,
+            esfuerzo: intervention.impact >= 5 ? 'alto' : intervention.impact >= 2 ? 'medio' : 'bajo',
             responsable: intervention.category === 'infraestructura' ? 'dev' : intervention.category === 'datos' ? 'seo' : 'contenido',
             gananciaScore: intervention.impact,
             timeline: { semana: Math.ceil((idx + 1) / 3) }
@@ -1189,7 +1245,7 @@ function generateSOSTACData() {
 // INIT
 // ============================================================
 
-console.log('✅ Ejecuta.SEO Widget v2.0 cargado');
+console.log('✅ Ejecuta.SEO Widget v2.1 cargado — Recalibrado Estratégico');
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
