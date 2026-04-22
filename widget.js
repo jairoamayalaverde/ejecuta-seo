@@ -7,6 +7,19 @@
 const CONFIG = {
     proxyUrl: 'https://jairoamaya.co/html-proxy.php',
     
+    // Credenciales Supabase
+    supabase: {
+        url: 'https://vrhztgfgbjirmpbbdcks.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyaHp0Z2ZnYmppcm1wYmJkY2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODMxODUsImV4cCI6MjA4NjE1OTE4NX0.wkkxiZcLaADcGBLFvnAECHKLD7uLTinlVnvN4VjYElU'
+    },
+    
+    // Credenciales EmailJS
+    emailjs: {
+        serviceId: 'service_per05pl',
+        templateId: 'template Análisis SEO',
+        publicKey: 'lmZm9EQP7anHuS8if'
+    },
+    
     // Pesos recalibrados: 70% Fundamentos + 20% Optimización + 10% Vanguardia
     analysisFactors: {
         // ═══════════════════════════════════════════
@@ -1186,6 +1199,7 @@ function getScoreLevel(score) {
 async function handleLeadSubmit(e) {
     e.preventDefault();
     
+    const btn = e.target.querySelector('button[type="submit"]');
     const name = document.getElementById('name-input').value.trim();
     const email = document.getElementById('email-input').value.trim();
 
@@ -1193,38 +1207,101 @@ async function handleLeadSubmit(e) {
         alert('Por favor completa todos los campos');
         return;
     }
+    
+    const originalBtnText = btn.innerHTML;
+    btn.innerHTML = '⏳ ENVIANDO...';
+    btn.disabled = true;
 
-    const leadData = {
-        name,
-        email,
-        domain: STATE.domain,
-        score: STATE.score,
-        analysis: STATE.analysis,
-        interventions: STATE.interventions,
-        categories: STATE.categories,
-        roadmap: STATE.roadmap,
-        timestamp: new Date().toISOString()
-    };
-
-    console.log('Lead capturado:', leadData);
-
-    // TODO: Enviar a backend
-    // await fetch('/api/leads', {
-    //     method: 'POST',
-    //     headers: { 'Content-Type': 'application/json' },
-    //     body: JSON.stringify(leadData)
-    // });
-
-    if (typeof gtag !== 'undefined') {
-        gtag('event', 'generate_lead', {
-            event_category: 'Lead',
-            event_label: 'SEO Report',
-            value: STATE.score
+    try {
+        // ✅ 1. PREPARAR DATOS
+        const scoreData = getScoreLevel(STATE.score);
+        const leadData = {
+            name: name,
+            email: email,
+            domain: STATE.domain,
+            score: STATE.score,
+            score_level: scoreData.label,
+            analysis: {
+                factors: STATE.analysis,
+                categories: STATE.categories,
+                interventions: STATE.interventions.map(i => ({
+                    factor: i.factor,
+                    category: i.category,
+                    impact: i.impact,
+                    message: i.message
+                })),
+                roadmap: STATE.roadmap.map(item => ({
+                    period: item.period,
+                    title: item.title,
+                    tasks: item.tasks,
+                    estimatedScore: item.estimatedScore
+                }))
+            }
+        };
+        
+        // ✅ 2. GUARDAR EN SUPABASE
+        const supabaseResponse = await fetch(`${CONFIG.supabase.url}/rest/v1/ejecuta_seo_leads`, {
+            method: 'POST',
+            headers: {
+                'apikey': CONFIG.supabase.key,
+                'Authorization': `Bearer ${CONFIG.supabase.key}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify(leadData)
         });
+        
+        if (!supabaseResponse.ok) {
+            console.error('❌ Error Supabase:', await supabaseResponse.text());
+        } else {
+            console.log('✅ Lead guardado en Supabase');
+        }
+        
+        // ✅ 3. FORMATEAR DATOS PARA EMAIL
+        const topInterventions = STATE.interventions.slice(0, 5);
+        const emailData = {
+            to_name: name,
+            to_email: email,
+            domain: STATE.domain,
+            score: STATE.score,
+            score_level: scoreData.label,
+            top_issues: topInterventions.map(i => 
+                `• ${i.message.split('\n')[0]}`
+            ).join('\n'),
+            roadmap_summary: STATE.roadmap.map(r => 
+                `${r.period}: ${r.title} (Score estimado: ${r.estimatedScore}/100)`
+            ).join('\n\n')
+        };
+        
+        // ✅ 4. ENVIAR EMAIL VÍA EMAILJS
+        await emailjs.send(
+            CONFIG.emailjs.serviceId,
+            CONFIG.emailjs.templateId,
+            emailData,
+            CONFIG.emailjs.publicKey
+        );
+        
+        console.log('✅ Email enviado correctamente');
+        
+        // ✅ 5. TRACKING ANALYTICS
+        if (typeof gtag !== 'undefined') {
+            gtag('event', 'generate_lead', {
+                event_category: 'Lead',
+                event_label: 'SEO Report',
+                value: STATE.score
+            });
+        }
+        
+        // ✅ 6. MOSTRAR ÉXITO
+        STATE.view = 'success';
+        render();
+        
+    } catch (error) {
+        console.error('❌ Error completo:', error);
+        btn.disabled = false;
+        btn.innerHTML = originalBtnText;
+        alert('Error al enviar el análisis. Por favor intenta nuevamente.');
     }
-
-    STATE.view = 'success';
-    render();
 }
 
 // ============================================================
