@@ -446,7 +446,7 @@ function attachResultsListeners() {
     
     if (scheduleBtn) {
         scheduleBtn.addEventListener('click', () => {
-            window.open('https://calendly.com/jairoamaya', '_blank');
+            window.open('https://wa.me/573012963640?text=Hola%20Jairo%2C%20analicé%20mi%20sitio%20con%20Ejecuta.SEO%20y%20me%20gustaría%20agendar%20una%20sesión%20estratégica', '_blank');
         });
     }
     
