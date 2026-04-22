@@ -701,20 +701,58 @@ function analyzeSchema(doc) {
     const scripts = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'));
     const count = scripts.length;
     
-    const types = scripts.map(script => {
+    if (count === 0) {
+        return {
+            status: false,
+            value: 0,
+            label: 'Schema.org',
+            displayValue: 'No detectado',
+            critical: true
+        };
+    }
+    
+    // Extraer tipos de schema manejando @graph y @type como array
+    const types = new Set();
+    
+    scripts.forEach(script => {
         try {
-            const json = JSON.parse(script.textContent);
-            return json['@type'] || 'Unknown';
-        } catch {
-            return 'Invalid';
+            const data = JSON.parse(script.textContent);
+            
+            // Manejar @graph (schemas personalizados como los de Jairo)
+            if (data['@graph'] && Array.isArray(data['@graph'])) {
+                data['@graph'].forEach(item => {
+                    if (item['@type']) {
+                        // @type puede ser string o array
+                        if (Array.isArray(item['@type'])) {
+                            item['@type'].forEach(t => types.add(t));
+                        } else {
+                            types.add(item['@type']);
+                        }
+                    }
+                });
+            }
+            // Manejar schema directo
+            else if (data['@type']) {
+                if (Array.isArray(data['@type'])) {
+                    data['@type'].forEach(t => types.add(t));
+                } else {
+                    types.add(data['@type']);
+                }
+            }
+        } catch (e) {
+            console.error('Error parseando JSON-LD:', e);
         }
-    }).filter(t => t !== 'Invalid');
+    });
+    
+    const typesArray = Array.from(types);
     
     return {
-        status: count >= 2,
+        status: count >= 1 && typesArray.length > 0,
         value: count,
         label: 'Schema.org',
-        displayValue: types.length > 0 ? types.join(', ') : `${count} schemas`,
+        displayValue: typesArray.length > 0 ? 
+            `${typesArray.slice(0, 3).join(', ')}${typesArray.length > 3 ? '...' : ''}` : 
+            `${count} schemas`,
         critical: true
     };
 }
@@ -724,6 +762,11 @@ function analyzeBreadcrumbs(doc) {
         .some(script => {
             try {
                 const json = JSON.parse(script.textContent);
+                // Manejar @graph
+                if (json['@graph'] && Array.isArray(json['@graph'])) {
+                    return json['@graph'].some(item => item['@type'] === 'BreadcrumbList');
+                }
+                // Manejar schema directo
                 return json['@type'] === 'BreadcrumbList';
             } catch { return false; }
         });
@@ -740,6 +783,11 @@ function analyzeFAQSchema(doc) {
         .some(script => {
             try {
                 const json = JSON.parse(script.textContent);
+                // Manejar @graph
+                if (json['@graph'] && Array.isArray(json['@graph'])) {
+                    return json['@graph'].some(item => item['@type'] === 'FAQPage');
+                }
+                // Manejar schema directo
                 return json['@type'] === 'FAQPage';
             } catch { return false; }
         });
@@ -756,7 +804,22 @@ function analyzeArticleSchema(doc) {
         .some(script => {
             try {
                 const json = JSON.parse(script.textContent);
-                return json['@type'] === 'Article' || json['@type'] === 'BlogPosting';
+                // Manejar @graph
+                if (json['@graph'] && Array.isArray(json['@graph'])) {
+                    return json['@graph'].some(item => {
+                        const type = item['@type'];
+                        if (Array.isArray(type)) {
+                            return type.includes('Article') || type.includes('BlogPosting');
+                        }
+                        return type === 'Article' || type === 'BlogPosting';
+                    });
+                }
+                // Manejar schema directo
+                const type = json['@type'];
+                if (Array.isArray(type)) {
+                    return type.includes('Article') || type.includes('BlogPosting');
+                }
+                return type === 'Article' || type === 'BlogPosting';
             } catch { return false; }
         });
     return {
