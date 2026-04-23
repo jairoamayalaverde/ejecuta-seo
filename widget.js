@@ -6,7 +6,19 @@
 
 const CONFIG = {
     proxyUrl: 'https://jairoamaya.co/html-proxy.php',
-    pdfGeneratorUrl: 'https://jairoamaya.co/pdf-generator.php',
+    
+    // Credenciales Supabase
+    supabase: {
+        url: 'https://vrhztgfgbjirmpbbdcks.supabase.co',
+        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyaHp0Z2ZnYmppcm1wYmJkY2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODMxODUsImV4cCI6MjA4NjE1OTE4NX0.wkkxiZcLaADcGBLFvnAECHKLD7uLTinlVnvN4VjYElU'
+    },
+    
+    // Credenciales EmailJS
+    emailjs: {
+        serviceId: 'service_per05pl',
+        templateId: 'template_y4oyibo',
+        publicKey: 'lmZm9EQP7anHuS8if'
+    },
     
     // Pesos recalibrados: 70% Fundamentos + 20% Optimización + 10% Vanguardia
     analysisFactors: {
@@ -1182,14 +1194,13 @@ async function handleLeadSubmit(e) {
     }
     
     const originalBtnText = btn.innerHTML;
-    btn.innerHTML = '⏳ GENERANDO PDF...';
+    btn.innerHTML = '⏳ ENVIANDO...';
     btn.disabled = true;
 
     try {
-        // ✅ PREPARAR DATOS COMPLETOS PARA PDF
+        // ✅ PREPARAR DATOS
         const scoreData = getScoreLevel(STATE.score);
-        
-        const payload = {
+        const leadData = {
             name: name,
             email: email,
             domain: STATE.domain,
@@ -1213,28 +1224,56 @@ async function handleLeadSubmit(e) {
             }
         };
         
-        // ✅ ENVIAR A PHP BACKEND
-        const response = await fetch('https://jairoamaya.co/api/pdf-generator.php', {
+        // ✅ GUARDAR EN SUPABASE
+        const supabaseResponse = await fetch(`${CONFIG.supabase.url}/rest/v1/ejecuta_seo_leads`, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'apikey': CONFIG.supabase.key,
+                'Authorization': `Bearer ${CONFIG.supabase.key}`,
+                'Content-Type': 'application/json',
+                'Prefer': 'return=minimal'
             },
-            body: JSON.stringify(payload)
+            body: JSON.stringify(leadData)
         });
         
-        if (!response.ok) {
-            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        if (!supabaseResponse.ok) {
+            console.error('❌ Error Supabase:', await supabaseResponse.text());
+        } else {
+            console.log('✅ Lead guardado en Supabase');
         }
         
-        const result = await response.json();
+        // ✅ FORMATEAR DATOS PARA EMAIL
+        const topInterventions = STATE.interventions.slice(0, 5);
+        const emailData = {
+            to_name: name,
+            to_email: email,
+            domain: STATE.domain,
+            score: STATE.score,
+            score_level: scoreData.label,
+            top_issues: topInterventions.map(i => {
+                const message = i.message || i.description || 'Factor requiere optimización';
+                return `• ${message.split('\n')[0]}`;
+            }).join('\n'),
+            roadmap_summary: STATE.roadmap.map(r => 
+                `${r.period}: ${r.title} (Score estimado: ${r.estimatedScore}/100)`
+            ).join('\n\n')
+        };
         
-        console.log('✅ Resultado:', result);
+        // ✅ ENVIAR EMAIL VÍA EMAILJS
+        await emailjs.send(
+            CONFIG.emailjs.serviceId,
+            CONFIG.emailjs.templateId,
+            emailData,
+            CONFIG.emailjs.publicKey
+        );
+        
+        console.log('✅ Email enviado correctamente');
         
         // ✅ TRACKING ANALYTICS
         if (typeof gtag !== 'undefined') {
             gtag('event', 'generate_lead', {
                 event_category: 'Lead',
-                event_label: 'SEO Report PDF',
+                event_label: 'SEO Report',
                 value: STATE.score
             });
         }
@@ -1247,7 +1286,7 @@ async function handleLeadSubmit(e) {
         console.error('❌ Error completo:', error);
         btn.disabled = false;
         btn.innerHTML = originalBtnText;
-        alert('Error al generar el análisis. Por favor intenta nuevamente.');
+        alert('Error al enviar el análisis. Por favor intenta nuevamente.');
     }
 }
 
