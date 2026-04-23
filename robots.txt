@@ -1,24 +1,2 @@
-# Permitir crawlers de redes sociales para OG tags
-User-agent: facebookexternalhit
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: LinkedInBot
-Allow: /
-
-# Permitir Google y Bing
-User-agent: Googlebot
-Allow: /
-
-User-agent: Bingbot
-Allow: /
-
-# Bloquear el resto de scrapers agresivos
 User-agent: *
-Disallow: /api/
-Disallow: /_next/
 Allow: /
-
-Sitemap: https://ejecuta.jairoamaya.co/sitemap.xml
