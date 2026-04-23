@@ -235,6 +235,8 @@ function renderImpactMetrics() {
 function renderCategoryBreakdown() {
     const categories = Object.entries(STATE.categories).map(([key, data]) => ({
         name: CONFIG.categoryNames[key] || key,
+        achievedWeight: data.achievedWeight,
+        totalWeight: data.totalWeight,
         score: data.score,
         details: data.factors
     }));
@@ -247,7 +249,7 @@ function renderCategoryBreakdown() {
                     <div class="category-header">
                         <div class="category-name">${cat.name}</div>
                         <div class="category-score ${cat.score >= 70 ? 'high' : cat.score >= 50 ? 'medium' : 'low'}">
-                            ${cat.score}/100
+                            ${cat.achievedWeight}/${cat.totalWeight} pts
                         </div>
                     </div>
                     <div class="category-details">
@@ -872,20 +874,22 @@ async function analyzeLLMsTxt(domain) {
             const timeoutId = setTimeout(() => controller.abort(), 3000);
             
             const response = await fetch(url, { 
-                signal: controller.signal,
-                mode: 'no-cors'
+                signal: controller.signal
             });
             
             clearTimeout(timeoutId);
             
-            return {
-                status: true,
-                value: 'Implementado',
-                label: 'llms.txt',
-                displayValue: '✨ Early Adopter (Top 0.5%)',
-                critical: false
-            };
+            if (response.ok) {
+                return {
+                    status: true,
+                    value: 'Implementado',
+                    label: 'llms.txt',
+                    displayValue: '✨ Early Adopter (Top 0.5%)',
+                    critical: false
+                };
+            }
         } catch (e) {
+            // 404 o timeout - continuar al siguiente path
             continue;
         }
     }
@@ -907,28 +911,31 @@ async function analyzeAIPlugin(domain) {
         const timeoutId = setTimeout(() => controller.abort(), 3000);
         
         const response = await fetch(url, { 
-            signal: controller.signal,
-            mode: 'no-cors'
+            signal: controller.signal
         });
         
         clearTimeout(timeoutId);
         
-        return {
-            status: true,
-            value: 'Implementado',
-            label: 'AI Plugin',
-            displayValue: '🚀 Agent-Ready (Top 0.1%)',
-            critical: false
-        };
+        if (response.ok) {
+            return {
+                status: true,
+                value: 'Implementado',
+                label: 'AI Plugin',
+                displayValue: '🚀 Agent-Ready (Top 0.1%)',
+                critical: false
+            };
+        }
     } catch (e) {
-        return {
-            status: false,
-            value: 'No implementado',
-            label: 'AI Plugin',
-            displayValue: '💡 Oportunidad early-adopter',
-            critical: false
-        };
+        // 404 o timeout - no implementado
     }
+    
+    return {
+        status: false,
+        value: 'No implementado',
+        label: 'AI Plugin',
+        displayValue: '💡 Oportunidad early-adopter',
+        critical: false
+    };
 }
 
 function analyzeSemanticClarity(doc) {
@@ -1082,65 +1089,46 @@ function calculatePotentialScore(currentScore, interventions) {
 }
 
 function generateRoadmap(interventions, currentScore) {
+    if (interventions.length === 0) return [];
+    
     const weeks = [];
     let score = currentScore;
+    let remainingTasks = [...interventions];
     
-    // Agrupar por prioridad
-    const critical = interventions.filter(i => i.critical);
-    const high = interventions.filter(i => !i.critical && i.impact >= 15);
-    const medium = interventions.filter(i => !i.critical && i.impact >= 10 && i.impact < 15);
-    const low = interventions.filter(i => !i.critical && i.impact < 10);
+    // Distribuir tareas en semanas (máximo 6 semanas, 2-3 tareas por semana)
+    const maxWeeks = 6;
+    const tasksPerWeek = Math.ceil(remainingTasks.length / maxWeeks);
     
-    // Semana 1-2: Críticos
-    if (critical.length > 0) {
-        const tasks = critical.slice(0, 2).map(i => ({
-            priority: 'P0',
-            name: i.description,
-            impact: `+${i.impact} pts - Bloqueador crítico`
-        }));
-        const gain = critical.slice(0, 2).reduce((sum, i) => sum + i.impact, 0);
+    for (let weekNum = 1; weekNum <= maxWeeks && remainingTasks.length > 0; weekNum++) {
+        // Tomar las próximas 2-3 tareas más importantes
+        const weekTasks = remainingTasks.splice(0, Math.min(tasksPerWeek, 3));
+        
+        if (weekTasks.length === 0) break;
+        
+        // Calcular ganancia de la semana
+        const gain = weekTasks.reduce((sum, i) => sum + i.impact, 0);
         score += gain;
+        
+        // Determinar título según el tipo de tareas
+        let title = 'Optimización';
+        if (weekNum === 1 && weekTasks.some(t => t.critical)) {
+            title = 'Fundamentos Críticos';
+        } else if (weekNum <= 2) {
+            title = 'Infraestructura Base';
+        } else if (weekNum <= 4) {
+            title = 'Optimización Técnica';
+        } else {
+            title = 'Refinamiento Avanzado';
+        }
+        
         weeks.push({
-            period: 'Semana 1-2',
-            title: 'Infraestructura Crítica',
-            tasks,
-            estimatedScore: Math.min(Math.round(score), 100),
-            gain
-        });
-    }
-    
-    // Semana 3-4: Alta prioridad
-    if (high.length > 0 || critical.length > 2) {
-        const remaining = critical.slice(2);
-        const tasks = [...remaining, ...high].slice(0, 3).map(i => ({
-            priority: 'P1',
-            name: i.description,
-            impact: `+${i.impact} pts`
-        }));
-        const gain = [...remaining, ...high].slice(0, 3).reduce((sum, i) => sum + i.impact, 0);
-        score += gain;
-        weeks.push({
-            period: 'Semana 3-4',
-            title: 'Optimización Técnica',
-            tasks,
-            estimatedScore: Math.min(Math.round(score), 100),
-            gain
-        });
-    }
-    
-    // Semana 5-6: Media/Baja prioridad
-    if (medium.length > 0 || low.length > 0) {
-        const tasks = [...medium, ...low].slice(0, 3).map(i => ({
-            priority: 'P2',
-            name: i.description,
-            impact: `+${i.impact} pts`
-        }));
-        const gain = [...medium, ...low].slice(0, 3).reduce((sum, i) => sum + i.impact, 0);
-        score += gain;
-        weeks.push({
-            period: 'Semana 5-6',
-            title: 'Refinamiento y Citabilidad',
-            tasks,
+            period: `Semana ${weekNum}`,
+            title: title,
+            tasks: weekTasks.map(i => ({
+                priority: i.critical ? 'P0' : (i.impact >= 8 ? 'P1' : 'P2'),
+                name: i.description,
+                impact: `+${i.impact} pts${i.critical ? ' - Crítico' : ''}`
+            })),
             estimatedScore: Math.min(Math.round(score), 100),
             gain
         });
