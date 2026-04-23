@@ -1230,6 +1230,21 @@ async function handleLeadSubmit(e) {
         
         // ✅ FORMATEAR DATOS PARA EMAIL
         const topInterventions = STATE.interventions.slice(0, 5);
+        
+        // Generar HTML del roadmap completo
+        const roadmapHtml = STATE.roadmap.map(week => `
+            <div class="roadmap-week">
+                <div class="roadmap-week-header">${week.period}</div>
+                <div class="roadmap-week-title">${week.title}</div>
+                ${week.tasks.map(task => `
+                    <div class="roadmap-task">
+                        <strong>${task.priority}</strong> ${task.name} <span style="color:#10b981;">${task.impact}</span>
+                    </div>
+                `).join('')}
+                <div class="roadmap-score">Score estimado al finalizar: ${week.estimatedScore}/100 (+${week.gain} pts)</div>
+            </div>
+        `).join('');
+        
         const emailData = {
             to_name: name,
             to_email: email,
@@ -1238,11 +1253,9 @@ async function handleLeadSubmit(e) {
             score_level: scoreData.label,
             top_issues: topInterventions.map(i => {
                 const message = i.message || i.description || 'Factor requiere optimización';
-                return `• ${message.split('\n')[0]}`;
-            }).join('\n'),
-            roadmap_summary: STATE.roadmap.map(r => 
-                `${r.period}: ${r.title} (Score estimado: ${r.estimatedScore}/100)`
-            ).join('\n\n')
+                return `<div class="issue-item">${message.split('\n')[0]}</div>`;
+            }).join(''),
+            roadmap_html: roadmapHtml
         };
         
         // ✅ ENVIAR EMAIL VÍA EMAILJS
