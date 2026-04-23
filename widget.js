@@ -318,7 +318,7 @@ function renderBenchmark() {
 function renderRoadmap() {
     return `
         <div class="roadmap-section">
-            <h3>🗓️ Roadmap Ejecutable (6 Semanas)</h3>
+            <h3>🗓️ Roadmap Ejecutable (sugerido)</h3>
             
             ${STATE.roadmap.map(week => `
                 <div class="roadmap-week">
@@ -352,14 +352,12 @@ function renderRoadmap() {
 function renderLeadCapture() {
     return `
         <div class="lead-capture">
-            <h2>📊 Reporte Completo + Plan SOSTAC</h2>
-            <p>Recibe el análisis detallado de los 30+ factores evaluados más tu roadmap ejecutable personalizado de 6 semanas</p>
+            <h2>📊 Reporte Completo </h2>
+            <p>Recibe el análisis detallado de los 30+ factores evaluados más tu roadmap ejecutable sugerido </p>
             
             <ul>
-                <li>Diagnóstico técnico completo en PDF</li>
-                <li>Plan SOSTAC personalizado (6 semanas)</li>
-                <li>Priorización por impacto y esfuerzo</li>
-                <li>Estimado de ganancia por tarea</li>
+                <li>Diagnóstico técnico completo en tu correo</li>
+                <li>Plan que puedes ejecutar en SOSTACFLOW </li>
             </ul>
             
             <form class="lead-form" id="lead-form">
@@ -371,7 +369,7 @@ function renderLeadCapture() {
                     Enviar Reporte Completo
                 </button>
                 <div class="privacy-note">
-                    🔒 Tu información está protegida. No spam, solo valor.
+                    🔒 Tu información está protegida. Sin spam.
                 </div>
             </form>
         </div>
@@ -385,12 +383,11 @@ function renderCTAs() {
         <div class="cta-section">
             <h3>¿Listo para implementar estas mejoras?</h3>
             <p style="font-size:16px;color:#999;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;">
-                Tienes ${tasksCount} tareas identificadas. Agenda una sesión estratégica para priorizarlas según tu contexto específico.
+                Tienes ${tasksCount} tareas identificadas. Agenda una sesión para priorizarlas según tu contexto específico.
             </p>
             
             <div class="cta-options">
                 <div class="cta-option featured" style="max-width:500px;margin:0 auto;">
-                    <span class="cta-badge">Sesión Gratuita</span>
                     <h4>📞 Hablemos de tu Roadmap</h4>
                     <p>30 minutos revisando tu análisis, priorizando según tu stack técnico y recursos, identificando quick wins.</p>
                     <button class="cta-btn primary" id="schedule-btn">
