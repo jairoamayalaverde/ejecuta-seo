@@ -318,7 +318,7 @@ function renderBenchmark() {
 function renderRoadmap() {
     return `
         <div class="roadmap-section">
-            <h3>🗓️ Roadmap Ejecutable (sugerido)</h3>
+            <h3>🗓️ Roadmap Ejecutable (6 Semanas)</h3>
             
             ${STATE.roadmap.map(week => `
                 <div class="roadmap-week">
@@ -357,7 +357,7 @@ function renderLeadCapture() {
             
             <ul>
                 <li>Diagnóstico técnico completo en tu correo</li>
-                <li>Plan que puedes ejecutar en SOSTACFLOW </li>
+                <li>Plan que puedes ejecutar en <a href="https://sostacflow.jairoamaya.co" target="_blank" style="color:#ec4899;text-decoration:none;">SOSTACFLOW</a></li>
             </ul>
             
             <form class="lead-form" id="lead-form">
@@ -383,11 +383,12 @@ function renderCTAs() {
         <div class="cta-section">
             <h3>¿Listo para implementar estas mejoras?</h3>
             <p style="font-size:16px;color:#999;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;">
-                Tienes ${tasksCount} tareas identificadas. Agenda una sesión para priorizarlas según tu contexto específico.
+                Tienes ${tasksCount} tareas identificadas. Agenda una sesión estratégica para priorizarlas según tu contexto específico.
             </p>
             
             <div class="cta-options">
                 <div class="cta-option featured" style="max-width:500px;margin:0 auto;">
+                    <span class="cta-badge">Sesión Gratuita</span>
                     <h4>📞 Hablemos de tu Roadmap</h4>
                     <p>30 minutos revisando tu análisis, priorizando según tu stack técnico y recursos, identificando quick wins.</p>
                     <button class="cta-btn primary" id="schedule-btn">
