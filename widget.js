@@ -1,75 +1,85 @@
 // ============================================================
 // EJECUTA.SEO - WIDGET HÍBRIDO
 // Fusión de análisis técnico robusto + visualización estratégica
-// Version: 2.0.0
+// Version: 2.1.0 — + Domain Rating (Ahrefs, vía proxy)
 // ============================================================
 
 const CONFIG = {
     proxyUrl: 'https://jairoamaya.co/html-proxy.php',
-    
+
     // Credenciales Supabase
     supabase: {
         url: 'https://vrhztgfgbjirmpbbdcks.supabase.co',
         key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyaHp0Z2ZnYmppcm1wYmJkY2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODMxODUsImV4cCI6MjA4NjE1OTE4NX0.wkkxiZcLaADcGBLFvnAECHKLD7uLTinlVnvN4VjYElU'
     },
-    
+
     // Credenciales EmailJS
     emailjs: {
         serviceId: 'service_per05pl',
         templateId: 'template_y4oyibo',
         publicKey: 'lmZm9EQP7anHuS8if'
     },
-    
+
+    // Endpoint público de Domain Rating (Ahrefs) — sin API key, vía proxy
+    ahrefs: {
+        drEndpoint: 'https://api.ahrefs.com/v3/public/domain-rating-free'
+    },
+
     // Pesos recalibrados: 70% Fundamentos + 20% Optimización + 10% Vanguardia
     analysisFactors: {
         // ═══════════════════════════════════════════
         // FUNDAMENTOS (70 pts) — DOLOR REAL HOY
         // ═══════════════════════════════════════════
-        
+
         // INFRAESTRUCTURA (30 pts)
         https: { category: 'infraestructura', weight: 12, critical: true },
         mobile: { category: 'infraestructura', weight: 10, critical: true },
         ttfb: { category: 'infraestructura', weight: 6, critical: true },
         compression: { category: 'infraestructura', weight: 2, critical: false },
-        
+
         // ESTRUCTURA SEMÁNTICA BÁSICA (25 pts)
         title: { category: 'semantica', weight: 10, critical: true },
         h1: { category: 'semantica', weight: 8, critical: true },
         meta_desc: { category: 'semantica', weight: 5, critical: false },
         content: { category: 'semantica', weight: 2, critical: false },
-        
+
         // RASTREABILIDAD (15 pts)
         robots: { category: 'rastreabilidad', weight: 8, critical: true },
         sitemap: { category: 'rastreabilidad', weight: 7, critical: true },
-        
+
         // ═══════════════════════════════════════════
         // OPTIMIZACIÓN (20 pts) — COMPETENCIA
         // ═══════════════════════════════════════════
-        
+
         // DATOS ESTRUCTURADOS BÁSICOS (10 pts)
         schema: { category: 'datos', weight: 6, critical: false },
         opengraph: { category: 'social', weight: 4, critical: false },
-        
+
         // SEMÁNTICA AVANZADA (10 pts)
         canonical: { category: 'semantica', weight: 3, critical: false },
         internal_links: { category: 'semantica', weight: 3, critical: false },
         h2: { category: 'semantica', weight: 2, critical: false },
         alt_text: { category: 'semantica', weight: 2, critical: false },
-        
+
         // ═══════════════════════════════════════════
         // VANGUARDIA (10 pts) — BONUS DIFERENCIADOR
         // ═══════════════════════════════════════════
-        
+
         // SCHEMAS AVANZADOS (5 pts)
         breadcrumbs: { category: 'datos', weight: 2, critical: false },
         faq_schema: { category: 'datos', weight: 2, critical: false },
         article_schema: { category: 'datos', weight: 1, critical: false },
-        
+
         // CITABILIDAD IA (5 pts)
         llms_txt: { category: 'ia', weight: 3, critical: false },
         ai_plugin: { category: 'ia', weight: 2, critical: false }
+
+        // Nota: Domain Rating NO se incluye aquí a propósito.
+        // Es una métrica de autoridad externa (backlinks), no un factor
+        // "arreglable" en un roadmap de 6 semanas, así que se muestra
+        // aparte en Impact Metrics y no distorsiona el score ponderado.
     },
-    
+
     categoryNames: {
         infraestructura: '🔧 Infraestructura Técnica',
         semantica: '📝 Estructura Semántica',
@@ -78,7 +88,7 @@ const CONFIG = {
         ia: '🤖 Citabilidad IA',
         rastreabilidad: '🔍 Rastreabilidad'
     },
-    
+
     benchmark: {
         sector: 'Web 2026',
         average: 70,
@@ -95,7 +105,8 @@ const STATE = {
     interventions: [],
     potentialScore: 100,
     progress: 0,
-    roadmap: []
+    roadmap: [],
+    domainRating: null
 };
 
 // ============================================================
@@ -104,7 +115,7 @@ const STATE = {
 
 function render() {
     const app = document.getElementById('app');
-    
+
     switch(STATE.view) {
         case 'input':
             app.innerHTML = renderInput();
@@ -153,10 +164,10 @@ function renderAnalyzing() {
         'Midiendo citabilidad IA...',
         'Calculando score final...'
     ];
-    
+
     const currentStep = Math.floor((STATE.progress / 100) * progressSteps.length);
     const stepText = progressSteps[Math.min(currentStep, progressSteps.length - 1)];
-    
+
     return `
         <div class="loading-state">
             <div class="spinner"></div>
@@ -174,7 +185,7 @@ function renderAnalyzing() {
 
 function renderResults() {
     const scoreData = getScoreLevel(STATE.score);
-    
+
     return `
         ${renderResultsHero(scoreData)}
         ${renderImpactMetrics()}
@@ -206,7 +217,10 @@ function renderImpactMetrics() {
     const failedFactors = totalFactors - passedFactors;
     const criticalIssues = STATE.analysis.filter(a => a.critical && !a.status).length;
     const potentialGain = STATE.potentialScore - STATE.score;
-    
+
+    const dr = STATE.domainRating;
+    const drValue = dr && dr.status ? Math.round(dr.value) : null;
+
     return `
         <div class="impact-section">
             <div class="impact-title">🔍 Hallazgos del Análisis Técnico</div>
@@ -227,7 +241,16 @@ function renderImpactMetrics() {
                     <div class="impact-value good">+${potentialGain}</div>
                     <div class="impact-label">Ganancia Potencial</div>
                 </div>
+                <div class="impact-card">
+                    <div class="impact-value ${drValue !== null ? 'good' : 'warning'}">
+                        ${drValue !== null ? drValue : '—'}
+                    </div>
+                    <div class="impact-label">Domain Rating (DR)</div>
+                </div>
             </div>
+            <p style="text-align:center;font-size:11px;color:#444;margin-top:20px;">
+                Domain Rating by <a href="https://ahrefs.com/" target="_blank" style="color:#666;">Ahrefs</a>
+            </p>
         </div>
     `;
 }
@@ -240,7 +263,7 @@ function renderCategoryBreakdown() {
         score: data.score,
         details: data.factors
     }));
-    
+
     return `
         <div class="category-section">
             <h3>📊 Desglose por Categoría</h3>
@@ -272,7 +295,7 @@ function renderBenchmark() {
     const industry = CONFIG.benchmark;
     const gap = industry.average - STATE.score;
     const gapPercentage = Math.abs(gap) * 2.5;
-    
+
     return `
         <div class="benchmark-section">
             <h3>📈 Benchmark vs Industria</h3>
@@ -378,7 +401,7 @@ function renderLeadCapture() {
 
 function renderCTAs() {
     const tasksCount = STATE.analysis.filter(f => !f.status).length;
-    
+
     return `
         <div class="cta-section">
             <h3>¿Listo para implementar estas mejoras?</h3>
@@ -443,11 +466,11 @@ function attachInputListeners() {
 function attachResultsListeners() {
     const form = document.getElementById('lead-form');
     const scheduleBtn = document.getElementById('schedule-btn');
-    
+
     if (form) {
         form.addEventListener('submit', handleLeadSubmit);
     }
-    
+
     if (scheduleBtn) {
         scheduleBtn.addEventListener('click', () => {
             window.open('https://wa.me/573012963640?text=Hola%20Jairo%2C%20analicé%20mi%20sitio%20con%20Ejecuta.SEO%20y%20me%20gustaría%20agendar%20una%20sesión%20estratégica', '_blank');
@@ -498,12 +521,20 @@ async function startAnalysis() {
 
 async function runAnalysis(domain) {
     updateProgress(10);
-    
+
     const targetUrl = `https://${domain}`;
-    const response = await fetch(`${CONFIG.proxyUrl}?url=${encodeURIComponent(targetUrl)}`);
-    
+
+    // El fetch del HTML del sitio y la consulta del Domain Rating
+    // corren en paralelo para no alargar el tiempo total de análisis.
+    const [response, drResult] = await Promise.all([
+        fetch(`${CONFIG.proxyUrl}?url=${encodeURIComponent(targetUrl)}`),
+        analyzeDomainRating(domain)
+    ]);
+
+    STATE.domainRating = drResult;
+
     updateProgress(30);
-    
+
     if (!response.ok) {
         throw new Error(`No se pudo conectar con ${domain}`);
     }
@@ -515,16 +546,16 @@ async function runAnalysis(domain) {
     updateProgress(50);
 
     const rawResults = await executeAllAnalysis(doc, domain);
-    
+
     updateProgress(70);
-    
+
     STATE.analysis = processResults(rawResults);
     STATE.score = calculateScore(STATE.analysis);
     STATE.categories = calculateCategoryScores(STATE.analysis);
     STATE.interventions = generateInterventions(STATE.analysis);
     STATE.potentialScore = calculatePotentialScore(STATE.score, STATE.interventions);
     STATE.roadmap = generateRoadmap(STATE.interventions, STATE.score);
-    
+
     updateProgress(100);
 }
 
@@ -541,7 +572,7 @@ async function executeAllAnalysis(doc, domain) {
         ttfb: analyzeTTFB(),
         mobile: analyzeMobile(doc),
         compression: { status: true, value: 'Detectado', label: 'Compresión', displayValue: 'Gzip/Brotli' },
-        
+
         title: analyzeTitle(doc),
         meta_desc: analyzeMetaDesc(doc),
         h1: analyzeH1(doc),
@@ -550,17 +581,17 @@ async function executeAllAnalysis(doc, domain) {
         content: analyzeContent(doc),
         alt_text: analyzeAltText(doc),
         internal_links: analyzeInternalLinks(doc),
-        
+
         schema: analyzeSchema(doc),
         breadcrumbs: analyzeBreadcrumbs(doc),
         faq_schema: analyzeFAQSchema(doc),
         article_schema: analyzeArticleSchema(doc),
-        
+
         opengraph: analyzeOpenGraph(doc),
-        
+
         llms_txt: await analyzeLLMsTxt(domain),
         ai_plugin: await analyzeAIPlugin(domain),
-        
+
         robots: { status: true, value: 'Requiere verificación', label: 'Robots.txt', displayValue: 'Validar manualmente' },
         sitemap: { status: true, value: 'Requiere verificación', label: 'Sitemap XML', displayValue: 'Validar manualmente' }
     };
@@ -704,7 +735,7 @@ function analyzeInternalLinks(doc) {
 function analyzeSchema(doc) {
     const scripts = Array.from(doc.querySelectorAll('script[type="application/ld+json"]'));
     const count = scripts.length;
-    
+
     if (count === 0) {
         return {
             status: false,
@@ -714,14 +745,14 @@ function analyzeSchema(doc) {
             critical: true
         };
     }
-    
+
     // Extraer tipos de schema manejando @graph y @type como array
     const types = new Set();
-    
+
     scripts.forEach(script => {
         try {
             const data = JSON.parse(script.textContent);
-            
+
             // Manejar @graph (schemas personalizados como los de Jairo)
             if (data['@graph'] && Array.isArray(data['@graph'])) {
                 data['@graph'].forEach(item => {
@@ -747,9 +778,9 @@ function analyzeSchema(doc) {
             console.error('Error parseando JSON-LD:', e);
         }
     });
-    
+
     const typesArray = Array.from(types);
-    
+
     return {
         status: count >= 1 && typesArray.length > 0,
         value: count,
@@ -865,18 +896,18 @@ async function analyzeLLMsTxt(domain) {
         `https://${domain}/llms.txt`,
         `https://${domain}/.well-known/llms.txt`
     ];
-    
+
     for (const url of paths) {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000);
-            
+
             const response = await fetch(url, { 
                 signal: controller.signal
             });
-            
+
             clearTimeout(timeoutId);
-            
+
             if (response.ok) {
                 return {
                     status: true,
@@ -891,7 +922,7 @@ async function analyzeLLMsTxt(domain) {
             continue;
         }
     }
-    
+
     return {
         status: false,
         value: 'No implementado',
@@ -903,17 +934,17 @@ async function analyzeLLMsTxt(domain) {
 
 async function analyzeAIPlugin(domain) {
     const url = `https://${domain}/.well-known/ai-plugin.json`;
-    
+
     try {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
-        
+
         const response = await fetch(url, { 
             signal: controller.signal
         });
-        
+
         clearTimeout(timeoutId);
-        
+
         if (response.ok) {
             return {
                 status: true,
@@ -926,7 +957,7 @@ async function analyzeAIPlugin(domain) {
     } catch (e) {
         // 404 o timeout - no implementado
     }
-    
+
     return {
         status: false,
         value: 'No implementado',
@@ -934,6 +965,45 @@ async function analyzeAIPlugin(domain) {
         displayValue: '💡 Oportunidad early-adopter',
         critical: false
     };
+}
+
+// Consulta el Domain Rating público de Ahrefs a través del proxy propio
+// (html-proxy.php), que reenvía la respuesta JSON tal cual para
+// api.ahrefs.com. No requiere API key. No afecta el score ponderado:
+// se usa solo como métrica informativa en Impact Metrics.
+async function analyzeDomainRating(domain) {
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        const drApiUrl = `${CONFIG.ahrefs.drEndpoint}?target=${encodeURIComponent(domain)}`;
+        const response = await fetch(
+            `${CONFIG.proxyUrl}?url=${encodeURIComponent(drApiUrl)}`,
+            { signal: controller.signal }
+        );
+        clearTimeout(timeoutId);
+
+        if (!response.ok) throw new Error('DR no disponible');
+
+        const raw = await response.text();
+        const data = JSON.parse(raw);
+        const dr = data?.domain_rating?.domain_rating ?? null;
+
+        return {
+            status: dr !== null,
+            value: dr,
+            label: 'Domain Rating',
+            displayValue: dr !== null ? `DR ${Math.round(dr)}/100` : 'No disponible'
+        };
+    } catch (e) {
+        console.warn('DR fetch falló:', e);
+        return {
+            status: false,
+            value: null,
+            label: 'Domain Rating',
+            displayValue: 'No disponible'
+        };
+    }
 }
 
 function analyzeSemanticClarity(doc) {
@@ -967,11 +1037,11 @@ function analyzeIndexability(doc) {
 
 function processResults(rawResults) {
     const processed = [];
-    
+
     Object.keys(rawResults).forEach(key => {
         const result = rawResults[key];
         const config = CONFIG.analysisFactors[key];
-        
+
         if (config) {
             processed.push({
                 id: key,
@@ -985,7 +1055,7 @@ function processResults(rawResults) {
             });
         }
     });
-    
+
     return processed;
 }
 
@@ -1005,7 +1075,7 @@ function calculateScore(analysis) {
 
 function calculateCategoryScores(analysis) {
     const categories = {};
-    
+
     // Agrupar por categoría
     analysis.forEach(item => {
         if (!categories[item.category]) {
@@ -1015,20 +1085,20 @@ function calculateCategoryScores(analysis) {
                 achievedWeight: 0
             };
         }
-        
+
         categories[item.category].factors.push(item);
         categories[item.category].totalWeight += item.weight;
         if (item.status) {
             categories[item.category].achievedWeight += item.weight;
         }
     });
-    
+
     // Calcular scores
     Object.keys(categories).forEach(key => {
         const cat = categories[key];
         cat.score = cat.totalWeight > 0 ? Math.round((cat.achievedWeight / cat.totalWeight) * 100) : 0;
     });
-    
+
     return categories;
 }
 
@@ -1051,7 +1121,7 @@ function generateInterventions(analysis) {
         meta_desc: { description: 'Escribir meta description (120-160 chars)', impact: 5 },
         robots: { description: 'Configurar robots.txt correctamente', impact: 8 },
         sitemap: { description: 'Generar y enviar sitemap.xml a Google', impact: 7 },
-        
+
         // OPTIMIZACIÓN — Competencia (impactos 2-6)
         schema: { description: 'Implementar Schema.org básico (WebSite, Organization)', impact: 6 },
         opengraph: { description: 'Agregar meta tags Open Graph (4 tags mínimo)', impact: 4 },
@@ -1060,7 +1130,7 @@ function generateInterventions(analysis) {
         alt_text: { description: 'Agregar alt text a imágenes', impact: 2 },
         internal_links: { description: 'Aumentar enlaces internos relevantes', impact: 3 },
         content: { description: 'Expandir contenido a mínimo 300 palabras', impact: 2 },
-        
+
         // VANGUARDIA — Bonus (impactos 1-3)
         breadcrumbs: { description: 'Implementar Breadcrumbs Schema', impact: 2 },
         faq_schema: { description: 'Agregar FAQ Schema para preguntas frecuentes', impact: 2 },
@@ -1088,25 +1158,25 @@ function calculatePotentialScore(currentScore, interventions) {
 
 function generateRoadmap(interventions, currentScore) {
     if (interventions.length === 0) return [];
-    
+
     const weeks = [];
     let score = currentScore;
     let remainingTasks = [...interventions];
-    
+
     // Distribuir tareas en semanas (máximo 6 semanas, 2-3 tareas por semana)
     const maxWeeks = 6;
     const tasksPerWeek = Math.ceil(remainingTasks.length / maxWeeks);
-    
+
     for (let weekNum = 1; weekNum <= maxWeeks && remainingTasks.length > 0; weekNum++) {
         // Tomar las próximas 2-3 tareas más importantes
         const weekTasks = remainingTasks.splice(0, Math.min(tasksPerWeek, 3));
-        
+
         if (weekTasks.length === 0) break;
-        
+
         // Calcular ganancia de la semana
         const gain = weekTasks.reduce((sum, i) => sum + i.impact, 0);
         score += gain;
-        
+
         // Determinar título según el tipo de tareas
         let title = 'Optimización';
         if (weekNum === 1 && weekTasks.some(t => t.critical)) {
@@ -1118,7 +1188,7 @@ function generateRoadmap(interventions, currentScore) {
         } else {
             title = 'Refinamiento Avanzado';
         }
-        
+
         weeks.push({
             period: `Semana ${weekNum}`,
             title: title,
@@ -1131,7 +1201,7 @@ function generateRoadmap(interventions, currentScore) {
             gain
         });
     }
-    
+
     return weeks;
 }
 
@@ -1169,7 +1239,7 @@ function getScoreLevel(score) {
 
 async function handleLeadSubmit(e) {
     e.preventDefault();
-    
+
     const btn = e.target.querySelector('button[type="submit"]');
     const name = document.getElementById('name-input').value.trim();
     const email = document.getElementById('email-input').value.trim();
@@ -1178,7 +1248,7 @@ async function handleLeadSubmit(e) {
         alert('Por favor completa todos los campos');
         return;
     }
-    
+
     const originalBtnText = btn.innerHTML;
     btn.innerHTML = '⏳ ENVIANDO...';
     btn.disabled = true;
@@ -1192,6 +1262,9 @@ async function handleLeadSubmit(e) {
             domain: STATE.domain,
             score: STATE.score,
             score_level: scoreData.label,
+            domain_rating: (STATE.domainRating && STATE.domainRating.status)
+                ? Math.round(STATE.domainRating.value)
+                : null,
             analysis: {
                 factors: STATE.analysis,
                 categories: STATE.categories,
@@ -1209,7 +1282,7 @@ async function handleLeadSubmit(e) {
                 }))
             }
         };
-        
+
         // ✅ GUARDAR EN SUPABASE
         const supabaseResponse = await fetch(`${CONFIG.supabase.url}/rest/v1/ejecuta_seo_leads`, {
             method: 'POST',
@@ -1221,16 +1294,16 @@ async function handleLeadSubmit(e) {
             },
             body: JSON.stringify(leadData)
         });
-        
+
         if (!supabaseResponse.ok) {
             console.error('❌ Error Supabase:', await supabaseResponse.text());
         } else {
             console.log('✅ Lead guardado en Supabase');
         }
-        
+
         // ✅ FORMATEAR DATOS PARA EMAIL
         const topInterventions = STATE.interventions.slice(0, 5);
-        
+
         // Generar HTML del roadmap completo
         const roadmapHtml = STATE.roadmap.map(week => `
             <div class="roadmap-week">
@@ -1244,20 +1317,21 @@ async function handleLeadSubmit(e) {
                 <div class="roadmap-score">Score estimado al finalizar: ${week.estimatedScore}/100 (+${week.gain} pts)</div>
             </div>
         `).join('');
-        
+
         const emailData = {
             to_name: name,
             to_email: email,
             domain: STATE.domain,
             score: STATE.score,
             score_level: scoreData.label,
+            domain_rating: leadData.domain_rating !== null ? leadData.domain_rating : 'N/D',
             top_issues: topInterventions.map(i => {
                 const message = i.message || i.description || 'Factor requiere optimización';
                 return `<div class="issue-item">${message.split('\n')[0]}</div>`;
             }).join(''),
             roadmap_html: roadmapHtml
         };
-        
+
         // ✅ ENVIAR EMAIL VÍA EMAILJS
         await emailjs.send(
             CONFIG.emailjs.serviceId,
@@ -1265,9 +1339,9 @@ async function handleLeadSubmit(e) {
             emailData,
             CONFIG.emailjs.publicKey
         );
-        
+
         console.log('✅ Email enviado correctamente');
-        
+
         // ✅ TRACKING ANALYTICS
         if (typeof gtag !== 'undefined') {
             gtag('event', 'generate_lead', {
@@ -1276,11 +1350,11 @@ async function handleLeadSubmit(e) {
                 value: STATE.score
             });
         }
-        
+
         // ✅ MOSTRAR ÉXITO
         STATE.view = 'success';
         render();
-        
+
     } catch (error) {
         console.error('❌ Error completo:', error);
         btn.disabled = false;
@@ -1299,6 +1373,7 @@ function createSOSTACProject() {
         domain: STATE.domain,
         analyzedAt: new Date().toISOString(),
         seoScore: STATE.score,
+        domainRating: (STATE.domainRating && STATE.domainRating.status) ? Math.round(STATE.domainRating.value) : null,
         categories: STATE.categories,
         interventions: STATE.interventions,
         roadmap: STATE.roadmap,
@@ -1312,7 +1387,7 @@ function createSOSTACProject() {
 
 function generateSOSTACData() {
     const failingFactors = STATE.analysis.filter(f => !f.status);
-    
+
     return {
         situation: [
             { title: `Análisis completo de ${STATE.domain}`, completed: true, note: `Score SEO: ${STATE.score}/100` },
@@ -1352,7 +1427,7 @@ function generateSOSTACData() {
 // INIT
 // ============================================================
 
-console.log('✅ Ejecuta.SEO Widget v2.0 cargado');
+console.log('✅ Ejecuta.SEO Widget v2.1 cargado (+ Domain Rating)');
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
