@@ -200,7 +200,6 @@ function renderResults() {
         ${renderBenchmark()}
         ${renderRoadmap()}
         ${renderLeadCapture()}
-        ${renderCTAs()}
     `;
 }
 
@@ -411,30 +410,6 @@ function renderLeadCapture() {
     `;
 }
 
-function renderCTAs() {
-    const tasksCount = STATE.analysis.filter(f => !f.status).length;
-
-    return `
-        <div class="cta-section">
-            <h3>¿Listo para implementar estas mejoras?</h3>
-            <p style="font-size:16px;color:#999;margin-bottom:40px;max-width:600px;margin-left:auto;margin-right:auto;">
-                Tienes ${tasksCount} tareas identificadas. Agenda una sesión estratégica para priorizarlas según tu contexto específico.
-            </p>
-            
-            <div class="cta-options">
-                <div class="cta-option featured" style="max-width:500px;margin:0 auto;">
-                    <span class="cta-badge">Sesión Gratuita</span>
-                    <h4>📞 Hablemos de tu Roadmap</h4>
-                    <p>30 minutos revisando tu análisis, priorizando según tu stack técnico y recursos, identificando quick wins.</p>
-                    <button class="cta-btn primary" id="schedule-btn">
-                        Agendar por WhatsApp
-                    </button>
-                </div>
-            </div>
-        </div>
-    `;
-}
-
 function renderSuccess() {
     return `
         <div class="success-message">
@@ -494,17 +469,10 @@ function resetAnalysis() {
 
 function attachResultsListeners() {
     const form = document.getElementById('lead-form');
-    const scheduleBtn = document.getElementById('schedule-btn');
     const newAnalysisBtn = document.getElementById('new-analysis-btn');
 
     if (form) {
         form.addEventListener('submit', handleLeadSubmit);
-    }
-
-    if (scheduleBtn) {
-        scheduleBtn.addEventListener('click', () => {
-            window.open('https://wa.me/573012963640?text=Hola%20Jairo%2C%20analicé%20mi%20sitio%20con%20Ejecuta.SEO%20y%20me%20gustaría%20agendar%20una%20sesión%20estratégica', '_blank');
-        });
     }
 
     if (newAnalysisBtn) {
