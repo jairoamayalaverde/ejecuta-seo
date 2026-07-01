@@ -31,7 +31,7 @@
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         * {
             margin: 0;
@@ -59,6 +59,33 @@
             margin-bottom: 60px;
         }
 
+        .hero-eyebrow {
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: #ec4899;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .hero-eyebrow::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #10b981;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.8);
+            animation: blink-dot 2s ease-in-out infinite;
+        }
+
+        @keyframes blink-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
         .hero-section h1 {
             font-size: clamp(32px, 6vw, 56px);
             font-weight: 900;
@@ -72,7 +99,7 @@
 
         .hero-section p {
             font-size: clamp(16px, 3vw, 20px);
-            color: #999;
+            color: #aaa;
             margin-bottom: 40px;
             max-width: 700px;
             margin-left: auto;
@@ -87,6 +114,25 @@
             max-width: 600px;
             margin: 0 auto;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .input-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #ec4899, #a855f7, transparent);
+            animation: scan-sweep 4s ease-in-out infinite;
+        }
+
+        @keyframes scan-sweep {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
         }
 
         .input-box:hover {
@@ -95,13 +141,22 @@
         }
 
         .input-box label {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
             font-size: 13px;
-            font-weight: 700;
+            font-weight: 600;
             color: #666;
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 16px;
+        }
+
+        .input-box label::before {
+            content: '$';
+            color: #ec4899;
+            font-weight: 700;
         }
 
         .input-box input {
@@ -113,9 +168,10 @@
             color: #fff;
             font-size: 18px;
             font-weight: 600;
-            font-family: 'Inter', sans-serif;
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
             margin-bottom: 24px;
             transition: all 0.2s ease;
+            caret-color: #ec4899;
         }
 
         .input-box input:focus {
@@ -153,6 +209,49 @@
             opacity: 0.5;
             cursor: not-allowed;
             transform: none;
+        }
+
+        /* FACTOR TICKER */
+        .factor-ticker {
+            max-width: 600px;
+            margin: 24px auto 0;
+            overflow: hidden;
+            mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+            -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+        }
+
+        .factor-ticker-track {
+            display: flex;
+            gap: 28px;
+            width: max-content;
+            animation: ticker-scroll 22s linear infinite;
+            font-family: 'IBM Plex Mono', 'Courier New', monospace;
+            font-size: 12px;
+            color: #555;
+            letter-spacing: 0.5px;
+        }
+
+        .factor-ticker-track span {
+            white-space: nowrap;
+        }
+
+        .factor-ticker-track span::after {
+            content: '·';
+            margin-left: 28px;
+            color: #333;
+        }
+
+        @keyframes ticker-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-eyebrow::before,
+            .input-box::before,
+            .factor-ticker-track {
+                animation: none;
+            }
         }
 
         /* LOADING */
@@ -831,6 +930,7 @@
 <body>
     <div class="container">
         <div class="hero-section">
+            <div class="hero-eyebrow">$ ejecuta --seo --ia</div>
             <h1>Analiza tu sitio web en 10 segundos (incluye score + mejoras)</h1>
             <p>Análisis técnico de 30+ factores que determinan tu visibilidad en buscadores tradicionales y sistemas de IA</p>
         </div>
