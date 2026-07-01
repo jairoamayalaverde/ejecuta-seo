@@ -153,6 +153,12 @@ function renderInput() {
                 Escanear 30+ factores técnicos
             </button>
         </div>
+        <div class="factor-ticker">
+            <div class="factor-ticker-track">
+                <span>https</span><span>mobile</span><span>ttfb</span><span>title</span><span>h1</span><span>meta_description</span><span>canonical</span><span>schema.org</span><span>open_graph</span><span>internal_links</span><span>alt_text</span><span>breadcrumbs</span><span>faq_schema</span><span>llms.txt</span><span>ai-plugin.json</span>
+                <span>https</span><span>mobile</span><span>ttfb</span><span>title</span><span>h1</span><span>meta_description</span><span>canonical</span><span>schema.org</span><span>open_graph</span><span>internal_links</span><span>alt_text</span><span>breadcrumbs</span><span>faq_schema</span><span>llms.txt</span><span>ai-plugin.json</span>
+            </div>
+        </div>
     `;
 }
 
