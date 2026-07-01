@@ -130,6 +130,7 @@ function render() {
             break;
         case 'success':
             app.innerHTML = renderSuccess();
+            attachSuccessListeners();
             break;
         case 'error':
             app.innerHTML = renderError();
@@ -199,6 +200,11 @@ function renderResults() {
 
 function renderResultsHero(scoreData) {
     return `
+        <div style="text-align:right;margin-bottom:16px;">
+            <button id="new-analysis-btn" style="background:none;border:none;color:#999;font-size:13px;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:1px;">
+                ↻ Nuevo análisis
+            </button>
+        </div>
         <div class="results-hero">
             <div class="score-label-top">VISIBILITY SCORE SEO</div>
             <div class="score-value-hero">
@@ -432,6 +438,9 @@ function renderSuccess() {
             <p style="margin-top: 24px; color: #666;">
                 ¿No lo ves? Revisa spam/promociones.
             </p>
+            <button id="new-analysis-btn" style="margin-top:32px;background:transparent;border:2px solid #10b981;color:#10b981;padding:14px 28px;border-radius:12px;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;">
+                Analizar otro sitio
+            </button>
         </div>
     `;
 }
@@ -463,9 +472,24 @@ function attachInputListeners() {
     btn.addEventListener('click', startAnalysis);
 }
 
+function resetAnalysis() {
+    STATE.view = 'input';
+    STATE.domain = '';
+    STATE.analysis = [];
+    STATE.score = 0;
+    STATE.categories = {};
+    STATE.interventions = [];
+    STATE.potentialScore = 100;
+    STATE.progress = 0;
+    STATE.roadmap = [];
+    STATE.domainRating = null;
+    render();
+}
+
 function attachResultsListeners() {
     const form = document.getElementById('lead-form');
     const scheduleBtn = document.getElementById('schedule-btn');
+    const newAnalysisBtn = document.getElementById('new-analysis-btn');
 
     if (form) {
         form.addEventListener('submit', handleLeadSubmit);
@@ -475,6 +499,17 @@ function attachResultsListeners() {
         scheduleBtn.addEventListener('click', () => {
             window.open('https://wa.me/573012963640?text=Hola%20Jairo%2C%20analicé%20mi%20sitio%20con%20Ejecuta.SEO%20y%20me%20gustaría%20agendar%20una%20sesión%20estratégica', '_blank');
         });
+    }
+
+    if (newAnalysisBtn) {
+        newAnalysisBtn.addEventListener('click', resetAnalysis);
+    }
+}
+
+function attachSuccessListeners() {
+    const newAnalysisBtn = document.getElementById('new-analysis-btn');
+    if (newAnalysisBtn) {
+        newAnalysisBtn.addEventListener('click', resetAnalysis);
     }
 }
 
