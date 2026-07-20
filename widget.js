@@ -1,5 +1,5 @@
 // ============================================================
-// EJECUTA.SEO - WIDGET HÍBRIDO
+// SCANNER.SEO - WIDGET HÍBRIDO
 // Fusión de análisis técnico robusto + visualización estratégica
 // Version: 2.1.0 — + Domain Rating (Ahrefs, vía proxy)
 // ============================================================
