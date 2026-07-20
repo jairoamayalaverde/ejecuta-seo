@@ -1,7 +1,7 @@
 // ============================================================
-// SCANNER.SEO - WIDGET HÍBRIDO
+// SCANNER SEO - WIDGET HÍBRIDO
 // Fusión de análisis técnico robusto + visualización estratégica
-// Version: 2.1.0 — + Domain Rating (Ahrefs, vía proxy)
+// Version: 2.2.0 — + Domain Rating (Ahrefs, vía proxy) + TTFB real
 // ============================================================
 
 const CONFIG = {
@@ -578,7 +578,7 @@ function updateProgress(value) {
 async function executeAllAnalysis(doc, domain) {
     return {
         https: analyzeHTTPS(domain),
-        ttfb: analyzeTTFB(),
+        ttfb: await analyzeTTFB(domain),
         mobile: analyzeMobile(doc),
         compression: { status: true, value: 'Detectado', label: 'Compresión', displayValue: 'Gzip/Brotli' },
 
@@ -614,14 +614,47 @@ function analyzeHTTPS(domain) {
     return { status: true, value: 'Seguro', label: 'HTTPS', displayValue: 'SSL Activo' };
 }
 
-function analyzeTTFB() {
-    const ttfb = (Math.random() * 2 + 0.5).toFixed(2);
-    return { 
-        status: parseFloat(ttfb) < 1.5, 
-        value: `${ttfb}s`,
-        label: 'TTFB',
-        displayValue: `${ttfb}s ${parseFloat(ttfb) < 1.5 ? '✓' : '(target: <1.5s)'}`
-    };
+// Mide el tiempo real que tarda el navegador en obtener una respuesta
+// del dominio analizado (no es un TTFB de laboratorio puro, pero es un
+// valor real y reproducible — antes este factor usaba Math.random(),
+// lo que hacía que el score cambiara de una corrida a otra sin razón).
+// Usamos mode:'no-cors' para no depender de que el sitio remoto tenga
+// CORS configurado; solo nos interesa cuánto tarda la respuesta.
+async function analyzeTTFB(domain) {
+    try {
+        const start = performance.now();
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+        await fetch(`https://${domain}/favicon.ico?_=${Date.now()}`, {
+            mode: 'no-cors',
+            cache: 'no-store',
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        const elapsed = (performance.now() - start) / 1000;
+        const rounded = elapsed.toFixed(2);
+
+        return {
+            status: elapsed < 1.5,
+            value: `${rounded}s`,
+            label: 'TTFB',
+            displayValue: `${rounded}s ${elapsed < 1.5 ? '✓' : '(target: <1.5s)'}`
+        };
+    } catch (e) {
+        // Si la medición falla (timeout, bloqueo, red), no penalizamos
+        // con un valor aleatorio ni inventado — lo marcamos como N/D
+        // y no restamos puntos por un dato que no pudimos verificar.
+        return {
+            status: true,
+            value: 'N/D',
+            label: 'TTFB',
+            displayValue: 'No se pudo medir'
+        };
+    }
 }
 
 function analyzeMobile(doc) {
@@ -1436,7 +1469,7 @@ function generateSOSTACData() {
 // INIT
 // ============================================================
 
-console.log('✅ Ejecuta.SEO Widget v2.1 cargado (+ Domain Rating)');
+console.log('✅ Scanner SEO Widget v2.2 cargado (+ Domain Rating + TTFB real)');
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
