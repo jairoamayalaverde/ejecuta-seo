@@ -1,7 +1,7 @@
 // ============================================================
 // SCANNER SEO - WIDGET HÍBRIDO
 // Fusión de análisis técnico robusto + visualización estratégica
-// Version: 2.2.0 — + Domain Rating (Ahrefs, vía proxy) + TTFB real
+// Version: 2.3.0 — + Domain Rating + TTFB real + Peso HTML + Render Blocking
 // ============================================================
 
 const CONFIG = {
@@ -36,6 +36,8 @@ const CONFIG = {
         mobile: { category: 'infraestructura', weight: 10, critical: true },
         ttfb: { category: 'infraestructura', weight: 6, critical: true },
         compression: { category: 'infraestructura', weight: 2, critical: false },
+        page_weight: { category: 'infraestructura', weight: 2, critical: false },
+        render_blocking: { category: 'infraestructura', weight: 3, critical: false },
 
         // ESTRUCTURA SEMÁNTICA BÁSICA (25 pts)
         title: { category: 'semantica', weight: 10, critical: true },
@@ -554,7 +556,7 @@ async function runAnalysis(domain) {
 
     updateProgress(50);
 
-    const rawResults = await executeAllAnalysis(doc, domain);
+    const rawResults = await executeAllAnalysis(doc, domain, html);
 
     updateProgress(70);
 
@@ -575,12 +577,14 @@ function updateProgress(value) {
     }
 }
 
-async function executeAllAnalysis(doc, domain) {
+async function executeAllAnalysis(doc, domain, html) {
     return {
         https: analyzeHTTPS(domain),
         ttfb: await analyzeTTFB(domain),
         mobile: analyzeMobile(doc),
         compression: { status: true, value: 'Detectado', label: 'Compresión', displayValue: 'Gzip/Brotli' },
+        page_weight: analyzePageWeight(html),
+        render_blocking: analyzeRenderBlocking(doc),
 
         title: analyzeTitle(doc),
         meta_desc: analyzeMetaDesc(doc),
@@ -655,6 +659,64 @@ async function analyzeTTFB(domain) {
             displayValue: 'No se pudo medir'
         };
     }
+}
+
+// Mide el peso del documento HTML (no incluye CSS/JS/imágenes descargados
+// aparte, solo el HTML que ya trajimos vía el proxy). Es una señal parcial
+// de performance, pero 100% confiable porque no depende de ningún servicio
+// externo — se calcula sobre datos que ya tenemos en memoria.
+function analyzePageWeight(html) {
+    const bytes = new TextEncoder().encode(html).length;
+    const kb = bytes / 1024;
+    const threshold = 300; // KB — umbral razonable solo para el documento HTML
+
+    return {
+        status: kb < threshold,
+        value: `${kb.toFixed(0)}KB`,
+        label: 'Peso del HTML',
+        displayValue: `${kb.toFixed(0)}KB ${kb < threshold ? '✓' : `(target: <${threshold}KB)`}`
+    };
+}
+
+// Detecta <script> en el <head> que bloquean el render inicial:
+// scripts con src pero sin async/defer/type="module", y scripts inline
+// (sin src) que siempre bloquean. Se excluyen los JSON-LD (no son JS
+// ejecutable). Calculado sobre el DOM que ya parseamos, sin llamadas extra.
+function analyzeRenderBlocking(doc) {
+    const head = doc.querySelector('head');
+
+    if (!head) {
+        return {
+            status: true,
+            value: 0,
+            label: 'Scripts Bloqueantes',
+            displayValue: 'Sin <head> detectado'
+        };
+    }
+
+    const scripts = Array.from(head.querySelectorAll('script'))
+        .filter(s => s.getAttribute('type') !== 'application/ld+json');
+
+    const blocking = scripts.filter(s => {
+        const hasSrc = s.hasAttribute('src');
+        const isAsync = s.hasAttribute('async');
+        const isDefer = s.hasAttribute('defer');
+        const isModule = s.getAttribute('type') === 'module';
+
+        // Scripts inline (sin src) en <head> siempre bloquean el render
+        if (!hasSrc) return true;
+
+        return !(isAsync || isDefer || isModule);
+    });
+
+    return {
+        status: blocking.length === 0,
+        value: blocking.length,
+        label: 'Scripts Bloqueantes',
+        displayValue: blocking.length === 0
+            ? 'Ninguno ✓'
+            : `${blocking.length} script(s) bloqueando el render en <head>`
+    };
 }
 
 function analyzeMobile(doc) {
@@ -1158,6 +1220,8 @@ function generateInterventions(analysis) {
         https: { description: 'Implementar certificado SSL/HTTPS', impact: 12 },
         mobile: { description: 'Hacer el sitio responsive (mobile-friendly)', impact: 10 },
         ttfb: { description: 'Optimizar Time To First Byte (servidor/cache)', impact: 6 },
+        page_weight: { description: 'Reducir peso del HTML (minificar, eliminar código muerto)', impact: 2 },
+        render_blocking: { description: 'Mover scripts a defer/async o al final del <head>', impact: 3 },
         title: { description: 'Optimizar meta title (30-60 caracteres)', impact: 10 },
         h1: { description: 'Agregar H1 único y descriptivo', impact: 8 },
         meta_desc: { description: 'Escribir meta description (120-160 chars)', impact: 5 },
@@ -1469,7 +1533,7 @@ function generateSOSTACData() {
 // INIT
 // ============================================================
 
-console.log('✅ Scanner SEO Widget v2.2 cargado (+ Domain Rating + TTFB real)');
+console.log('✅ Scanner SEO Widget v2.3 cargado (+ Peso HTML + Render Blocking)');
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
