@@ -1,4 +1,4 @@
-# Ejecuta.SEO - Widget Híbrido v2.0
+# Scanner SEO - Widget Híbrido v2.0
 
 Widget de diagnóstico técnico SEO + IA que combina análisis robusto de 30+ factores con visualización estratégica SOSTAC.
 
