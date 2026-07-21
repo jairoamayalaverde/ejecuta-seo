@@ -690,7 +690,7 @@ function analyzeRenderBlocking(doc) {
             status: true,
             value: 0,
             label: 'Scripts Bloqueantes',
-            displayValue: 'Sin <head> detectado'
+            displayValue: 'Sin &lt;head&gt; detectado'
         };
     }
 
@@ -715,7 +715,7 @@ function analyzeRenderBlocking(doc) {
         label: 'Scripts Bloqueantes',
         displayValue: blocking.length === 0
             ? 'Ninguno ✓'
-            : `${blocking.length} script(s) bloqueando el render en <head>`
+            : `${blocking.length} script(s) bloqueando el render en &lt;head&gt;`
     };
 }
 
@@ -1221,7 +1221,7 @@ function generateInterventions(analysis) {
         mobile: { description: 'Hacer el sitio responsive (mobile-friendly)', impact: 10 },
         ttfb: { description: 'Optimizar Time To First Byte (servidor/cache)', impact: 6 },
         page_weight: { description: 'Reducir peso del HTML (minificar, eliminar código muerto)', impact: 2 },
-        render_blocking: { description: 'Mover scripts a defer/async o al final del <head>', impact: 3 },
+        render_blocking: { description: 'Mover scripts a defer/async o al final del &lt;head&gt;', impact: 3 },
         title: { description: 'Optimizar meta title (30-60 caracteres)', impact: 10 },
         h1: { description: 'Agregar H1 único y descriptivo', impact: 8 },
         meta_desc: { description: 'Escribir meta description (120-160 chars)', impact: 5 },
