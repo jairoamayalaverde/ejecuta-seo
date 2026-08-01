@@ -1,24 +1,11 @@
 // ============================================================
 // SCANNER SEO - WIDGET HÍBRIDO
 // Fusión de análisis técnico robusto + visualización estratégica
-// Version: 2.3.0 — + Domain Rating + TTFB real + Peso HTML + Render Blocking
+// Version: 2.4.0 — Reporte directo en pantalla, sin lead capture
 // ============================================================
 
 const CONFIG = {
     proxyUrl: 'https://jairoamaya.co/html-proxy.php',
-
-    // Credenciales Supabase
-    supabase: {
-        url: 'https://vrhztgfgbjirmpbbdcks.supabase.co',
-        key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZyaHp0Z2ZnYmppcm1wYmJkY2tzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzA1ODMxODUsImV4cCI6MjA4NjE1OTE4NX0.wkkxiZcLaADcGBLFvnAECHKLD7uLTinlVnvN4VjYElU'
-    },
-
-    // Credenciales EmailJS
-    emailjs: {
-        serviceId: 'service_per05pl',
-        templateId: 'template_y4oyibo',
-        publicKey: 'lmZm9EQP7anHuS8if'
-    },
 
     // Endpoint público de Domain Rating (Ahrefs) — sin API key, vía proxy
     ahrefs: {
@@ -130,10 +117,6 @@ function render() {
             app.innerHTML = renderResults();
             attachResultsListeners();
             break;
-        case 'success':
-            app.innerHTML = renderSuccess();
-            attachSuccessListeners();
-            break;
         case 'error':
             app.innerHTML = renderError();
             attachErrorListeners();
@@ -201,7 +184,6 @@ function renderResults() {
         ${renderCategoryBreakdown()}
         ${renderBenchmark()}
         ${renderRoadmap()}
-        ${renderLeadCapture()}
     `;
 }
 
@@ -385,49 +367,6 @@ function renderRoadmap() {
     `;
 }
 
-function renderLeadCapture() {
-    return `
-        <div class="lead-capture">
-            <h2>📊 Reporte Completo </h2>
-            <p>Recibe el análisis detallado de los 30+ factores evaluados más tu roadmap ejecutable sugerido </p>
-            
-            <ul>
-                <li>Diagnóstico técnico completo en tu correo</li>
-                <li>Plan que puedes ejecutar en <a href="https://sostacflow.jairoamaya.co" target="_blank" style="color:#ec4899;text-decoration:none;">SOSTACFLOW</a></li>
-            </ul>
-            
-            <form class="lead-form" id="lead-form">
-                <div class="form-row">
-                    <input type="text" id="name-input" placeholder="Tu nombre" required />
-                    <input type="email" id="email-input" placeholder="tu@email.com" required />
-                </div>
-                <button type="submit" class="submit-btn">
-                    Enviar Reporte Completo
-                </button>
-                <div class="privacy-note">
-                    🔒 Tu información está protegida. Sin spam.
-                </div>
-            </form>
-        </div>
-    `;
-}
-
-function renderSuccess() {
-    return `
-        <div class="success-message">
-            <div class="success-icon">✓</div>
-            <h2>¡Análisis Enviado!</h2>
-            <p>Revisa tu email en los próximos 5 minutos. Te enviamos tu diagnóstico técnico completo + roadmap priorizado.</p>
-            <p style="margin-top: 24px; color: #666;">
-                ¿No lo ves? Revisa spam/promociones.
-            </p>
-            <button id="new-analysis-btn" style="margin-top:32px;background:transparent;border:2px solid #10b981;color:#10b981;padding:14px 28px;border-radius:12px;font-weight:900;font-size:13px;text-transform:uppercase;letter-spacing:1.5px;cursor:pointer;">
-                Analizar otro sitio
-            </button>
-        </div>
-    `;
-}
-
 function renderError() {
     return `
         <div class="error-message">
@@ -470,20 +409,8 @@ function resetAnalysis() {
 }
 
 function attachResultsListeners() {
-    const form = document.getElementById('lead-form');
     const newAnalysisBtn = document.getElementById('new-analysis-btn');
 
-    if (form) {
-        form.addEventListener('submit', handleLeadSubmit);
-    }
-
-    if (newAnalysisBtn) {
-        newAnalysisBtn.addEventListener('click', resetAnalysis);
-    }
-}
-
-function attachSuccessListeners() {
-    const newAnalysisBtn = document.getElementById('new-analysis-btn');
     if (newAnalysisBtn) {
         newAnalysisBtn.addEventListener('click', resetAnalysis);
     }
@@ -624,6 +551,8 @@ function analyzeHTTPS(domain) {
 // lo que hacía que el score cambiara de una corrida a otra sin razón).
 // Usamos mode:'no-cors' para no depender de que el sitio remoto tenga
 // CORS configurado; solo nos interesa cuánto tarda la respuesta.
+// Nota: esto genera un 404 esperado en consola (favicon.ico no siempre
+// existe) — es inofensivo, es solo la señal de red que estamos midiendo.
 async function analyzeTTFB(domain) {
     try {
         const start = performance.now();
@@ -995,6 +924,12 @@ function analyzeTwitterCards(doc) {
 // DETECCIÓN ASÍNCRONA DE FACTORES IA
 // ============================================================
 
+// Ambas funciones pasan por CONFIG.proxyUrl (html-proxy.php) en vez de
+// hacer fetch directo al dominio analizado. Antes, si el sitio no enviaba
+// Access-Control-Allow-Origin, el navegador bloqueaba la respuesta por CORS
+// y el archivo se marcaba como "no implementado" aunque sí existiera
+// (falso negativo). El proxy hace la petición server-side, así que no
+// depende de que el sitio remoto tenga CORS configurado.
 async function analyzeLLMsTxt(domain) {
     const paths = [
         `https://${domain}/llms.txt`,
@@ -1006,7 +941,7 @@ async function analyzeLLMsTxt(domain) {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-            const response = await fetch(url, { 
+            const response = await fetch(`${CONFIG.proxyUrl}?url=${encodeURIComponent(url)}`, {
                 signal: controller.signal
             });
 
@@ -1043,7 +978,7 @@ async function analyzeAIPlugin(domain) {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
 
-        const response = await fetch(url, { 
+        const response = await fetch(`${CONFIG.proxyUrl}?url=${encodeURIComponent(url)}`, {
             signal: controller.signal
         });
 
@@ -1340,200 +1275,10 @@ function getScoreLevel(score) {
 }
 
 // ============================================================
-// LEAD CAPTURE
-// ============================================================
-
-async function handleLeadSubmit(e) {
-    e.preventDefault();
-
-    const btn = e.target.querySelector('button[type="submit"]');
-    const name = document.getElementById('name-input').value.trim();
-    const email = document.getElementById('email-input').value.trim();
-
-    if (!name || !email) {
-        alert('Por favor completa todos los campos');
-        return;
-    }
-
-    const originalBtnText = btn.innerHTML;
-    btn.innerHTML = '⏳ ENVIANDO...';
-    btn.disabled = true;
-
-    try {
-        // ✅ PREPARAR DATOS
-        const scoreData = getScoreLevel(STATE.score);
-        const leadData = {
-            name: name,
-            email: email,
-            domain: STATE.domain,
-            score: STATE.score,
-            score_level: scoreData.label,
-            domain_rating: (STATE.domainRating && STATE.domainRating.status)
-                ? Math.round(STATE.domainRating.value)
-                : null,
-            analysis: {
-                factors: STATE.analysis,
-                categories: STATE.categories,
-                interventions: STATE.interventions.map(i => ({
-                    factor: i.factor,
-                    category: i.category,
-                    impact: i.impact,
-                    message: i.message || i.description || 'Factor requiere optimización'
-                })),
-                roadmap: STATE.roadmap.map(item => ({
-                    period: item.period,
-                    title: item.title,
-                    tasks: item.tasks,
-                    estimatedScore: item.estimatedScore
-                }))
-            }
-        };
-
-        // ✅ GUARDAR EN SUPABASE
-        const supabaseResponse = await fetch(`${CONFIG.supabase.url}/rest/v1/ejecuta_seo_leads`, {
-            method: 'POST',
-            headers: {
-                'apikey': CONFIG.supabase.key,
-                'Authorization': `Bearer ${CONFIG.supabase.key}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify(leadData)
-        });
-
-        if (!supabaseResponse.ok) {
-            console.error('❌ Error Supabase:', await supabaseResponse.text());
-        } else {
-            console.log('✅ Lead guardado en Supabase');
-        }
-
-        // ✅ FORMATEAR DATOS PARA EMAIL
-        const topInterventions = STATE.interventions.slice(0, 5);
-
-        // Generar HTML del roadmap completo
-        const roadmapHtml = STATE.roadmap.map(week => `
-            <div class="roadmap-week">
-                <div class="roadmap-week-header">${week.period}</div>
-                <div class="roadmap-week-title">${week.title}</div>
-                ${week.tasks.map(task => `
-                    <div class="roadmap-task">
-                        <strong>${task.priority}</strong> ${task.name} <span style="color:#10b981;">${task.impact}</span>
-                    </div>
-                `).join('')}
-                <div class="roadmap-score">Score estimado al finalizar: ${week.estimatedScore}/100 (+${week.gain} pts)</div>
-            </div>
-        `).join('');
-
-        const emailData = {
-            to_name: name,
-            to_email: email,
-            domain: STATE.domain,
-            score: STATE.score,
-            score_level: scoreData.label,
-            domain_rating: leadData.domain_rating !== null ? leadData.domain_rating : 'N/D',
-            top_issues: topInterventions.map(i => {
-                const message = i.message || i.description || 'Factor requiere optimización';
-                return `<div class="issue-item">${message.split('\n')[0]}</div>`;
-            }).join(''),
-            roadmap_html: roadmapHtml
-        };
-
-        // ✅ ENVIAR EMAIL VÍA EMAILJS
-        await emailjs.send(
-            CONFIG.emailjs.serviceId,
-            CONFIG.emailjs.templateId,
-            emailData,
-            CONFIG.emailjs.publicKey
-        );
-
-        console.log('✅ Email enviado correctamente');
-
-        // ✅ TRACKING ANALYTICS
-        if (typeof gtag !== 'undefined') {
-            gtag('event', 'generate_lead', {
-                event_category: 'Lead',
-                event_label: 'SEO Report',
-                value: STATE.score
-            });
-        }
-
-        // ✅ MOSTRAR ÉXITO
-        STATE.view = 'success';
-        render();
-
-    } catch (error) {
-        console.error('❌ Error completo:', error);
-        btn.disabled = false;
-        btn.innerHTML = originalBtnText;
-        alert('Error al enviar el análisis. Por favor intenta nuevamente.');
-    }
-}
-
-// ============================================================
-// SOSTAC FLOW INTEGRATION
-// ============================================================
-
-function createSOSTACProject() {
-    const payload = {
-        source: 'ejecuta.seo',
-        domain: STATE.domain,
-        analyzedAt: new Date().toISOString(),
-        seoScore: STATE.score,
-        domainRating: (STATE.domainRating && STATE.domainRating.status) ? Math.round(STATE.domainRating.value) : null,
-        categories: STATE.categories,
-        interventions: STATE.interventions,
-        roadmap: STATE.roadmap,
-        sostacData: generateSOSTACData()
-    };
-
-    // Fix para UTF-8: convertir a base64 correctamente
-    const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
-    window.location.href = `https://sostacflow.jairoamaya.co/importar?payload=${encoded}`;
-}
-
-function generateSOSTACData() {
-    const failingFactors = STATE.analysis.filter(f => !f.status);
-
-    return {
-        situation: [
-            { title: `Análisis completo de ${STATE.domain}`, completed: true, note: `Score SEO: ${STATE.score}/100` },
-            { title: `${failingFactors.length} factores requieren atención`, completed: true, note: 'Identificados mediante análisis automatizado' }
-        ],
-        objectives: [
-            { title: 'Alcanzar score 95/100', completed: false, note: `Actual: ${STATE.score}/100` },
-            { title: 'Eliminar todos los blockers críticos', completed: false, note: `${STATE.analysis.filter(a => a.critical && !a.status).length} críticos detectados` }
-        ],
-        strategy: [
-            { title: 'Optimización técnica priorizada', completed: false, note: 'Ejecutar en 6 semanas según roadmap' },
-            { title: 'Implementación de estándares modernos', completed: false, note: 'Schema.org + LLM readiness' }
-        ],
-        tactics: STATE.interventions.map((intervention, idx) => ({
-            id: `task_${idx + 1}`,
-            gap: intervention.description,
-            prioridad: intervention.critical ? 0 : intervention.impact >= 15 ? 1 : 2,
-            esfuerzo: intervention.impact >= 15 ? 'alto' : intervention.impact >= 10 ? 'medio' : 'bajo',
-            responsable: intervention.category === 'infraestructura' ? 'dev' : intervention.category === 'datos' ? 'seo' : 'contenido',
-            gananciaScore: intervention.impact,
-            timeline: { semana: Math.ceil((idx + 1) / 3) }
-        })),
-        action: STATE.roadmap.map((week, idx) => ({
-            semana: idx + 1,
-            tasks: week.tasks.map((_, taskIdx) => `task_${taskIdx + 1}`),
-            scoreEstimado: week.estimatedScore,
-            blockers: []
-        })),
-        control: [
-            { title: 'Tracking semanal de métricas', completed: false, note: 'Dashboard SOSTAC Flow' },
-            { title: 'Revisión quincenal de progreso', completed: false, note: 'Score actual vs objetivo' }
-        ]
-    };
-}
-
-// ============================================================
 // INIT
 // ============================================================
 
-console.log('✅ Scanner SEO Widget v2.3 cargado (+ Peso HTML + Render Blocking)');
+console.log('✅ Scanner SEO Widget v2.4 cargado (reporte directo, sin lead capture)');
 
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', render);
